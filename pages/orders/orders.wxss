@@ -1,0 +1,54 @@
+/* pages/order/order.wxss */
+
+.border {
+  border-bottom: 3rpx solid red;
+}
+
+.order-nav {
+  position: fixed;
+  top: 0rpx;
+  left: 0rpx;
+  height: 70rpx;
+  width: 100%;
+  z-index: 1000;
+}
+
+.order-text {
+  font-size: 30rpx;
+  height: 70rpx;
+  line-height: 70rpx;
+  text-align: center;
+}
+
+.orders {
+  margin-top: 70rpx;
+}
+
+.no-order {
+  display: flex;
+  flex-direction: column;
+  padding-top: 120rpx;
+}
+
+.no-order-icon {
+  font-size: 300%;
+  margin-bottom: 30rpx;
+}
+.zan-cell{
+  padding-top: 10rpx;
+  padding-bottom: 10rpx;
+}
+.zan-cell__text{
+  font-size: 30rpx;
+}
+.zan-cell__desc{ 
+  font-size: 25rpx;
+  color: #e6e6e6;
+}
+.zan-cell__ft{
+  font-size:28rpx;
+  color:red;
+}
+.zan-card__thumb{
+   height: 150rpx; 
+}

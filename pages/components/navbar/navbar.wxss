@@ -1,0 +1,34 @@
+/* pages/components/navbar/navbar.wxss */
+
+
+.type-container{
+  width: 100%;
+  height: 88rpx;
+  background-color: #fff;
+  overflow: hidden;
+   position: fixed; 
+   top: 50rpx; 
+  left: 0rpx;
+  z-index: 1000;
+}
+.type-navbar{
+  white-space: nowrap;
+  height: 88rpx;
+  width: 100%;
+  background-color: #fff;
+}
+.type-box{
+  width:160rpx;
+  box-sizing: content-box;
+  font-size: 24rpx;
+  line-height: 84rpx;
+  text-align: center;
+  display: inline-block;
+  overflow: hidden;
+}
+.type-navbar-item{
+  border-bottom: 4rpx solid #fff;
+}
+.type-item-on{
+  border-bottom: 4rpx solid #e64340;
+}

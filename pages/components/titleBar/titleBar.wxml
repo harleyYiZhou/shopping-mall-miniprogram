@@ -1,0 +1,12 @@
+<!--pages/components/titleBar/titleBar.wxml-->
+<template name="title">
+  <view class="zan-panel" bindtap="linkTo" data-items="{{item.items[0]}}"> 
+    <view class="zan-cell">
+      <view class="zan-cell__bd">
+        <view class="zan-cell__text">{{item.items[0].title}}</view>
+        <view class="zan-cell__desc" wx:if="{{item.items[0].subtitle}}">{{item.items[0].subtitle}}</view>
+      </view>
+      <view class="zan-cell__ft">更多></view>
+    </view>
+  </view>
+</template>

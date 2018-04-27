@@ -1,0 +1,11 @@
+<!--pages/shopping-cart/shopping-cart.wxml-->
+<import src="../components/bottom-nav/bottom-nav" />
+<import src="../components/cart/cart" />
+
+<view>
+  <view class="container">
+    <template is="{{goodsList.list.length > 0 ? 'cart-goods-list' : 'no-goods'}}" data="{{...goodsList,trans}}"></template>
+  </view>
+  <view style="height: 200rpx;"></view>
+  <template is="bottom-nav" data="{{selected,trans}}" />
+</view>

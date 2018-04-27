@@ -1,0 +1,25 @@
+<!--pages/addresses/addresses.wxml-->
+<view class="page-container color--grey-100">
+	<view class="color--grey-0 list-bordered padding-x-20">
+		<view class="list-item padding-top-20 padding-bottom-10" wx:for="{{ userAddresses }}" wx:key="_id">
+			<view class="flex margin-left-5">
+				<text class="block">{{ item.name }} {{ item.mobilePhone }}</text>
+				<text>{{ item.province }} {{ item.city }}</text>
+				<text wx:if="{{ item.district }}"> {{ item.district }}</text>
+        <text> {{item.street}}</text>
+				<text> {{ item.address }}</text>
+				<text wx:if="{{ item.postalCode }}">（{{ item.postalCode }}）</text>
+			</view>
+			<view class="text-right margin-top-20">
+				<button bindtap="updateAddress" data-address-id="{{ item._id }}" class="btn update-btn">{{trans.edit}}</button>
+				<view bindtap="removeAddress" data-index="{{ index }}" class="inline-block remove-btn margin-left-10">
+          <view class="zan-icon zan-icon-delete" style="font-size: 180%;"></view>
+				</view>
+			</view>
+		</view>
+		<view class="padding-bottom-10 padding-top-20 text-center">
+			<button bindtap="addAddress" class="btn width-60">{{trans.addShippingAddress}}</button>
+		</view>
+	</view>
+</view>
+

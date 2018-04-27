@@ -1,0 +1,3 @@
+<template name="spacer">
+  <view style="height: {{item.height}}px"></view>
+</template>

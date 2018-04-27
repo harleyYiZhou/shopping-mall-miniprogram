@@ -1,0 +1,101 @@
+{
+	"description": "项目配置文件。",
+	"packOptions": {
+		"ignore": []
+	},
+	"setting": {
+		"urlCheck": false,
+		"es6": true,
+		"postcss": true,
+		"minified": true,
+		"newFeature": true
+	},
+	"compileType": "miniprogram",
+	"libVersion": "1.9.98",
+	"appid": "wx391628a6dc5c9c81",
+	"projectname": "720-guzzu-wxshop",
+	"isGameTourist": false,
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"plugin": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"currentL": -1,
+			"list": []
+		},
+		"miniprogram": {
+			"current": -1,
+			"list": [
+				{
+					"id": -1,
+					"name": "searchFor",
+					"pathName": "pages/components/navbar/navbar",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "shoppingCart",
+					"pathName": "pages/shopping-cart/shopping-cart",
+					"query": ""
+				},
+				{
+					"id": 2,
+					"name": "user-center",
+					"pathName": "pages/user-center/user-center",
+					"query": ""
+				},
+				{
+					"id": 3,
+					"name": "addresses",
+					"pathName": "pages/addresses/addresses",
+					"query": ""
+				},
+				{
+					"id": 4,
+					"name": "orders",
+					"pathName": "pages/orders/orders",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "update-address",
+					"pathName": "pages/update-address/update-address",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "account",
+					"pathName": "pages/account/account",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "product-detail",
+					"pathName": "pages/product-detail/product-detail",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "catagory",
+					"pathName": "pages/catagory/catagory",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "setting",
+					"pathName": "pages/setting/setting",
+					"query": ""
+				}
+			]
+		}
+	}
+}

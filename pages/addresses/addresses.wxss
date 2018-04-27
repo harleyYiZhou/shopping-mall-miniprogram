@@ -1,0 +1,24 @@
+/* pages/addresses/addresses.wxss */
+.icon {
+	width: 60rpx;
+	height: 60rpx;
+}
+
+.update-btn {
+	width: 150rpx;
+	height: 62rpx;
+	line-height: 56rpx;
+}
+
+.remove-btn {
+	border-radius: 10rpx;
+	/* border: 3rpx solid #444; */
+	height: 60rpx;
+	overflow: hidden;
+	color:#fff;
+}
+.btn{
+	background-color: #444;
+	border-color: #444;
+	color:#fff;
+}

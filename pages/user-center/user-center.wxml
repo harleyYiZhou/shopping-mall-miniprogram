@@ -1,0 +1,93 @@
+<!--pages/user-center/user-center.wxml-->
+<import src="../components/bottom-nav/bottom-nav" />
+
+<view>
+  <view class="page-container">
+    <navigator url="/pages/account/account">
+      <view class="layout-row layout-wrap layout-align-center padding-y-20 top">
+        <view class="width-30 text-center">
+          <image class="userImg" mode="widthFix" src="../../image/img/food1.jpg"></image>
+        </view>
+        <text class="width-60 usertext">11201521</text>
+        <text class="width-10 usertext">></text>
+      </view>
+    </navigator>
+    <view class="zan-cell zan-cell--access">
+      <view class="zan-cell__bd">{{trans.orders}}</view>
+      <view class="zan-cell__ft">{{trans.allOrder}}</view>
+    </view>
+    <view class="layout-row layout-wrap  width-100 padding-y-10">
+      <view class="layout-column layout-align-center flex">
+        <view class="zan-icon zan-icon-debit-pay order-icon"></view>
+        <view class="order-name">{{trans.pending}}</view>
+      </view>
+      <view class="layout-column layout-align-center flex">
+        <view class="zan-icon zan-icon-logistics order-icon"></view>
+        <view class="order-name">{{trans.shipped}}</view>
+      </view>
+      <view class="layout-column layout-align-center flex">
+        <view class="zan-icon zan-icon-edit order-icon"></view>
+        <view class="order-name">{{trans.unComment}}</view>
+      </view>
+      <view class="layout-column layout-align-center flex">
+        <view class="zan-icon zan-icon-gold-coin order-icon"></view>
+        <view class="order-name">{{trans.refund}}</view>
+      </view>
+    </view>
+    <view>
+      <view class="zan-cell zan-cell--access">
+        <view class="zan-cell__bd">
+          <view class="zan-icon zan-icon-location"></view>
+          {{trans.manageAddress}}
+        </view>
+        <view class="zan-cell__ft"></view>
+      </view>
+    </view>
+    <view>
+      <view class="zan-cell zan-cell--access">
+        <view class="zan-cell__bd">
+          <view class="zan-icon zan-icon-like-o"></view>
+          {{trans.myFavorite}}
+        </view>
+        <view class="zan-cell__ft"></view>
+      </view>
+    </view>
+    <view>
+      <view class="zan-cell zan-cell--access">
+        <view class="zan-cell__bd">
+          <view class="zan-icon zan-icon-question"></view>
+          {{trans.service}}
+        </view>
+        <view class="zan-cell__ft"></view>
+      </view>
+    </view>
+    <view>
+      <view class="zan-cell zan-cell--access">
+        <view class="zan-cell__bd">
+          <view class="zan-icon zan-icon-debit-pay"></view>
+          {{trans.coupon}}
+        </view>
+        <view class="zan-cell__ft"></view>
+      </view>
+    </view>
+    <view>
+      <view class="zan-cell zan-cell--access">
+        <view class="zan-cell__bd">
+          <view class="zan-icon zan-icon-member-day-privilege"></view>
+          {{trans.membershipCard}}
+        </view>
+        <view class="zan-cell__ft"></view>
+      </view>
+    </view>
+    <view>
+      <view class="zan-cell zan-cell--access">
+        <view class="zan-cell__bd">
+          <view class="zan-icon zan-icon-setting"></view>
+          {{trans.setting}}
+        </view>
+        <view class="zan-cell__ft"></view>
+      </view>
+    </view>
+  </view>
+  <template is="bottom-nav" data="{{selected,trans}}" />
+</view>

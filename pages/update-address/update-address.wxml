@@ -1,0 +1,51 @@
+<!--pages/update-address/update-address.wxml-->
+<!-- update-address.wxml -->
+<view class="page-container color--grey-100">
+	<form bindsubmit="submit">
+		<view class="color--grey-0 padding-x-20 padding-y-5 margin-bottom-10">
+      <input type="text" name="userAddressId" value="{{currAddress._id}}" hidden="true" wx:if="{{currAddress._id}}"/>
+			<view class="form-item layout-row">
+				<label class="width-25" for="name">{{trans.name}}</label>
+				<input class="flex" id="name" name="name" type="text" value="{{ currAddress.name }}" placeholder="{{trans.phName}}"></input>
+			</view>
+			<view class="form-item layout-row">
+				<label class="width-25" for="mobilePhone">{{trans.mobilePhone}}</label>
+				<input class="flex" id="mobilePhone" name="mobilePhone" type="text" value="{{ currAddress.mobilePhone }}" placeholder="{{trans.phMobilePhone}}"></input>
+			</view>
+      <view class="form-item layout-row" hidden="{{zoneLevel<1}}">
+        <label class="width-25" for="province">{{trans.province}}</label>
+        <picker class="flex" name="province" bindchange="selectZone" data-level="1" value="{{provinces_index}}" range-key="name" range="{{provinces}}">
+          <view>{{citys?provinces[provinces_index].name:'请选择省份'}}</view>
+        </picker>
+      </view>
+      <view class="form-item layout-row" hidden="{{zoneLevel<2}}">
+        <label class="width-25" for="city">{{trans.city}}</label>
+        <picker class="flex" name="city" bindchange="selectZone" data-level="2" value="{{citys_index}}" range-key="name" range="{{citys}}">
+          <view>{{areas?citys[citys_index].name:'请选择城市'}}</view>
+        </picker>
+      </view>
+      <view class="form-item layout-row" hidden="{{zoneLevel<3}}" style="display:{{state}}"  >
+        <label class="width-25" for="district">{{trans.district}}</label>
+        <picker class="flex" name="district" bindchange="selectZone" data-level="3" value="{{areas_index}}" range-key="name" range="{{areas}}">
+          <view>{{streets?areas[areas_index].name:'请选择县区'}}</view>
+        </picker>
+      </view>
+      <view class="form-item layout-row" hidden="{{zoneLevel<4}}">
+        <label class="width-25" for="street">{{trans.streets}}</label>
+        <picker class="flex" name="street" bindchange="selectZone" data-level="4" value="{{streets_index}}" range-key="name" range="{{streets}}">
+          <view>{{streets[streets_index].name}}</view>
+        </picker>
+      </view>
+			<view class="form-item layout-row">
+				<label class="width-25" for="address">{{trans.address}}</label>
+				<input class="flex" id="address" name="address" type="text" value="{{ currAddress.address }}" placeholder="{{trans.phAddress}}"></input>
+			</view>
+			<!--<view class="form-item layout-row" style="border:none;">
+				<label class="width-25" for="postalCode">邮政编码</label>
+				<input class="flex" id="postalCode" name="postalCode" type="text" value="{{ currAddress.postalCode }}" placeholder="请输入邮政编码"></input>
+			</view>-->
+		</view>
+		<button form-type="submit" class="block-btn">{{trans.updateShippingAddress}}</button>
+	</form>
+</view>
+

@@ -1,0 +1,14 @@
+<!--pages/components/product-item/product-item.wxml-->
+<template name="productgroup">
+  <view class="layout-row layout-wrap ">
+    <block wx:for="{{item.items}}" wx:for-item="product"  >
+      <view style="width:{{productwidth}}%" class="layout-row layout-wrap layout-justify-center" bindtap="linkTo" data-product="{{product}}" data-type="{{item}}">
+        <image src="{{product.image.url}}" style="width: 100%;height: {{imageHeight}}rpx;margin-right: 4%" mode="aspectFill"></image>
+        <view  style='width: 100%;margin-right: 4%' class="productContent">
+          <view class="productName textview">{{product.name}}</view>
+          <view class="productPrice">￥{{product.price/100}}</view>
+        </view>
+      </view>
+    </block>
+  </view>
+</template>

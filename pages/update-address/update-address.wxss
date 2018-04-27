@@ -1,0 +1,12 @@
+/* pages/update-address/update-address.wxss */
+
+.form-item {
+	height: 100rpx;
+	line-height: 100rpx;
+	border-bottom: 1rpx solid #E0E0E0;
+}
+
+.form-item input {
+	height: 100rpx;
+	line-height: 100rpx;
+}

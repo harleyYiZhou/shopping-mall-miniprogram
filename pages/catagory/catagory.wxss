@@ -1,0 +1,38 @@
+/* pages/catagory/catagory.wxss */
+@import "../components/bottom-nav/bottom-nav";
+
+.search{
+  background: #eeeeee;
+  border-radius: 10rpx;
+  margin: 10rpx 30rpx 10rpx 30rpx;
+  padding: 5rpx 15rpx 5rpx 15rpx;
+   height: 50rpx; 
+}
+.zan-icon-search{
+  font-size: 150%;
+  margin-left: 10rpx;
+}
+.input-content{
+  font-size: 35rpx;
+  color: #666666;
+  margin-left: 20rpx;
+}
+.catagory{
+  border-top: 1rpx solid #eeeeee;
+}
+.catagory-title{
+  border-right: 1rpx solid #eeeeee;
+}
+.catagory-title .levelOne{
+    height: 70rpx;
+    line-height: 70rpx;
+    font-size: 30rpx;
+}
+.selecte{
+  font-weight: bold;
+  color: brown;
+  border-bottom: 2rpx solid brown;
+}
+.levelSecImg{
+  border-radius: 50%;
+}

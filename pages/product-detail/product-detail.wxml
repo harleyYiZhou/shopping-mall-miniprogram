@@ -1,0 +1,167 @@
+<!--pages/product-detail/product-detail.wxml-->
+<import src="../components/swiper/swiper" />
+
+<view class="page-container">
+  <view class="swiper">
+    <template is="swiper" data="{{item,imageArr}}"></template>
+  </view>
+  <view class="introduction layout-column padding-x-20 padding-y-10">
+    <text class="product-title">Choocklate T-shit</text>
+    <text class="product-subtitle">岘港品牌 质量好，款式心音</text>
+    <text class="product-price">￥99起</text>
+  </view>
+  <view class="option">
+    <view class="zan-cell zan-cell--access" bindtap="showPopup">
+      <view class="zan-cell__bd">{{trans.selected}}</view>
+      <view class="zan-cell__ft"></view>
+    </view>
+  </view>
+  <view class="spacer"></view>
+  <view class="shopMessage">
+    <view class="zan-cell zan-cell--access">
+      <view class="zan-cell__bd layout-row">
+        <view class="">
+          <image src="../../image/img/food1.jpg" mode="widthFix" class="shopImg"></image>
+        </view>
+        <view class="width-70 margin-left-10">
+          <view class="zan-cell__text">guzzu</view>
+          <view class="zan-cell__desc">a good shop</view>
+        </view>
+      </view>
+      <view class="zan-cell__ft"></view>
+    </view>
+  </view>
+  <view class="spacer"></view>
+  <view class="comments ">
+    <view class="comments-title">
+      <view class="zan-cell zan-cell--access">
+        <view class="zan-cell__bd">{{trans.comment}}</view>
+        <view class="zan-cell__ft">92%满意</view>
+      </view>
+    </view>
+    <view class="comments-content margin-bottom-10">
+      <view class="border"></view>
+      <view class="comments-user">
+        <view class="zan-cell">
+          <view class="zan-cell__bd layout-row">
+            <view>
+              <image src="../../image/img/food1.jpg" mode="widthFix" class="userImg"></image>
+            </view>
+            <view class="width-70 margin-left-10">
+              <view class="zan-cell__text">guzzu</view>
+            </view>
+          </view>
+          <view class="zan-cell__ft">2018.04.22 14:58</view>
+        </view>
+      </view>
+      <view class="comments-center">
+        <view class="comments-text">
+          东西炒鸡好吃的，赞不绝口，very good !!!! so yummy!!!
+        </view>
+        <view class="margin-top-20">
+          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
+          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
+          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
+          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
+          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
+        </view>
+      </view>
+    </view>
+    <view class="comments-content">
+      <view class="border"></view>
+      <view class="comments-user">
+        <view class="zan-cell">
+          <view class="zan-cell__bd layout-row">
+            <view>
+              <image src="../../image/img/food1.jpg" mode="widthFix" class="userImg"></image>
+            </view>
+            <view class="width-70 margin-left-10">
+              <view class="zan-cell__text">guzzu</view>
+            </view>
+          </view>
+          <view class="zan-cell__ft">2018.04.22 14:58</view>
+        </view>
+      </view>
+      <view class="comments-center">
+        <view class="comments-text">
+          东西炒鸡好吃的，赞不绝口，very good !!!! so yummy!!!
+        </view>
+        <view class="margin-top-20">
+          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
+          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
+          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
+          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
+          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="spacer"></view>
+  <view class="section layout-row layout-justify-center margin-y-10 padding-bottom-20">
+    下拉查看图文详情
+  </view>
+  <view hidden='{{showProductDetail}}'>
+    <image src="../../image/img/food1.jpg" mode="widthFix"></image>
+    <image src="../../image/img/food1.jpg" mode="widthFix"></image>
+    <image src="../../image/img/food1.jpg" mode="widthFix"></image>
+    <image src="../../image/img/food1.jpg" mode="widthFix"></image>
+    <image src="../../image/img/food1.jpg" mode="widthFix"></image>
+    <image src="../../image/img/food1.jpg" mode="widthFix"></image>    
+  </view>
+</view>
+<view class="footer-box" hidden="{{footerhidden}}">
+  <view class="layout-row">
+    <view class="width-15 layout-column layout-justify-center layout-align-center mini-btn">
+      <view class="zan-icon zan-icon-like-o"></view>
+      <view>{{trans.collect}}</view>
+    </view>
+    <view class="width-15 layout-column layout-justify-center layout-align-center mini-btn">
+      <view class="zan-icon zan-icon-cart"></view>
+      <view>{{trans.cart}}</view>
+    </view>
+    <view class="flex">
+      <button class="zan-btn  zan-btn--danger">{{trans.payment}}</button>
+    </view>
+    <view class="flex">
+      <button class="zan-btn  zan-btn--warn">{{trans.addToCart}}</button>
+    </view>
+  </view>
+</view>
+<view class="show-popup" hidden="{{hideShopPopup}}">
+  <view class="popup-mask" bindtap="hideShopPopup"></view>
+  <view class="popup-contents">
+    <view class="pop-goods-info layout-row padding-y-10">
+      <view class="">
+        <image src="../../image/img/food1.jpg" mode="widthFix" class="square-120"></image>
+      </view>
+      <view class="flex margin-left-10">
+        <view class="product-title">T-shit</view>
+        <view class="product-price">￥66</view>
+      </view>
+    </view>
+    <view class="size-label-box">
+      <block wx:for="{{goodsDetail.properties}}" wx:for-item="property" wx:for-index="idx" wx:key="id">
+        <view class="label">{{property.name}}</view>
+        <view class="label-item-box">
+          <view class="label-item {{item.active ? 'active' : '' }}" wx:for="{{property.childsCurGoods}}" wx:key="id" bindtap="labelItemTap" data-propertyindex="{{idx}}" data-propertyid="{{property.id}}" data-propertyname="{{property.name}}" data-propertychildindex="{{index}}"
+            data-propertychildid="{{item.id}}" data-propertychildname="{{item.name}}">
+            {{item.name}}
+          </view>
+        </view>
+      </block>
+    </view>
+    <view class="layout-row layout-wrap layout-justify-between goodsNum">
+      <view class="num-label layout-row layout-align-center">{{trans.buyNum}}</view>
+      <view class="num-box layout-row layout-wrap layout-justify-end">
+        <view class="num-jian {{buyNumber == buyNumMin ? 'hui': ''}}" bindtap="numJianTap">-</view>
+        <view class="num-input">
+          <input type="number" value="{{buyNum}}"  bindchange="changeNum"/>
+        </view>
+        <view class="num-jia {{buyNumber== buyNumMax ? 'hui': ''}}" bindtap="numJiaTap">+</view>
+      </view>
+    </view>
+    <view class="margin-top-10">
+      <button class="zan-btn zan-btn--danger">{{trans.addToCart}}</button>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,13 @@
+<!--pages/components/searchFor/searchFor.wxml-->
+<template name="searchFor">
+  <view class="layout-row layout-wrap layout-align-center searchFor">
+    <image class="width-20 logo" mode="widthFix" src="../../image/img/logo.jpg">guzzu</image>
+    <view class="layout-row width-70 input-group">
+      <icon  type="search" size="20"></icon>
+      <input class="width-80" placeholder='出行季 最高满200'></input>
+      <image src="../../image/icon/scanning.png" mode='widthFix' class="width-10"></image>
+    </view>
+    <image src="../../image/icon/remind.png" class="message-icon" mode='widthFix' ></image>
+    
+  </view>
+</template>

@@ -1,0 +1,19 @@
+/* pages/account/account.wxss */
+@import "../components/actionsheet/actionsheet";
+@import "../components/dialog/dialog";
+
+.logout{
+  position: absolute;
+  bottom: 20rpx;
+  width: 100%;
+}
+.logout-btn{
+  color: burlywood;
+  border: 1rpx solid burlywood;  
+}
+.img{
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+}

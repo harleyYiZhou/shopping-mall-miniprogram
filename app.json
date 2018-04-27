@@ -1,0 +1,22 @@
+{
+  "pages":[
+    "pages/index/index",
+    "pages/logs/logs",
+    "pages/components/searchFor/searchFor",
+    "pages/shopping-cart/shopping-cart",
+    "pages/user-center/user-center",
+    "pages/orders/orders",
+    "pages/addresses/addresses",
+    "pages/update-address/update-address",
+    "pages/account/account",
+    "pages/product-detail/product-detail",
+    "pages/catagory/catagory",
+    "pages/setting/setting"
+  ],
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "WeChat",
+    "navigationBarTextStyle":"black"
+  }
+}

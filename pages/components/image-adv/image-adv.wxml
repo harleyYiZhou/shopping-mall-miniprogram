@@ -1,0 +1,6 @@
+<!--pages/components/image-adv/image-adv.wxml-->
+<template name="image-adv">
+  <view>
+    <image mode="widthFix" src="{{item.items[0].src}}" onclick=""></image>
+  </view>
+</template>

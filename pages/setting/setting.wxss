@@ -1,0 +1,4 @@
+/* pages/setting/setting.wxss */
+.setting-title{
+  font-size:35rpx;
+}

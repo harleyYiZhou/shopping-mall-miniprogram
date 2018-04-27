@@ -1,0 +1,56 @@
+<!--pages/account/account.wxml-->
+<import src="../components/actionsheet/actionsheet" />
+<import src="../components/dialog/dialog" />
+
+
+<view>
+  <view class="margin-top-20">
+    <view class="zan-cell">
+      <view class="zan-cell__bd">{{trans.basicInf}}</view>
+    </view>
+    <view class="zan-cell zan-cell--access" bindtap="userImg">
+      <view class="zan-cell__bd">
+        <view class="zan-cell__text">{{trans.image}}</view>
+      </view>
+      <view class="zan-cell__ft">
+         <image src="../../image/img/food1.jpg" mode="widthFix" class="img"></image> 
+      </view>
+    </view>
+    <view class="zan-cell">
+      <view class="zan-cell__bd">
+        <view class="zan-cell__text">{{trans.accountId}}</view>
+      </view>
+      <view class="zan-cell__ft">4564123134</view>
+    </view>
+    <view class="zan-cell zan-cell--access">
+      <view class="zan-cell__bd">
+        <view class="zan-cell__text">{{trans.name}}</view>
+      </view>
+      <view class="zan-cell__ft" bindtap="toggleBaseDialog">harley</view>
+    </view>
+  </view>
+  <view class="margin-top-20">
+    <view class="zan-cell">
+      <view class="zan-cell__bd">{{trans.secretInf}}</view>
+    </view>
+    <view class="zan-cell">
+      <view class="zan-cell__bd">
+        <view class="zan-cell__text">{{trans.phoneNum}}</view>
+      </view>
+      <view class="zan-cell__ft">4561231561</view>
+    </view>
+    <view class="zan-cell zan-cell--access">
+      <view class="zan-cell__bd">
+        <view class="zan-cell__text">{{trans.changepsw}}</view>
+      </view>
+      <view class="zan-cell__ft"></view>
+    </view>
+  </view>
+</view>
+<view class="logout">
+  <view class="zan-btns">
+    <button class="zan-btn logout-btn">{{trans.logoutBtn}}</button>
+  </view>
+</view>
+<template is="zan-actionsheet" data="{{ ...baseActionsheet,trans}}"></template>
+<template is="zan-dialog" data="{{ zanDialog,trans }}"></template>

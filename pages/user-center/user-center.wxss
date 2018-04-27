@@ -1,0 +1,20 @@
+/* pages/user-center/user-center.wxss */
+@import "../components/bottom-nav/bottom-nav";
+
+.userImg{
+  border-radius: 50%;
+  width: 70%;
+}
+.usertext{
+  font-size: 35rpx;
+  color: #ffffff;
+}
+.top{
+  background: #666666
+}
+.order-icon{
+  font-size: 180%;
+}
+.order-name{
+  font-size: 30rpx;
+}
