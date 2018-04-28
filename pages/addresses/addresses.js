@@ -152,5 +152,15 @@ Page({
    */
   onShareAppMessage: function () {
 
+  },
+  updateAddress: function(){
+    wx.navigateTo({
+      url: '/pages/update-address/update-address',
+    })
+  },
+  addAddress:function(){
+    wx.navigateTo({
+      url: '/pages/update-address/update-address',
+    })
   }
 })

@@ -12,36 +12,48 @@
         <text class="width-10 usertext">></text>
       </view>
     </navigator>
-    <view class="zan-cell zan-cell--access">
-      <view class="zan-cell__bd">{{trans.orders}}</view>
-      <view class="zan-cell__ft">{{trans.allOrder}}</view>
-    </view>
+    <navigator url="/pages/orders/orders">
+      <view class="zan-cell zan-cell--access">
+        <view class="zan-cell__bd">{{trans.orders}}</view>
+        <view class="zan-cell__ft">{{trans.allOrder}}</view>
+      </view>
+    </navigator>
     <view class="layout-row layout-wrap  width-100 padding-y-10">
       <view class="layout-column layout-align-center flex">
-        <view class="zan-icon zan-icon-debit-pay order-icon"></view>
+        <navigator url='/pages/orders/orders'>
+          <view class="zan-icon zan-icon-debit-pay order-icon"></view>
+        </navigator>
         <view class="order-name">{{trans.pending}}</view>
       </view>
       <view class="layout-column layout-align-center flex">
-        <view class="zan-icon zan-icon-logistics order-icon"></view>
+        <navigator url='/pages/orders/orders'>
+          <view class="zan-icon zan-icon-logistics order-icon"></view>
+        </navigator>
         <view class="order-name">{{trans.shipped}}</view>
       </view>
       <view class="layout-column layout-align-center flex">
-        <view class="zan-icon zan-icon-edit order-icon"></view>
+        <navigator url='/pages/orders/orders'>
+          <view class="zan-icon zan-icon-edit order-icon"></view>
+        </navigator>
         <view class="order-name">{{trans.unComment}}</view>
       </view>
       <view class="layout-column layout-align-center flex">
-        <view class="zan-icon zan-icon-gold-coin order-icon"></view>
+        <navigator url='/pages/orders/orders'>
+          <view class="zan-icon zan-icon-gold-coin order-icon"></view>
+        </navigator>
         <view class="order-name">{{trans.refund}}</view>
       </view>
     </view>
     <view>
-      <view class="zan-cell zan-cell--access">
-        <view class="zan-cell__bd">
-          <view class="zan-icon zan-icon-location"></view>
-          {{trans.manageAddress}}
+      <navigator url="/pages/addresses/addresses">
+        <view class="zan-cell zan-cell--access">
+          <view class="zan-cell__bd">
+            <view class="zan-icon zan-icon-location"></view>
+            {{trans.manageAddress}}
+          </view>
+          <view class="zan-cell__ft"></view>
         </view>
-        <view class="zan-cell__ft"></view>
-      </view>
+      </navigator>
     </view>
     <view>
       <view class="zan-cell zan-cell--access">
@@ -80,13 +92,15 @@
       </view>
     </view>
     <view>
-      <view class="zan-cell zan-cell--access">
-        <view class="zan-cell__bd">
-          <view class="zan-icon zan-icon-setting"></view>
-          {{trans.setting}}
+      <navigator url="/pages/setting/setting">
+        <view class="zan-cell zan-cell--access">
+          <view class="zan-cell__bd">
+            <view class="zan-icon zan-icon-setting"></view>
+            {{trans.setting}}
+          </view>
+          <view class="zan-cell__ft"></view>
         </view>
-        <view class="zan-cell__ft"></view>
-      </view>
+      </navigator>
     </view>
   </view>
   <template is="bottom-nav" data="{{selected,trans}}" />

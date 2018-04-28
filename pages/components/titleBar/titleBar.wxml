@@ -6,7 +6,7 @@
         <view class="zan-cell__text">{{item.items[0].title}}</view>
         <view class="zan-cell__desc" wx:if="{{item.items[0].subtitle}}">{{item.items[0].subtitle}}</view>
       </view>
-      <view class="zan-cell__ft">更多></view>
+      <view class="zan-cell__ft">{{trans.more}}></view>
     </view>
   </view>
 </template>

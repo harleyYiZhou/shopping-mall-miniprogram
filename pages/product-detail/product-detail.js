@@ -1,6 +1,7 @@
 // pages/product-detail/product-detail.js
 var json = require("../../json/page.js");
 var app=getApp();
+var guzzuUtil=require("../../utils/guzzu-utils.js");
 
 Page({
 
@@ -178,9 +179,25 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    var that=this;
     if (!this.data.locale || this.data.locale !== app.globalData.locale) {
       app.translate.langData(this);
     }
+    that.setData({
+      productId: options.linkId
+    })
+    guzzuUtil.callApiGet('products/'+that.data.productId).then(function(res1){
+      console.log(res1);
+      that.setData({
+        page: res1
+      });
+      guzzuUtil.callApiGet('stores/'+res1.store).then(function(res2){
+        console.log(res2);
+        that.setData({
+          store: res2
+        })
+      })
+    })
   },
 
   /**

@@ -1,5 +1,7 @@
 // pages/catagory/catagory.js
 var app=getApp();
+var guzzuUtil=require("../../utils/guzzu-utils.js");
+
 Page({
 
   /**
@@ -7,459 +9,14 @@ Page({
    */
   data: {
     tapIndex: 0,
-    selected: '2',
-    catagory:{
-      levelOne:[
-        {
-          title: "有品推荐",
-          leverSec: [
-            {
-              title: "小米6",
-              src:"../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src:"../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src:"../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src:"../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title:" 手机",
-          leverSec: [
-            {
-              title: "小米5",
-              src:"../../image/img/food1.jpg"
-            },
-            {
-              title: "小米5",
-              src:"../../image/img/food1.jpg"
-            },
-            {
-              title: "小米aha",
-              src:"../../image/img/food1.jpg"
-            },
-            {
-              title: "小米66",
-              src:"../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: "笔记本",
-          leverSec: [
-            {
-              title: "小米6",
-              src:"../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src:"../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src:"../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src:"../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: "有品推荐",
-          leverSec: [
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: " 手机",
-          leverSec: [
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: "笔记本",
-          leverSec: [
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: "有品推荐",
-          leverSec: [
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: " 手机",
-          leverSec: [
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: "笔记本",
-          leverSec: [
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: "有品推荐",
-          leverSec: [
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: " 手机",
-          leverSec: [
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: "笔记本",
-          leverSec: [
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: "有品推荐",
-          leverSec: [
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: " 手机",
-          leverSec: [
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: "笔记本",
-          leverSec: [
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: "有品推荐",
-          leverSec: [
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: " 手机",
-          leverSec: [
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: "笔记本",
-          leverSec: [
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: "有品推荐",
-          leverSec: [
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: " 手机",
-          leverSec: [
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            }
-          ]
-        },
-        {
-          title: "笔记本",
-          leverSec: [
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            },
-            {
-              title: "小米6",
-              src: "../../image/img/food1.jpg"
-            }
-          ]
-        }
-        
-      ]
-    }
+    selected: '2'
   },
 
   /**
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+    var that=this;
     if (!this.data.locale || this.data.locale !== app.globalData.locale) {
       app.translate.langData(this);
     }
@@ -469,6 +26,21 @@ Page({
     console.log(scrollHeight);
     this.setData({
       scrollHeight: scrollHeight-170
+    })
+
+    guzzuUtil.callApiGet('shopping-malls/5adedc43de3c90022eb25d3b/categories').then(function(res1){
+      console.log(res1);
+      var categoryId=res1[that.data.tapIndex]._id;
+      that.setData({
+        category: res1,
+        categoryId: categoryId
+      })
+      guzzuUtil.callApiGet('shopping-malls/5adedc43de3c90022eb25d3b/categories/'+categoryId).then(function(res2){
+        console.log(res2);
+        that.setData({
+          categoryPage: res2
+        })
+      })
     })
   },
 
@@ -487,8 +59,23 @@ Page({
   },
   btmNavLink: app.btmNavLink,
   chooseLevel:function(e){
+    var that=this;
     this.setData({
       tapIndex: e.currentTarget.dataset.index
+    });
+    guzzuUtil.callApiGet('shopping-malls/5adedc43de3c90022eb25d3b/categories').then(function (res1) {
+      console.log(res1);
+      var categoryId = res1[that.data.tapIndex]._id;
+      that.setData({
+        category: res1,
+        categoryId: categoryId
+      })
+      guzzuUtil.callApiGet('shopping-malls/5adedc43de3c90022eb25d3b/categories/' + categoryId).then(function (res2) {
+        console.log(res2);
+        that.setData({
+          categoryPage: res2
+        })
+      })
     })
   }
 })

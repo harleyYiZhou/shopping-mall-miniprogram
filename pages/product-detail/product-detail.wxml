@@ -3,29 +3,28 @@
 
 <view class="page-container">
   <view class="swiper">
-    <template is="swiper" data="{{item,imageArr}}"></template>
+    <template is="banner" data="{{item,imageArr}}"></template>
   </view>
   <view class="introduction layout-column padding-x-20 padding-y-10">
-    <text class="product-title">Choocklate T-shit</text>
-    <text class="product-subtitle">岘港品牌 质量好，款式心音</text>
-    <text class="product-price">￥99起</text>
+    <text class="product-title">{{page.name}}</text>
+    <text class="product-subtitle">{{page.tagline}}</text>
+    <text class="product-price">￥{{page.price/100}}</text>
   </view>
   <view class="option">
-    <view class="zan-cell zan-cell--access" bindtap="showPopup">
+    <view wx:if="{{page.useProductOptions}}" class="zan-cell zan-cell--access" bindtap="showPopup">
       <view class="zan-cell__bd">{{trans.selected}}</view>
       <view class="zan-cell__ft"></view>
     </view>
   </view>
   <view class="spacer"></view>
-  <view class="shopMessage">
+  <view class="shopMessage" >
     <view class="zan-cell zan-cell--access">
       <view class="zan-cell__bd layout-row">
         <view class="">
-          <image src="../../image/img/food1.jpg" mode="widthFix" class="shopImg"></image>
+          <image src="{{store.logo.url}}" mode="widthFix" class="shopImg"></image>
         </view>
         <view class="width-70 margin-left-10">
-          <view class="zan-cell__text">guzzu</view>
-          <view class="zan-cell__desc">a good shop</view>
+          <view class="zan-cell__text">{{store.name}}</view>
         </view>
       </view>
       <view class="zan-cell__ft"></view>

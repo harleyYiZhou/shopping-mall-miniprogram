@@ -7,6 +7,7 @@ module.exports = {
 		error: '错误',
     error1:'订单：商品库存不足',
 		unknownError: '未知错误！',
+    more:'更多',
 		showModal: {
 			cancel: '取消',
 			confirm: '确认',

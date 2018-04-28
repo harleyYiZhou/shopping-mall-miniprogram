@@ -31,9 +31,9 @@
             </view>
           </view>
         </view>
-        <view class="delete-btn" data-index="{{index}}" catchtap="delItem">
+         <view class="delete-btn" data-index="{{index}}" catchtap="delItem">
           {{trans.removeTitle}}
-        </view>
+        </view> 
       </view>
     </view>
   </view>

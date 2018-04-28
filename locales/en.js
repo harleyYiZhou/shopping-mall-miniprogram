@@ -7,6 +7,7 @@ module.exports = {
 		error: 'Error',
     error1: 'Order: out of stock',
 		unknownError: 'Unknown Error.',
+    more: 'more',
 		showModal: {
 			cancel: 'Cancel',
 			confirm: 'Confirm',
@@ -257,7 +258,7 @@ module.exports = {
 		totalCost: 'TotalCost',
 		goToPay: 'Proceed to Checkout',
 		'backToStore': 'Back To Store',
-		removeTitle: 'Remove product',
+		removeTitle: 'Remove',
 		removeContent: 'Are you sure you want to remove this product?',
     error1: 'Order: out of stock'
 	},
@@ -273,7 +274,7 @@ module.exports = {
 		infoNotComplete: 'The address information is not complete.',
 		'updateShippingAddress': 'Update Address',
 		'name': 'Name',
-		'mobilePhone': 'Mobile Phone',
+		'mobilePhone': 'Phone',
 		'province': 'Province',
 		'city': 'City',
 		'district': 'District',

@@ -30,22 +30,22 @@ App({
     var id=e.currentTarget.id;
     switch(id){
       case "0": 
-        wx.navigateTo({
+        wx.redirectTo({
           url: '/pages/index/index',
         });
         break;
       case "1":
-        wx.navigateTo({
+        wx.redirectTo({
           url: '/pages/shopping-cart/shopping-cart',
         });
         break;
       case "2":
-        wx.navigateTo({
+        wx.redirectTo({
           url: '/pages/catagory/catagory',
         });
         break;
       case "3":
-        wx.navigateTo({
+        wx.redirectTo({
           url: '/pages/user-center/user-center',
         });
         break;

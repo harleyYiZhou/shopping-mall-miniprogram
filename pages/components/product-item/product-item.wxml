@@ -1,8 +1,8 @@
 <!--pages/components/product-item/product-item.wxml-->
 <template name="productgroup">
-  <view class="layout-row layout-wrap ">
+  <view class="layout-row layout-wrap margin-left-10">
     <block wx:for="{{item.items}}" wx:for-item="product"  >
-      <view style="width:{{productwidth}}%" class="layout-row layout-wrap layout-justify-center" bindtap="linkTo" data-product="{{product}}" data-type="{{item}}">
+      <view style="width:{{productwidth}}%" class="layout-row layout-wrap layout-justify-center" bindtap="linkTo" data-product="{{product}}" data-item="{{item}}">
         <image src="{{product.image.url}}" style="width: 100%;height: {{imageHeight}}rpx;margin-right: 4%" mode="aspectFill"></image>
         <view  style='width: 100%;margin-right: 4%' class="productContent">
           <view class="productName textview">{{product.name}}</view>

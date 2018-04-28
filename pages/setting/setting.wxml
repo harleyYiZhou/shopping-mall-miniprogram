@@ -3,8 +3,8 @@
   <view class="zan-cell">
     <view class="zan-cell__bd setting-title">{{trans.language}}</view>
     <view class="zan-cell__ft">
-      <picker bindchange='' value="{{index}}" range="{{lang}}">
-        <view class="picker setting-title">{{lang[index]}}</view>
+      <picker bindchange='tapLanguage' value="{{index}}" range="{{lang}}">
+        <view class="picker setting-title">{{language[index].name}}</view>
       </picker>
     </view>
   </view>
