@@ -1,6 +1,6 @@
 /**index.wxss**/
-@import "../components/searchFor/searchFor" ;
-@import "../components/navbar/navbar" ;
+@import "../components/searchFor/searchFor";
+@import "../components/navbar/navbar";
 @import "../components/titleBar/titleBar";
 @import "../components/swiper/swiper";
 @import "../components/bottom-nav/bottom-nav";

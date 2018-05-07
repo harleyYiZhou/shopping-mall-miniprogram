@@ -44,7 +44,7 @@
         <view class="zan-cell">
           <view class="zan-cell__bd layout-row">
             <view>
-              <image src="../../image/img/food1.jpg" mode="widthFix" class="userImg"></image>
+              <image src="../../public/images/img/food1.jpg" mode="widthFix" class="userImg"></image>
             </view>
             <view class="width-70 margin-left-10">
               <view class="zan-cell__text">guzzu</view>
@@ -58,11 +58,11 @@
           东西炒鸡好吃的，赞不绝口，very good !!!! so yummy!!!
         </view>
         <view class="margin-top-20">
-          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
-          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
-          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
-          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
-          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
+          <image class="square-200 margin-right-10" src="../../public/images/img/food1.jpg" mode="widthFix"></image>
+          <image class="square-200 margin-right-10" src="../../public/images/img/food1.jpg" mode="widthFix"></image>
+          <image class="square-200 margin-right-10" src="../../public/images/img/food1.jpg" mode="widthFix"></image>
+          <image class="square-200 margin-right-10" src="../../public/images/img/food1.jpg" mode="widthFix"></image>
+          <image class="square-200 margin-right-10" src="../../public/images/img/food1.jpg" mode="widthFix"></image>
         </view>
       </view>
     </view>
@@ -72,7 +72,7 @@
         <view class="zan-cell">
           <view class="zan-cell__bd layout-row">
             <view>
-              <image src="../../image/img/food1.jpg" mode="widthFix" class="userImg"></image>
+              <image src="../../public/images/img/food1.jpg" mode="widthFix" class="userImg"></image>
             </view>
             <view class="width-70 margin-left-10">
               <view class="zan-cell__text">guzzu</view>
@@ -86,11 +86,11 @@
           东西炒鸡好吃的，赞不绝口，very good !!!! so yummy!!!
         </view>
         <view class="margin-top-20">
-          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
-          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
-          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
-          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
-          <image class="square-200 margin-right-10" src="../../image/img/food1.jpg" mode="widthFix"></image>
+          <image class="square-200 margin-right-10" src="../../public/images/img/food1.jpg" mode="widthFix"></image>
+          <image class="square-200 margin-right-10" src="../../public/images/img/food1.jpg" mode="widthFix"></image>
+          <image class="square-200 margin-right-10" src="../../public/images/img/food1.jpg" mode="widthFix"></image>
+          <image class="square-200 margin-right-10" src="../../public/images/img/food1.jpg" mode="widthFix"></image>
+          <image class="square-200 margin-right-10" src="../../public/images/img/food1.jpg" mode="widthFix"></image>
         </view>
       </view>
     </view>
@@ -100,12 +100,12 @@
     下拉查看图文详情
   </view>
   <view hidden='{{showProductDetail}}'>
-    <image src="../../image/img/food1.jpg" mode="widthFix"></image>
-    <image src="../../image/img/food1.jpg" mode="widthFix"></image>
-    <image src="../../image/img/food1.jpg" mode="widthFix"></image>
-    <image src="../../image/img/food1.jpg" mode="widthFix"></image>
-    <image src="../../image/img/food1.jpg" mode="widthFix"></image>
-    <image src="../../image/img/food1.jpg" mode="widthFix"></image>    
+    <image src="../../public/images/img/food1.jpg" mode="widthFix"></image>
+    <image src="../../public/images/img/food1.jpg" mode="widthFix"></image>
+    <image src="../../public/images/img/food1.jpg" mode="widthFix"></image>
+    <image src="../../public/images/img/food1.jpg" mode="widthFix"></image>
+    <image src="../../public/images/img/food1.jpg" mode="widthFix"></image>
+    <image src="../../public/images/img/food1.jpg" mode="widthFix"></image>    
   </view>
 </view>
 <view class="footer-box" hidden="{{footerhidden}}">
@@ -131,7 +131,7 @@
   <view class="popup-contents">
     <view class="pop-goods-info layout-row padding-y-10">
       <view class="">
-        <image src="../../image/img/food1.jpg" mode="widthFix" class="square-120"></image>
+        <image src="../../public/images/img/food1.jpg" mode="widthFix" class="square-120"></image>
       </view>
       <view class="flex margin-left-10">
         <view class="product-title">T-shit</view>

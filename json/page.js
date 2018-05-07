@@ -173,23 +173,23 @@ module.exports = {
 				'type': 'titlePic-nav',
 				'items': [
 					{
-						src: '../../image/img/camara.png',
+						src: '../../public/images/img/camara.png',
 						name: '每日新品'
 					},
 					{
-						src: '../../image/img/hotel.png',
+						src: '../../public/images/img/hotel.png',
 						name: '小米众筹'
 					},
 					{
-						src: '../../image/img/home.png',
+						src: '../../public/images/img/home.png',
 						name: '人气拼团'
 					},
 					{
-						src: '../../image/img/snowmountain.png',
+						src: '../../public/images/img/snowmountain.png',
 						name: '科技家电'
 					},
 					{
-						src: '../../image/img/tree.png',
+						src: '../../public/images/img/tree.png',
 						name: '影音专区'
 					}
 				]
