@@ -38,5 +38,9 @@ module.exports = {
 			}
 		],
 		'no-extend-native': 0,
+		'object-curly-spacing': [
+			2,
+			'always'
+		],
 	}
 };

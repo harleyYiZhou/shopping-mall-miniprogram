@@ -75,12 +75,12 @@ Page({
 				}
 			]
 		},
-		'delBtnWidth': 51,
+		// 'delBtnWidth': 51,
 		'__webviewId__': 21,
 		selected: '1'
 
 	},
-	btmNavLink: app.btmNavLink,
+	btnNavLink: app.btnNavLink(),
 	// 获取元素自适应后的实际宽度
 	getEleWidth: function (w) {
 		var real = 0;

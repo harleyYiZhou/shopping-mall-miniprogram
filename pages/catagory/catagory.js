@@ -1,6 +1,6 @@
 // pages/catagory/catagory.js
 var app = getApp();
-var guzzuUtil = require('../../utils/guzzu-utils.js');
+const { callApi } = require('../../utils/guzzu-utils.js');
 
 Page({
 
@@ -28,14 +28,14 @@ Page({
 			scrollHeight: scrollHeight - 170
 		});
 
-		guzzuUtil.callApiGet('shopping-malls/5adedc43de3c90022eb25d3b/categories').then(function (res1) {
+		callApi.get('shopping-malls/{smallid}/categories').then(function (res1) {
 			console.log(res1);
 			var categoryId = res1[that.data.tapIndex]._id;
 			that.setData({
 				category: res1,
 				categoryId: categoryId
 			});
-			guzzuUtil.callApiGet('shopping-malls/5adedc43de3c90022eb25d3b/categories/' + categoryId).then(function (res2) {
+			callApi.get('shopping-malls/{smallid}/categories/' + categoryId).then(function (res2) {
 				console.log(res2);
 				that.setData({
 					categoryPage: res2
@@ -57,20 +57,20 @@ Page({
 	onShow: function () {
 
 	},
-	btmNavLink: app.btmNavLink,
+	btnNavLink: app.btnNavLink(),
 	chooseLevel: function (e) {
 		var that = this;
 		this.setData({
 			tapIndex: e.currentTarget.dataset.index
 		});
-		guzzuUtil.callApiGet('shopping-malls/5adedc43de3c90022eb25d3b/categories').then(function (res1) {
+		callApi.get('shopping-malls/{smallid}/categories').then(function (res1) {
 			console.log(res1);
 			var categoryId = res1[that.data.tapIndex]._id;
 			that.setData({
 				category: res1,
 				categoryId: categoryId
 			});
-			guzzuUtil.callApiGet('shopping-malls/5adedc43de3c90022eb25d3b/categories/' + categoryId).then(function (res2) {
+			callApi.get('shopping-malls/{smallid}/categories/' + categoryId).then(function (res2) {
 				console.log(res2);
 				that.setData({
 					categoryPage: res2

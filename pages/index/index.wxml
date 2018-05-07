@@ -14,7 +14,7 @@
     <template is="searchFor" />
     <template is="page-nav" data="{{pages,activeCategoryId,trans}}" />
   </view>
-  <view class="container" wx:for="{{page.blocks}}">
+  <view class="container" wx:for="{{page.blocks}}"  wx:key="item">
     <template wx:if="{{item.type!=='banner'&&item.type!=='navgroup'&&item.type!=='productgroup'}}" is="{{item.type}}" data="{{item,trans}}" />
     <template wx:if="{{item.type==='banner'}}" is="{{item.type}}" data="{{item,imageArr,trans}}" />
     <template wx:if="{{item.type==='navgroup'}}" is="{{item.type}}" data="{{item,navWidth,trans}}" />

@@ -3,7 +3,7 @@
 <template name="banner">
   <view class="swiper">
     <swiper style="height: {{imageArr[0]}}rpx; max-height: 750rpx;" bindchange='bindchange' indicator-dots="true" autoplay="true" interval="5000" duration="1000" circular='true'>
-      <block wx:for="{{item.items}}" wx:for-item="swiper" >
+      <block wx:for="{{item.items}}" wx:for-item="swiper" wx:key="swiper">
         <swiper-item>
           <image src="{{swiper.image.url}}" class="width-100"  mode='widthFix' data-product="{{swiper}}" data-item="{{item}}" bindtap='linkTo' />
         </swiper-item>

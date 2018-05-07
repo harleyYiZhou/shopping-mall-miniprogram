@@ -3,14 +3,11 @@
 // var navbar=require("../components/navbar/navbar.js")
 const app = getApp();
 var json = require('../../json/page.js');
-var guzzuUtils = require('../../utils/guzzu-utils.js');
+const { callApi } = require('../../utils/guzzu-utils.js');
 
 Page({
 	data: {
-		motto: 'Hello World',
-		userInfo: {},
 		hasUserInfo: false,
-		canIUse: wx.canIUse('button.open-type.getUserInfo'),
 		navWidth: 0,
 		imageArr: [],
 		current: 0,
@@ -19,25 +16,19 @@ Page({
 		selected: '0',
 		activeCategoryId: 0
 	},
-	btmNavLink: app.btmNavLink,
-	// 事件处理函数
-	bindViewTap: function () {
-		wx.navigateTo({
-			url: '../logs/logs'
-		});
-	},
+	btnNavLink: app.btnNavLink(),
 	onLoad: function () {
 		var that = this;
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
 
-		guzzuUtils.callApiGet('shopping-malls/5adedc43de3c90022eb25d3b/pages').then(function (result) {
+		callApi.get('shopping-malls/{smallid}/pages').then(function (result) {
 			that.setData({
 				pages: result
 			});
 			var pageId = that.data.pages[that.data.activeCategoryId]._id;
-			guzzuUtils.callApiGet('shopping-malls/5adedc43de3c90022eb25d3b/pages/' + pageId).then(function (res) {
+			callApi.get('shopping-malls/{smallid}/pages/' + pageId).then(function (res) {
 				that.setData({
 					page: res
 				});
@@ -106,10 +97,10 @@ Page({
 		var product = e.currentTarget.dataset.product;
 		let linkType = e.currentTarget.dataset.product.linkType;
 		console.log(linkType);
+		let linkId = product._id;
 		switch (linkType) {
 			case 'product':
 				if (linkType) {
-					let linkId = product._id;
 					wx.navigateTo({
 						url: '/pages/product-detail/product-detail?linkId=' + linkId,
 					});
@@ -117,7 +108,7 @@ Page({
 				break;
 			case 'shoppingMallCategory':
 				if (linkType) {
-					let linkId = product.shoppingMallCategory;
+					linkId = product.shoppingMallCategory;
 					wx.navigateTo({
 						url: '/pages/product-detail/product-detail?linkId=' + linkId,
 					});
@@ -125,38 +116,33 @@ Page({
 				break;
 			case 'store':
 				if (linkType) {
-					let linkId = product.store;
+					linkId = product.store;
 					wx.navigateTo({
 						url: '/pages/product-detail/product-detail?linkId=' + linkId,
 					});
 				}
 				break;
 			case 'store-category':
-				// let linkId = product._id;
 				wx.navigateTo({
 					url: '/store-category/store-category?linkId' + linkId,
 				});
 				break;
 			case 'global-category':
-				// let linkId = product._id;
 				wx.navigateTo({
 					url: '/global-category/global-category?linkId' + linkId,
 				});
 				break;
 			case 'store-top':
-				// let linkId = product._id;
 				wx.navigateTo({
 					url: '/store-top/store-top?linkId' + linkId,
 				});
 				break;
 			case 'global-top':
-				// let linkId = product._id;
 				wx.navigateTo({
 					url: '../index/index',
 				});
 				break;
 			case 'page':
-				// let linkId = product._id;
 				wx.navigateTo({
 					url: '../page/page?linkId' + linkId,
 				});
@@ -172,7 +158,7 @@ Page({
 		});
 		var pageId = that.data.pages[that.data.activeCategoryId]._id;
 		console.log(pageId);
-		guzzuUtils.callApiGet('shopping-malls/5adedc43de3c90022eb25d3b/pages/' + pageId).then(function (res) {
+		callApi.get('shopping-malls/{smallid}/pages/' + pageId).then(function (res) {
 			that.setData({
 				page: res
 			});

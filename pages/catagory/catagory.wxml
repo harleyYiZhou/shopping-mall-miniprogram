@@ -9,7 +9,7 @@
   <view class="catagory layout-row width-100">
     <view class="catagory-title layout-column">
       <scroll-view scroll-y style="height: {{scrollHeight}}rpx;" bindscrolltoupper="" bindscrolltolower="" bindscroll="" scroll-into-view="" scroll-top="{{scrollTop}}">
-        <view class="levelOne margin-x-10 text-center {{index===tapIndex?'selecte':'false'}}" wx:for="{{category}}" data-index="{{index}}" bindtap='chooseLevel'>{{item.name}}</view>
+        <view class="levelOne margin-x-10 text-center {{index===tapIndex?'selecte':'false'}}" wx:for="{{category}}" wx:key="item" data-index="{{index}}" bindtap='chooseLevel'>{{item.name}}</view>
       </scroll-view>
     </view>
     <view class="catagory-subtitle flex padding-x-10 padding-y-10 layout-column ">
@@ -20,7 +20,7 @@
         <text>{{category[tapIndex].description}}</text>
       </view>
       <view class="layout-row layout-wrap  layout-justify-between">
-        <view wx:for="{{categoryPage.products}}" class="width-30 text-center margin-bottom-10">
+        <view wx:for="{{categoryPage.products}}" wx:key="item" class="width-30 text-center margin-bottom-10">
           <image class="square-100 levelSecImg" src="{{item.image.thumb.url}}"></image>
           <view>{{item.name}}</view>
         </view>

@@ -68,5 +68,5 @@ Page({
 	onShareAppMessage: function () {
 
 	},
-	btmNavLink: app.btmNavLink
+	btnNavLink: app.btnNavLink()
 });

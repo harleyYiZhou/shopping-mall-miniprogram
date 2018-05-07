@@ -1,7 +1,7 @@
 <!--pages/components/titlePic-nav/titlePic-nav.wxml-->
 <template name="navgroup">
   <view class="layout-row layout-wrap layout-align-center navigation">
-    <block wx:if="{{item}}" wx:for="{{item.items}}" wx:for-item="product">
+    <block wx:if="{{item}}" wx:for="{{item.items}}" wx:for-item="product"  wx:key="product">
       <view class="layout-column layout-align-center layout-justify-center" style="width: {{navWidth}}%" bindtap="linkTo" data-product="{{product}}" data-item="{{item}}"  >
         <image style="width: 90rpx" mode="widthFix" src="{{product.image.url}}" ></image>
         <text wx:if="{{product.title}}">{{product.title}}</text>

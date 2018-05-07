@@ -1,18 +1,18 @@
 <template name="bottom-nav">
     <view class="layout-row layout-wrap bottom-nav">
-        <view class="flex text-center" id="0" bindtap='btmNavLink'>
+        <view class="flex text-center" id="0" bindtap='btnNavLink'>
             <view class="zan-icon zan-icon-wap-home nav-icon  {{selected==='0' ? 'selected':'default'}} "></view>
             <view class="nav-text  {{selected==='0' ? 'selected':'default'}}">{{trans.tabBar.homePage}}</view>
         </view>
-        <view class="flex text-center" id="1" bindtap='btmNavLink'>
+        <view class="flex text-center" id="1" bindtap='btnNavLink'>
             <view class="zan-icon zan-icon-shopping-cart nav-icon   {{selected==='1'?'selected':default}}"></view>
             <view class="nav-text   {{selected==='1'?'selected':default}}">{{trans.tabBar.cart}}</view>
         </view>
-        <view class="flex text-center" id="2" bindtap='btmNavLink'>
+        <view class="flex text-center" id="2" bindtap='btnNavLink'>
             <view class="zan-icon zan-icon-wap-nav nav-icon  {{selected==='2'?'selected':default}}"></view>
             <view class="nav-text  {{selected==='2'?'selected':default}}">{{trans.tabBar.category}}</view>
         </view>
-        <view class="flex text-center " id="3" bindtap='btmNavLink'>
+        <view class="flex text-center " id="3" bindtap='btnNavLink'>
             <view class="zan-icon zan-icon-contact nav-icon {{selected==='3'?'selected':default}}"></view>
             <view class="nav-text {{selected==='3'?'selected':default}}">{{trans.tabBar.myPage}}</view>
         </view>

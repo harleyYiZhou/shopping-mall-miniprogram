@@ -6,7 +6,7 @@
     <navigator url="/pages/account/account">
       <view class="layout-row layout-wrap layout-align-center padding-y-20 top">
         <view class="width-30 text-center">
-          <image class="userImg" mode="widthFix" src="../../image/img/food1.jpg"></image>
+          <image class="userImg" mode="widthFix" src="../../public/images/img/food1.jpg"></image>
         </view>
         <text class="width-60 usertext">11201521</text>
         <text class="width-10 usertext">></text>

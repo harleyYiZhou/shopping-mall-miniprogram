@@ -1,6 +1,6 @@
 // app.js
-var guzzuUtils = require('./utils/guzzu-utils.js');
 const translate = require('./utils/translate.js');
+const { btnNavLink } = require('./utils/guzzu-utils.js');
 
 App({
 	onLaunch: function () {
@@ -16,42 +16,9 @@ App({
 		}
 		that.globalData.trans = require(`./locales/${that.globalData.locale}`);
 		// this.login();
-		var timestamp = new Date();
-		console.log(time.formatTime(timestamp, 'Y/M/D h:m:s'));
-		console.log(time.formatTime(timestamp, 'h:m'));
 	},
 	translate,
-	btmNavLink: function (e) {
-		this.globalData.selected = e.currentTarget.id;
-		console.log(this.globalData);
-		wx.showLoading({
-			title: 'loading',
-		});
-		var id = e.currentTarget.id;
-		switch (id) {
-			case '0':
-				wx.redirectTo({
-					url: '/pages/index/index',
-				});
-				break;
-			case '1':
-				wx.redirectTo({
-					url: '/pages/shopping-cart/shopping-cart',
-				});
-				break;
-			case '2':
-				wx.redirectTo({
-					url: '/pages/catagory/catagory',
-				});
-				break;
-			case '3':
-				wx.redirectTo({
-					url: '/pages/user-center/user-center',
-				});
-				break;
-		}
-		wx.hideLoading();
-	},
+	btnNavLink,
 	globalData: {
 		userInfo: null,
 		selected: '0',

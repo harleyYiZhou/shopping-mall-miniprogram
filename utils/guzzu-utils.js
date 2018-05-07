@@ -1,15 +1,5 @@
 // guzzu-utils.js
-var config = require('../config.js');
-
-module.exports.callApiPost = callApiPost;
-module.exports.callApiGet = callApiGet;
-module.exports.hasLoginSession = hasLoginSession;
-module.exports.checkMobilePhone = checkMobilePhone;
-module.exports.login = login;
-module.exports.storageGet = storageGet;
-module.exports.storageSet = storageSet;
-module.exports.storageRemove = storageRemove;
-module.exports.bindPhoneNumber = bindPhoneNumber;
+const config = require('../config.js');
 
 /**
  * guzzu storage (run time only quick storage)
@@ -28,9 +18,89 @@ function storageRemove(key) {
 	delete guzzuStorageCache[key];
 }
 
+const callApi = {
+	get: _request('GET'),
+	post: _request('POST')
+};
+
+function _request(method = 'GET') {
+	return (url, params = {}) => {
+		return new Promise(function (resolve, reject) {
+			const app = getApp();
+			const API_PREFIX = config.API_URL;
+			const obj = {
+				method,
+				url: API_PREFIX + url.replace(/{\s*smallid\s*}/i, config.shoppingMallId),
+				data: params,
+				header: {
+					'x-guzzu-lang': app.globalData.locale
+				},
+				success: function (res) {
+					if (res.statusCode === '200' || res.statusCode === 200) {
+						resolve(res.data);
+					} else if (res.statusCode === '500' || res.statusCode === 500) {
+						reject(res.data);
+						wx.showModal({
+							title: 'error',
+							content: res.data.detail.message,
+							showCancel: false
+						});
+					} else {
+						reject(res);
+					}
+				},
+				fail: function (err) {
+					reject(err);
+				}
+			};
+			let accessToken = wx.getStorageSync('accessToken');
+			if (accessToken) {
+				obj.header['x-guzzu-access-token'] = accessToken;
+			}
+			wx.request(obj);
+		});
+	};
+}
+
+/**
+ * @description 顶层路由
+ */
+function btnNavLink() {
+	return function (e) {
+		const app = getApp();
+		let id = e.currentTarget.id;
+		app.globalData.selected = id;
+		if (this.data.selected === id) {
+			return;
+		}
+		wx.showLoading({
+			title: 'loading',
+		});
+		let url;
+		switch (id) {
+			case '0':
+				url = '/pages/index/index';
+				break;
+			case '1':
+				url = '/pages/shopping-cart/shopping-cart';
+				break;
+			case '2':
+				url = '/pages/catagory/catagory';
+				break;
+			case '3':
+				url = '/pages/user-center/user-center';
+				break;
+		}
+		if (url) {
+			wx.redirectTo({
+				url,
+			});
+		}
+		wx.hideLoading();
+	};
+}
+
 function checkLogin(err) {
-	console.log(1);
-	console.log(err);
 	if (err && err.detail && err.detail.message === 'signin required') {
 		wx.showModal({
 			title: 'Your session has expired.',
@@ -55,110 +125,8 @@ function checkLogin(err) {
 	}
 }
 
-function callApiGet(name) {
-	return new Promise(function (resolve, reject) {
-		var app = getApp();
-		var API_URL = config.API_URL;
-		var obj = {
-			method: 'GET',
-			url: API_URL + name,
-			header: {
-				'x-guzzu-lang': getApp().globalData.locale
-			},
-			success: function (res) {
-				if (res.statusCode === '200' || res.statusCode === 200) {
-					resolve(res.data);
-				} else if (res.statusCode === '500' || res.statusCode === 500) {
-					reject(res.data);
-					checkLogin(res.data);
-					// wx.showToast({
-					//   title: res.data.detail.message,
-					//   icon:'none',
-					//   duration:2000
-					// })
-					wx.showModal({
-						title: 'error',
-						content: res.data.detail.message,
-						showCancel: false
-					});
-					app.globalData.islegal = app.globalData.islegal && false;
-					console.log(app.globalData.islegal);
-				} else {
-					reject(res);
-				}
-			},
-			fail: function (err) {
-				reject(err);
-			}
-		};
-		var sessionId = wx.getStorageSync('guzzuSessionId');
-		// var sessionId = storageGet('guzzuSessionId');
-		if (sessionId) {
-			obj.header['x-guzzu-sessionid'] = sessionId;
-		}
-		wx.request(obj);
-	});
-}
-
-function callApiPost(name, params) {
-	return new Promise(function (resolve, reject) {
-		var app = getApp();
-		var API_URL = config.API_URL;
-		var obj = {
-			method: 'POST',
-			header: {
-				'x-guzzu-lang': getApp().globalData.locale
-			},
-			url: API_URL + name,
-			data: params,
-			success: function (res) {
-				if (res.statusCode === '200' || res.statusCode === 200) {
-					resolve(res.data);
-				} else if (res.statusCode === '500' || res.statusCode === 500) {
-					reject(res.data);
-					checkLogin(res.data);
-					// wx.showToast({
-					//   title: res.data.detail.message,
-					//   icon:'none',
-					//   duration:2000
-					// })
-					wx.showModal({
-						title: 'error',
-						content: res.data.detail.message,
-						showCancel: false
-					});
-					app.globalData.islegal = app.globalData.islegal && false;
-					console.log(app.globalData.islegal);
-				} else {
-					reject(res);
-				}
-			},
-			fail: function (err) {
-				reject(err);
-			}
-		};
-		var sessionId = wx.getStorageSync('guzzuSessionId');
-		// var sessionId = storageGet('guzzuSessionId');
-		if (sessionId) {
-			obj.header['x-guzzu-sessionid'] = sessionId;
-		}
-		wx.request(obj);
-	});
-};
-
-function hasLoginSession() {
-	var sessionId = wx.getStorageSync('guzzuSessionId');
-	// var sessionId = storageGet('guzzuSessionId');
-	if (sessionId) {
-		return true;
-	} else {
-		return false;
-	}
-};
-
 function checkMobilePhone() {
 	return new Promise(function (resolve, reject) {
-		console.log('checkMobilePhone', hasLoginSession());
 		callApi('Auth.getCurrentSession', {}).then(function (result) {
 			console.log('1', result);
 			if (result && result.user && result.user.mobilePhone) {
@@ -219,8 +187,8 @@ function login() {
 			});
 		}).then(function (result) {
 			// 4. set guzzu-session-id in local storage
-			wx.setStorageSync('guzzuSessionId', result.sessionId);
-			// storageSet('guzzuSessionId', result.sessionId);
+			wx.setStorageSync('accessToken', result.accessToken);
+			// storageSet('accessToken', result.accessToken);
 			return checkMobilePhone();
 		}).then(function (result) {
 			resolve(result);
@@ -316,3 +284,12 @@ Promise.prototype.finally = function (callback) {
 		reason => P.resolve(callback(reason)).then(() => { throw reason; })
 	);
 };
+
+module.exports.callApi = callApi;
+module.exports.checkMobilePhone = checkMobilePhone;
+module.exports.login = login;
+module.exports.storageGet = storageGet;
+module.exports.storageSet = storageSet;
+module.exports.storageRemove = storageRemove;
+module.exports.bindPhoneNumber = bindPhoneNumber;
+module.exports.btnNavLink = btnNavLink;
