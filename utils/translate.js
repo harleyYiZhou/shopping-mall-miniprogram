@@ -3,7 +3,7 @@ module.exports = {
 		'zh': '简体中文',
 		'en': 'English'
 	},
-	toArray (self) {
+	toArray(self) {
 		let locale = getApp().globalData.locale;
 		let i = 0;
 		let index = 0;
@@ -21,7 +21,7 @@ module.exports = {
 			index: index
 		});
 	},
-	setLocale (code) {
+	setLocale(code) {
 		const app = getApp();
 		app.globalData.locale = code;
 		app.globalData.trans = require(`../locales/${code}`);
@@ -34,7 +34,7 @@ module.exports = {
 	*@param self ,当前page的this
 	*@param { string } locale,语言类型
 	*/
-	langData (self) {
+	langData(self) {
 		const app = getApp();
 		let locale = app.globalData.locale;
 		let trans = app.globalData.trans;

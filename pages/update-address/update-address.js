@@ -1,465 +1,463 @@
 // update-address.js
 var guzzuUtils = require('../../utils/guzzu-utils');
-var app=getApp();
-
+var app = getApp();
 
 // userAddress.js
 // var zoneUtils = require('../../utils/china_zones.js');
-var app = getApp();
 Page({
 
 	/**
    * 页面的初始数据
    */
-  data: {
-    zonesList: [],
-    zones: null,
-    zoneLevel: 1,
-    provinces_index: 0,
-    citys_index: 0,
-    areas_index: 0,
-    streets_index: 0,
-    currAddress: undefined,
-    state: ''
-  },
+	data: {
+		zonesList: [],
+		zones: null,
+		zoneLevel: 1,
+		provinces_index: 0,
+		citys_index: 0,
+		areas_index: 0,
+		streets_index: 0,
+		currAddress: undefined,
+		state: ''
+	},
 
 	/**
    * 生命周期函数--监听页面加载
    */
-  onLoad: function (options) {
-    if (!this.data.locale || this.data.locale !== app.globalData.locale) {
-      app.translate.langData(this);
-    }
-    var that = this;
-    // 请求获取province
-    var params = {
-      // provinceId: '440000'
-    };
-    console.log(app.globalData.trans);
+	onLoad: function (options) {
+		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
+			app.translate.langData(this);
+		}
+		var that = this;
+		// 请求获取province
+		var params = {
+			// provinceId: '440000'
+		};
+		console.log(app.globalData.trans);
 
-    guzzuUtils.callApi('Zone.findProvince', params).then(function (result) {
-      // init zone
-      var zones = result;
-      var provinces = [];
-      for (var i in zones) {
-        provinces.push({
-          id: i,
-          name: zones[i].name
-        });
-      }
-      that.setData({
-        provinces: provinces,
-        provinces_index: 0,
-        zones: zones
-      });
-      console.log(zones);
-      console.log(provinces.length);
-    });
-    var addressId = options.addressId;
-    if (!this.data.locale || this.data.locale !== app.globalData.locale) {
-      app.translate.langData(this);
-    }
-    if (addressId) {
-      that.editAddress(addressId);
-    } else {
-      that.addAddress();
-    }
-  },
+		guzzuUtils.callApi('Zone.findProvince', params).then(function (result) {
+			// init zone
+			var zones = result;
+			var provinces = [];
+			for (var i in zones) {
+				provinces.push({
+					id: i,
+					name: zones[i].name
+				});
+			}
+			that.setData({
+				provinces: provinces,
+				provinces_index: 0,
+				zones: zones
+			});
+			console.log(zones);
+			console.log(provinces.length);
+		});
+		var addressId = options.addressId;
+		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
+			app.translate.langData(this);
+		}
+		if (addressId) {
+			that.editAddress(addressId);
+		} else {
+			that.addAddress();
+		}
+	},
 
 	/**
    * 生命周期函数--监听页面初次渲染完成
    */
-  onReady: function () {
+	onReady: function () {
 
-  },
+	},
 
 	/**
    * 生命周期函数--监听页面显示
    */
-  onShow: function () {
+	onShow: function () {
 
-  },
+	},
 
 	/**
    * 生命周期函数--监听页面隐藏
    */
-  onHide: function () {
+	onHide: function () {
 
-  },
+	},
 
 	/**
    * 生命周期函数--监听页面卸载
    */
-  onUnload: function () {
+	onUnload: function () {
 
-  },
+	},
 
-  selectZone: function (event, analog_level, analog_index) {
-    var that = this;
-    var level = analog_level || Number(event.target.dataset.level); // 1:province;2:city;3:area;
-    var index = 0;
-    that.setData({
-      state: ''
-    });
-    if (analog_index != null) {
-      index = analog_index;
-    } else {
-      index = event.detail.value;
-    }
-    var item = [];
-    // var parent = [];
-    if (level === 1) {
-      item = that.data.provinces[index];
-      // 请求获取city
-      var params = {
-        provinceId: that.data.provinces[index].id
-      };
-      guzzuUtils.callApi('Zone.findCity', params).then(function (result) {
-        // init zone
-        var zones = result;
-        var citys = [];
-        for (var i in zones) {
-          citys.push({
-            id: i,
-            name: zones[i].name
-          });
-        }
-        that.setData({
-          citys: citys,
-          citys_index: 0
-          // zones: zones
-        });
-        var level1 = citys.length === 0 ? level : level + 1;
-        that.setData({
-          zoneLevel: level1
-        });
-        // console.log(zones)
-        // console.log(that.data.zoneLevel);
-      });
-      // parent = that.data.zones[item.id];
-    } else if (level === 2) {
-      item = that.data.citys[index];
-      var params = {
-        cityId: that.data.citys[index].id
-      };
-      guzzuUtils.callApi('Zone.findDistrict', params).then(function (result) {
-        // init zone
-        var zones = result;
-        var areas = [];
-        for (var i in zones) {
-          areas.push({
-            id: i,
-            name: zones[i].name
-          });
-        }
-        that.setData({
-          areas: areas,
-          areas_index: 0
-        });
-        var level1 = areas.length === 0 ? level : level + 1;
-        that.setData({
-          zoneLevel: level1
-        });
-        console.log(that.data.zoneLevel);
+	selectZone: function (event, analog_level, analog_index) {
+		var that = this;
+		var level = analog_level || Number(event.target.dataset.level); // 1:province;2:city;3:area;
+		var index = 0;
+		that.setData({
+			state: ''
+		});
+		if (analog_index != null) {
+			index = analog_index;
+		} else {
+			index = event.detail.value;
+		}
+		var item = [];
+		// var parent = [];
+		if (level === 1) {
+			item = that.data.provinces[index];
+			// 请求获取city
+			var params = {
+				provinceId: that.data.provinces[index].id
+			};
+			guzzuUtils.callApi('Zone.findCity', params).then(function (result) {
+				// init zone
+				var zones = result;
+				var citys = [];
+				for (var i in zones) {
+					citys.push({
+						id: i,
+						name: zones[i].name
+					});
+				}
+				that.setData({
+					citys: citys,
+					citys_index: 0
+					// zones: zones
+				});
+				var level1 = citys.length === 0 ? level : level + 1;
+				that.setData({
+					zoneLevel: level1
+				});
+				// console.log(zones)
+				// console.log(that.data.zoneLevel);
+			});
+			// parent = that.data.zones[item.id];
+		} else if (level === 2) {
+			item = that.data.citys[index];
+			var params = {
+				cityId: that.data.citys[index].id
+			};
+			guzzuUtils.callApi('Zone.findDistrict', params).then(function (result) {
+				// init zone
+				var zones = result;
+				var areas = [];
+				for (var i in zones) {
+					areas.push({
+						id: i,
+						name: zones[i].name
+					});
+				}
+				that.setData({
+					areas: areas,
+					areas_index: 0
+				});
+				var level1 = areas.length === 0 ? level : level + 1;
+				that.setData({
+					zoneLevel: level1
+				});
+				console.log(that.data.zoneLevel);
 
-        if (that.data.areas.length === 1) {
-          console.log(that.data.zoneLevel);
-          var params = {
-            districtId: that.data.areas[0].id
-          };
-          guzzuUtils.callApi('Zone.findStreet', params).then(function (result) {
-            console.log(result);
-            that.setData({
-              zoneLevel: 4,
-              state: 'none'
-            });
-            // init zone
-            var zones = result;
-            var streets = [];
-            for (var i in zones) {
-              streets.push({
-                id: i,
-                name: zones[i].name
-              });
-            }
-            that.setData({
-              streets: streets,
-              streets_index: 0
-            });
-          });
-        }
-      });
-      console.log(that.data.zoneLevel);
-    } else if (level === 3) {
-      var params = {
-        districtId: that.data.areas[index].id
-      };
-      guzzuUtils.callApi('Zone.findStreet', params).then(function (result) {
-        // init zone
-        var zones = result;
-        var streets = [];
-        for (var i in zones) {
-          streets.push({
-            id: i,
-            name: zones[i].name
-          });
-        }
-        that.setData({
-          streets: streets,
-          streets_index: 0
-        });
-        that.data.zoneLevel = streets.length === 0 ? level : level + 1;
-        that.setData({
-          zoneLevel: that.data.zoneLevel
-        });
-      });
-    } else if (level === 4) {
-      if (that.data.areas.length === 1) {
-        that.setData({
-          state: 'none'
-        });
-      }
-      that.setData({
-        streets_index: index
-      });
-    }
+				if (that.data.areas.length === 1) {
+					console.log(that.data.zoneLevel);
+					var params = {
+						districtId: that.data.areas[0].id
+					};
+					guzzuUtils.callApi('Zone.findStreet', params).then(function (result) {
+						console.log(result);
+						that.setData({
+							zoneLevel: 4,
+							state: 'none'
+						});
+						// init zone
+						var zones = result;
+						var streets = [];
+						for (var i in zones) {
+							streets.push({
+								id: i,
+								name: zones[i].name
+							});
+						}
+						that.setData({
+							streets: streets,
+							streets_index: 0
+						});
+					});
+				}
+			});
+			console.log(that.data.zoneLevel);
+		} else if (level === 3) {
+			var params = {
+				districtId: that.data.areas[index].id
+			};
+			guzzuUtils.callApi('Zone.findStreet', params).then(function (result) {
+				// init zone
+				var zones = result;
+				var streets = [];
+				for (var i in zones) {
+					streets.push({
+						id: i,
+						name: zones[i].name
+					});
+				}
+				that.setData({
+					streets: streets,
+					streets_index: 0
+				});
+				that.data.zoneLevel = streets.length === 0 ? level : level + 1;
+				that.setData({
+					zoneLevel: that.data.zoneLevel
+				});
+			});
+		} else if (level === 4) {
+			if (that.data.areas.length === 1) {
+				that.setData({
+					state: 'none'
+				});
+			}
+			that.setData({
+				streets_index: index
+			});
+		}
 
-    var subItems = [];
-    if (parent.subItems) {
-      for (var i in parent.subItems) {
-        subItems.push({
-          id: i,
-          name: parent.subItems[i].name
-        });
-      }
-    }
+		var subItems = [];
+		if (parent.subItems) {
+			for (var i in parent.subItems) {
+				subItems.push({
+					id: i,
+					name: parent.subItems[i].name
+				});
+			}
+		}
 
-    switch (level) {
-      case 1:
-        that.data.provinces_index = index;
-        that.data.citys_index = 0;
-        that.data.citys = subItems;
-        break;
-      case 2:
-        that.data.citys_index = index;
-        that.data.areas_index = 0;
-        that.data.areas = subItems;
-        break;
-      case 3:
-        that.data.areas_index = index;
-        that.data.streets_index = 0;
-        break;
-      case 4:
-        that.data.streets_index = index;
-        console.log(index);
-      default:
-        break;
-    }
+		switch (level) {
+			case 1:
+				that.data.provinces_index = index;
+				that.data.citys_index = 0;
+				that.data.citys = subItems;
+				break;
+			case 2:
+				that.data.citys_index = index;
+				that.data.areas_index = 0;
+				that.data.areas = subItems;
+				break;
+			case 3:
+				that.data.areas_index = index;
+				that.data.streets_index = 0;
+				break;
+			case 4:
+				that.data.streets_index = index;
+				console.log(index);
+			default:
+				break;
+		}
 
-    that.setData({
-      provinces_index: that.data.provinces_index,
-      citys_index: that.data.citys_index,
-      areas_index: that.data.areas_index,
-      streets_index: that.data.streets_index,
-      provinces: that.data.provinces,
-      citys: that.data.citys,
-      areas: that.data.areas
-      // zoneLevel: that.data.zoneLevel
-    });
-  },
+		that.setData({
+			provinces_index: that.data.provinces_index,
+			citys_index: that.data.citys_index,
+			areas_index: that.data.areas_index,
+			streets_index: that.data.streets_index,
+			provinces: that.data.provinces,
+			citys: that.data.citys,
+			areas: that.data.areas
+			// zoneLevel: that.data.zoneLevel
+		});
+	},
 
-  submit: function (event) {
-    var that = this;
-    var value = event.detail.value;
-    if (!value.name || !value.mobilePhone || !value.province ||
+	submit: function (event) {
+		var that = this;
+		var value = event.detail.value;
+		if (!value.name || !value.mobilePhone || !value.province ||
       !value.city || !value.address || !that.data.citys || !that.data.areas) {
-      wx.showModal({
-        title: that.data.trans.error,
-        content: that.data.trans.infoNotComplete,
-        showCancel: false
-      });
-    } else {
-      var params_province = that.data.provinces[value.province];
-      var params_city = that.data.citys[value.city];
-      var params_district = that.data.areas && that.data.areas[value.district];
-      var params_street = that.data.streets[value.street];
-      var params = {
-        name: value.name,
-        country: 'CHN',
-        province: params_province.name,
-        provinceId: params_province.id,
-        city: params_city.name,
-        cityId: params_city.id,
-        district: params_district ? params_district.name : '',
-        districtId: params_district ? params_district.id : '',
-        street: params_street ? params_street.name : '',
-        streetId: params_street ? params_street.id : '',
-        address: value.address,
-        mobilePhone: value.mobilePhone,
-        mobilePhoneCountry: 'CHN'
-      };
-      var uri = 'UserAddress.create';
-      if (value.userAddressId) {
-        params.userAddressId = value.userAddressId;
-        uri = 'UserAddress.update';
-      }
-      wx.showLoading({
-        title: that.data.trans.updating
-      });
-      guzzuUtils.callApi(uri, params).then(function (result) {
-        app.globalData.shippingAddress = result;
-        that.setData({
-          currAddress: result
-        });
-        wx.showToast({
-          title: that.data.trans.updateSuccess,
-          icon: 'success',
-          duration: 1500,
-          success: function () {
-            wx.navigateBack();
-          }
-        });
-      }, function (err) {
-        console.log(err);
-        wx.showModal({
-          title: that.data.trans.error,
-          content: that.data.trans.updateFailed,
-          showCancel: false
-        });
-      });
-    }
-  },
+			wx.showModal({
+				title: that.data.trans.error,
+				content: that.data.trans.infoNotComplete,
+				showCancel: false
+			});
+		} else {
+			var params_province = that.data.provinces[value.province];
+			var params_city = that.data.citys[value.city];
+			var params_district = that.data.areas && that.data.areas[value.district];
+			var params_street = that.data.streets[value.street];
+			var params = {
+				name: value.name,
+				country: 'CHN',
+				province: params_province.name,
+				provinceId: params_province.id,
+				city: params_city.name,
+				cityId: params_city.id,
+				district: params_district ? params_district.name : '',
+				districtId: params_district ? params_district.id : '',
+				street: params_street ? params_street.name : '',
+				streetId: params_street ? params_street.id : '',
+				address: value.address,
+				mobilePhone: value.mobilePhone,
+				mobilePhoneCountry: 'CHN'
+			};
+			var uri = 'UserAddress.create';
+			if (value.userAddressId) {
+				params.userAddressId = value.userAddressId;
+				uri = 'UserAddress.update';
+			}
+			wx.showLoading({
+				title: that.data.trans.updating
+			});
+			guzzuUtils.callApi(uri, params).then(function (result) {
+				app.globalData.shippingAddress = result;
+				that.setData({
+					currAddress: result
+				});
+				wx.showToast({
+					title: that.data.trans.updateSuccess,
+					icon: 'success',
+					duration: 1500,
+					success: function () {
+						wx.navigateBack();
+					}
+				});
+			}, function (err) {
+				console.log(err);
+				wx.showModal({
+					title: that.data.trans.error,
+					content: that.data.trans.updateFailed,
+					showCancel: false
+				});
+			});
+		}
+	},
 
-  editAddress: function (addressid) {
-    var that = this;
-    wx.showLoading({
-      title: that.data.trans.loading
-    });
-    var params = {
-      userAddressId: addressid
-    };
-    guzzuUtils.callApi('UserAddress.get', params).then(function (result) {
-      console.log(result);
-      wx.hideLoading();
-      that.data.currAddress = result;
-      that.setData(that.data);
-      var index = 0;
-      for (var i in that.data.zones) {
-        if (i === result.provinceId) {
-          that.selectZone(null, 1, index);
+	editAddress: function (addressid) {
+		var that = this;
+		wx.showLoading({
+			title: that.data.trans.loading
+		});
+		var params = {
+			userAddressId: addressid
+		};
+		guzzuUtils.callApi('UserAddress.get', params).then(function (result) {
+			console.log(result);
+			wx.hideLoading();
+			that.data.currAddress = result;
+			that.setData(that.data);
+			var index = 0;
+			for (var i in that.data.zones) {
+				if (i === result.provinceId) {
+					that.selectZone(null, 1, index);
 
-          break;
-        }
-        index++;
-      }
+					break;
+				}
+				index++;
+			}
 
-      if (result.cityId) {
-        var params1 = {
-          provinceId: result.provinceId
-        };
-        guzzuUtils.callApi('Zone.findCity', params1).then(function (result1) {
-          // init zone
-          var zones = result1;
-          var citys = [];
-          for (var i in zones) {
-            citys.push({
-              id: i,
-              name: zones[i].name
-            });
-          }
-          that.setData({
-            citys: citys,
-            citys_index: 0
-            // zones: zones
-          });
-          var index1 = 0;
-          for (var i in zones) {
-            if (i === result.cityId) {
-              that.selectZone(null, 2, index1);
-              break;
-            }
-            index1++;
-          }
+			if (result.cityId) {
+				var params1 = {
+					provinceId: result.provinceId
+				};
+				guzzuUtils.callApi('Zone.findCity', params1).then(function (result1) {
+					// init zone
+					var zones = result1;
+					var citys = [];
+					for (var i in zones) {
+						citys.push({
+							id: i,
+							name: zones[i].name
+						});
+					}
+					that.setData({
+						citys: citys,
+						citys_index: 0
+						// zones: zones
+					});
+					var index1 = 0;
+					for (var i in zones) {
+						if (i === result.cityId) {
+							that.selectZone(null, 2, index1);
+							break;
+						}
+						index1++;
+					}
 
-          if (result.districtId) {
-            var params2 = {
-              cityId: result.cityId
-            };
-            guzzuUtils.callApi('Zone.findDistrict', params2).then(function (result2) {
-              // init zone
-              var zones = result2;
-              var areas = [];
-              for (var i in zones) {
-                areas.push({
-                  id: i,
-                  name: zones[i].name
-                });
-              }
-              that.setData({
-                areas: areas,
-                areas_index: 0
-                // zones: zones
-              });
-              index = 0;
-              for (var i in zones) {
-                if (i === result.districtId) {
-                  that.selectZone(null, 3, index);
-                  break;
-                }
-                index++;
-              }
-              if (result.streetId) {
-                var params = {
-                  districtId: result.districtId
-                };
-                guzzuUtils.callApi('Zone.findStreet', params).then(function (result3) {
-                  // init zone
-                  var zones = result3;
-                  var streets = [];
-                  for (var i in zones) {
-                    streets.push({
-                      id: i,
-                      name: zones[i].name
-                    });
-                  }
-                  that.setData({
-                    streets: streets,
-                    streets_index: 0
-                  });
-                  index = 0;
-                  for (var i in zones) {
-                    if (i === result.streetId) {
-                      that.selectZone(null, 4, index);
-                      break;
-                    }
-                    index++;
-                  }
-                  console.log(that.data.areas.length);
-                  if (that.data.areas.length === 1) {
-                    that.setData({
-                      state: 'none'
-                    });
-                  }
-                });
-              }
-            });
-          }
-        });
-      }
-    });
-  },
+					if (result.districtId) {
+						var params2 = {
+							cityId: result.cityId
+						};
+						guzzuUtils.callApi('Zone.findDistrict', params2).then(function (result2) {
+							// init zone
+							var zones = result2;
+							var areas = [];
+							for (var i in zones) {
+								areas.push({
+									id: i,
+									name: zones[i].name
+								});
+							}
+							that.setData({
+								areas: areas,
+								areas_index: 0
+								// zones: zones
+							});
+							index = 0;
+							for (var i in zones) {
+								if (i === result.districtId) {
+									that.selectZone(null, 3, index);
+									break;
+								}
+								index++;
+							}
+							if (result.streetId) {
+								var params = {
+									districtId: result.districtId
+								};
+								guzzuUtils.callApi('Zone.findStreet', params).then(function (result3) {
+									// init zone
+									var zones = result3;
+									var streets = [];
+									for (var i in zones) {
+										streets.push({
+											id: i,
+											name: zones[i].name
+										});
+									}
+									that.setData({
+										streets: streets,
+										streets_index: 0
+									});
+									index = 0;
+									for (var i in zones) {
+										if (i === result.streetId) {
+											that.selectZone(null, 4, index);
+											break;
+										}
+										index++;
+									}
+									console.log(that.data.areas.length);
+									if (that.data.areas.length === 1) {
+										that.setData({
+											state: 'none'
+										});
+									}
+								});
+							}
+						});
+					}
+				});
+			}
+		});
+	},
 
-  addAddress: function (event) {
-    var that = this;
-    that.data.currAddress = {};
-    that.data.zoneLevel = 1;
-    that.data.provinces_index = 0;
-    that.data.citys_index = 0;
-    that.data.areas_index = 0;
-    that.data.citys = null;
-    that.data.areas = null;
-    that.setData(that.data);
-  }
+	addAddress: function (event) {
+		var that = this;
+		that.data.currAddress = {};
+		that.data.zoneLevel = 1;
+		that.data.provinces_index = 0;
+		that.data.citys_index = 0;
+		that.data.areas_index = 0;
+		that.data.citys = null;
+		that.data.areas = null;
+		that.setData(that.data);
+	}
 });
 // var app = getApp();
 // Page({

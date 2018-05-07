@@ -1,20 +1,23 @@
-.bottom-nav{
-  font-size: 45rpx;
-  background: #ffffff;
-  width: 100%;
-  position: fixed;
-  bottom: 0px;
-  left: 0px;
-  z-index: 1000;
-  height: 100rpx;
+.bottom-nav {
+    font-size: 45rpx;
+    background: #fff;
+    width: 100%;
+    position: fixed;
+    bottom: 0px;
+    left: 0px;
+    z-index: 1000;
+    height: 100rpx;
 }
-.nav-icon{
-  font-size: 180%;
-  /* color:red; */
+
+.nav-icon {
+    font-size: 180%;
+    /* color:red; */
 }
-.selected{
-  color: red;
+
+.selected {
+    color: red;
 }
-.nav-text{
-  font-size: 25rpx;
+
+.nav-text {
+    font-size: 25rpx;
 }

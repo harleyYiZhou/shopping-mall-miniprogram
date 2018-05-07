@@ -3,11 +3,11 @@ module.exports = {
 		loading: '加载中',
 		sessionExpired: '登录状态超时',
 		reSignin: '是否重新登录？',
-    errorMsg: '未登录',
+		errorMsg: '未登录',
 		error: '错误',
-    error1:'订单：商品库存不足',
+		error1: '订单：商品库存不足',
 		unknownError: '未知错误！',
-    more:'更多',
+		more: '更多',
 		showModal: {
 			cancel: '取消',
 			confirm: '确认',
@@ -23,32 +23,32 @@ module.exports = {
 	},
 	account: {
 		navBarTitle: '账户信息',
-    basicInf:'基础资料',
-    image:'头像',
-    accountId:'账号',
-    name:'姓名',
-    secretInf:'密保资料',
-    phoneNum:'手机号',
-    changepsw:'修改密码',
-    logoutBtn:'登出',
-    changeName:'修改姓名',
+		basicInf: '基础资料',
+		image: '头像',
+		accountId: '账号',
+		name: '姓名',
+		secretInf: '密保资料',
+		phoneNum: '手机号',
+		changepsw: '修改密码',
+		logoutBtn: '登出',
+		changeName: '修改姓名',
 		language: '语言'
 	},
-  userCenter: {
-    orders: '我的订单',
-    allOrder: '全部订单',
-    manageAddress: '地址管理',
-    pending: '待付款',
-    unshipped: '待发货',
-    shipped: '待收货',
-    unComment: '待评价',
-    refund: '退款订单',
-    myFavorite: '我的收藏',
-    setting: '设置',
-    service: '服务中心',
-    coupon: '优惠券',
-    membershipCard: '会员卡'
-  },
+	userCenter: {
+		orders: '我的订单',
+		allOrder: '全部订单',
+		manageAddress: '地址管理',
+		pending: '待付款',
+		unshipped: '待发货',
+		shipped: '待收货',
+		unComment: '待评价',
+		refund: '退款订单',
+		myFavorite: '我的收藏',
+		setting: '设置',
+		service: '服务中心',
+		coupon: '优惠券',
+		membershipCard: '会员卡'
+	},
 	addAddress: {
 		navBarTitle: 'Add address',
 		updating: '提交中',
@@ -198,13 +198,13 @@ module.exports = {
 		pending: '待付款',
 		unshipped: '待发货',
 		shipped: '待收货',
-    finished: '已完成',
+		finished: '已完成',
 		refId: '订单号',
 		option: '选项',
 		totalCost: '订单合计',
 		closed: '交易已完成',
 		viewDetails: '详细',
-    cancel: '取消订单',
+		cancel: '取消订单',
 		goToPay: '去支付',
 		emptyCart: '购物车里目前没有商品',
 		emptyCartHint: '请到店铺首页逛逛吧！'
@@ -219,12 +219,12 @@ module.exports = {
 		shipping: '物流',
 		returnRefund: '退换 / 退款',
 		addToCart: '加入购物车',
-    selected: '已选： 请选择颜色 型号 分类',
-    collect: '收藏',
-    cart: '购物车',
-    comment: '用户评价',
-    upLoad: '上拉查看图文详情',
-    buyNum: '购买数量'
+		selected: '已选： 请选择颜色 型号 分类',
+		collect: '收藏',
+		cart: '购物车',
+		comment: '用户评价',
+		upLoad: '上拉查看图文详情',
+		buyNum: '购买数量'
 	},
 	selectAddress: {
 		navBarTitle: '地址管理',
@@ -243,10 +243,10 @@ module.exports = {
 		navBarTitle: '购物车',
 		emptyCart: '购物车里目前没有商品',
 		emptyCartHint: '逛逛吧！',
-    shop:'Guzzu',
-    edit:'编辑',
-    complete:'完成',
-    allSelect: '全选',
+		shop: 'Guzzu',
+		edit: '编辑',
+		complete: '完成',
+		allSelect: '全选',
 		option: '选项',
 		discount: '折扣',
 		discountMinPurchase: '购物满',
@@ -260,7 +260,7 @@ module.exports = {
 		backToStore: '返回上一级',
 		removeTitle: '移除商品',
 		removeContent: '您确定要移除该商品吗？',
-    error1: '订单：商品库存不足'
+		error1: '订单：商品库存不足'
 	},
 	storeCategories: {
 		navBarTitle: '商品分类',
@@ -284,7 +284,7 @@ module.exports = {
 		phMobilePhone: '请输入手机号码',
 		phAddress: '请输入详细地址'
 	},
-  setting:{
-    language: '语言'
-  }
+	setting: {
+		language: '语言'
+	}
 };

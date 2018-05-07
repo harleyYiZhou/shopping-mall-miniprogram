@@ -1,0 +1,20 @@
+{
+  "name": "3200-shopping-mall-miniprogram",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://lglong519@bitbucket.org/guzzuteam/3200-shopping-mall-miniprogram.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/guzzuteam/3200-shopping-mall-miniprogram#readme",
+  "dependencies": {
+    "eslint": "^4.14.0",
+    "eslint-config-guzzu": "git+https://calvincchan@bitbucket.org/guzzuteam/eslint-config-guzzu.git"
+  }
+}

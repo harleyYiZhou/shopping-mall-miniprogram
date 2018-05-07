@@ -3,11 +3,11 @@ module.exports = {
 		loading: 'Loading...',
 		sessionExpired: 'Your session has expired.',
 		reSignin: 'Please sign in again, thanks.',
-    errorMsg: 'signin required',
+		errorMsg: 'signin required',
 		error: 'Error',
-    error1: 'Order: out of stock',
+		error1: 'Order: out of stock',
 		unknownError: 'Unknown Error.',
-    more: 'more',
+		more: 'more',
 		showModal: {
 			cancel: 'Cancel',
 			confirm: 'Confirm',
@@ -23,33 +23,33 @@ module.exports = {
 	},
 	account: {
 		navBarTitle: 'Account',
-    basicInf: 'Basic info',
-    image: 'Image',
-    accountId: 'AccountId',
-    name: 'Name',
-    secretInf: 'Secert Info',
-    phoneNum: 'Phone',
-    changepsw: 'Change password',
-    logoutBtn: 'Logout',
-    changeName: 'Change Name',
+		basicInf: 'Basic info',
+		image: 'Image',
+		accountId: 'AccountId',
+		name: 'Name',
+		secretInf: 'Secert Info',
+		phoneNum: 'Phone',
+		changepsw: 'Change password',
+		logoutBtn: 'Logout',
+		changeName: 'Change Name',
 		orders: 'Orders',
 		language: 'Language'
 	},
-  userCenter: {
-    orders: 'Orders',
-    manageAddress: 'Address book',
-    allOrder: 'View all',
-    pending: 'Pending',
-    unshipped: 'Paid',
-    shipped: 'Shipped',
-    unComment: 'Comment',
-    refund: 'Refund',
-    myFavorite: 'My favorite',
-    setting: 'Setting',
-    service: 'Service Center',
-    coupon: 'Coupon',
-    membershipCard: 'Menbership Card'
-  },
+	userCenter: {
+		orders: 'Orders',
+		manageAddress: 'Address book',
+		allOrder: 'View all',
+		pending: 'Pending',
+		unshipped: 'Paid',
+		shipped: 'Shipped',
+		unComment: 'Comment',
+		refund: 'Refund',
+		myFavorite: 'My favorite',
+		setting: 'Setting',
+		service: 'Service Center',
+		coupon: 'Coupon',
+		membershipCard: 'Menbership Card'
+	},
 	addAddress: {
 		navBarTitle: 'Add address',
 		updating: 'Processing...',
@@ -199,13 +199,13 @@ module.exports = {
 		pending: 'Pending',
 		unshipped: 'Paid',
 		shipped: 'Shipped',
-    finished: 'finished',
+		finished: 'finished',
 		refId: 'Order No.',
 		option: 'Option',
 		totalCost: 'Total Cost',
 		closed: 'Order completed',
 		viewDetails: 'Details',
-    cancel: 'Cancel',
+		cancel: 'Cancel',
 		goToPay: 'Checkout',
 		emptyCart: 'The cart is empty',
 		emptyCartHint: 'You can look around in the homepage'
@@ -220,11 +220,11 @@ module.exports = {
 		shipping: 'Shipping',
 		returnRefund: 'Return / Refund',
 		addToCart: 'Add to Cart',
-    selected: 'Selected: Please choose modal type',
-    collect: 'collect',
-    cart: 'cart',
-    upLoad: 'Pull up to see the graphic details',
-    buyNum: 'Purcharse'
+		selected: 'Selected: Please choose modal type',
+		collect: 'collect',
+		cart: 'cart',
+		upLoad: 'Pull up to see the graphic details',
+		buyNum: 'Purcharse'
 	},
 	selectAddress: {
 		navBarTitle: 'Addresses',
@@ -239,14 +239,14 @@ module.exports = {
 	store: {
 		navBarTitle: 'Store'
 	},
-  shoppingCart: {
+	shoppingCart: {
 		navBarTitle: 'Store Cart',
 		emptyCart: 'The cart is empty',
 		emptyCartHint: 'You can look around in the homepage',
-    shop: 'Guzzu',
-    edit: 'Edit',
-    complete: 'Complete',
-    allSelect: 'allSelect',
+		shop: 'Guzzu',
+		edit: 'Edit',
+		complete: 'Complete',
+		allSelect: 'allSelect',
 		option: 'Option',
 		discount: 'Discount',
 		discountMinPurchase: 'Up to',
@@ -260,7 +260,7 @@ module.exports = {
 		'backToStore': 'Back To Store',
 		removeTitle: 'Remove',
 		removeContent: 'Are you sure you want to remove this product?',
-    error1: 'Order: out of stock'
+		error1: 'Order: out of stock'
 	},
 	storeCategories: {
 		navBarTitle: 'Categories',
@@ -283,7 +283,7 @@ module.exports = {
 		phMobilePhone: 'Please input your mobilePhone.',
 		phAddress: 'Please input your address.'
 	},
-  setting: {
-    language: 'language'
-  }
+	setting: {
+		language: 'language'
+	}
 };
