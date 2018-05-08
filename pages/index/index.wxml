@@ -1,34 +1,33 @@
 <!--index.wxml-->
 <import src="../components/searchFor/searchFor" />
-<import src="../components/navbar/navbar" />
-<import src="../components/titleBar/titleBar" />
-<import src="../components/swiper/swiper" />
-<import src="../components/titlePic-nav/titlePic-nav" />
+<import src="../components/page-nav/page-nav" />
+<import src="../components/block-banner/block-banner" />
+<import src="../components/block-navgroup/block-navgroup" />
+<import src="../components/block-productgroup/block-productgroup" />
+<import src="../components/block-spacer/block-spacer" />
+<import src="../components/block-title/block-title" />
 <import src="../components/image-adv/image-adv" />
-<import src="../components/product-item/product-item" />
 <import src="../components/bottom-nav/bottom-nav" />
-<import src="../components/spacer/spacer" />
 
 <view style="position: relative">
-  <view style="margin-bottom: 150rpx">
-    <template is="searchFor" />
-    <template is="page-nav" data="{{pages,activeCategoryId,trans}}" />
-  </view>
-  <view class="container" wx:for="{{page.blocks}}"  wx:key="item">
-    <template wx:if="{{item.type!=='banner'&&item.type!=='navgroup'&&item.type!=='productgroup'}}" is="{{item.type}}" data="{{item,trans}}" />
-    <template wx:if="{{item.type==='banner'}}" is="{{item.type}}" data="{{item,imageArr,trans}}" />
-    <template wx:if="{{item.type==='navgroup'}}" is="{{item.type}}" data="{{item,navWidth,trans}}" />
-    <template wx:if="{{item.type==='productgroup'}}" is="{{item.type}}" data="{{item,productwidth,imageHeight,trans}}" />
-    <!--轮播图-->
-    <!-- 图文导航 -->
-    <!-- <template is="titlePic-nav" data="{{navigation,navWidth}}" /> -->
-    <!--图片广告-->
-    <!-- <template is="image-adv" data="{{imgUrls}}" /> -->
-    <!--标题导航-->
-    <!-- <template is="titleBar" data="{{...titleCell}}" /> -->
-    <!--商品列表-->
-    <!-- <template is="product-item" data="{{products,productwidth,imageHeight}}" />   -->
-  </view>
-  <view style="height: 100rpx;"></view>
-  <template is="bottom-nav" data="{{selected,trans}}" />
+      <view style="margin-bottom: 100rpx" class="search-nav">
+            <!-- <template is="searchFor" /> -->
+            <template is="page-nav" data="{{pages,pageIndex,trans}}" />
+      </view>
+      <block class="container margin-y-10" wx:for="{{currentPage.blocks}}" wx:key="item">
+            <template wx:if="{{item.type==='banner'}}" is="block-{{item.type}}" data="{{item,imageArr,trans}}" />
+            <template wx:if="{{item.type==='navgroup' || item.type==='title' || item.type==='spacer'}}" is="block-{{item.type}}" data="{{item,trans}}" />
+            <template wx:if="{{item.type==='productgroup'}}" is="block-{{item.type}}" data="{{item,productWidth,imageHeight,trans}}" />
+            <!--轮播图-->
+            <!-- 图文导航 -->
+            <!-- <template is="navgroup" data="{{navigation}}" /> -->
+            <!--图片广告-->
+            <!-- <template is="image-adv" data="{{imgUrls}}" /> -->
+            <!--标题导航-->
+            <!-- <template is="title" data="{{...titleCell}}" /> -->
+            <!--商品列表-->
+            <!-- <template is="productgroup" data="{{products,productWidth,imageHeight}}" />   -->
+      </block>
+      <view style="height: 100rpx;"></view>
+      <template is="bottom-nav" data="{{selected,trans}}" />
 </view>

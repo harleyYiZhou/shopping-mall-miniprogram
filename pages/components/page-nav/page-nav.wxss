@@ -1,27 +1,27 @@
-/* pages/components/navbar/navbar.wxss */
+/* pages/components/page-nav/page-nav.wxss */
 
 .type-container {
     width: 100%;
     height: 88rpx;
-    background-color: #fff;
+     background-color: #fff; 
     overflow: hidden;
     position: fixed;
-    top: 50rpx;
+     top: 0; 
     left: 0rpx;
     z-index: 1000;
+	/* background-color: #e0e0e0; */
 }
 
 .type-navbar {
     white-space: nowrap;
     height: 88rpx;
     width: 100%;
-    background-color: #fff;
 }
 
 .type-box {
-    width: 160rpx;
+    width: 187.5rpx;
     box-sizing: content-box;
-    font-size: 24rpx;
+    font-size: 30rpx;
     line-height: 84rpx;
     text-align: center;
     display: inline-block;

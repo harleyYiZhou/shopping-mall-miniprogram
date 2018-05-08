@@ -1,0 +1,17 @@
+<!--pages/components/block-productgroup/block-productgroup.wxml-->
+<template name="block-productgroup">
+	<view class="layout-row layout-wrap productgroup">
+		<block wx:for="{{item.items}}" wx:for-item="product" wx:key="product">
+			<view style="width:{{productWidth}}%" bindtap="linkTo" data-product="{{product}}"
+			   data-item="{{item}}">
+				<view class="layout-row layout-wrap layout-justify-center productgroup-inner">
+					<image src="{{product.image.url}}" style="width: 100%;height: {{imageHeight}}rpx;" mode="aspectFill"></image>
+					<view style='width: 100%;' class="productContent">
+						<view class="productName textview">{{product.name}}</view>
+						<view class="productPrice">￥{{product.price/100}}</view>
+					</view>
+				</view>
+			</view>
+		</block>
+	</view>
+</template>

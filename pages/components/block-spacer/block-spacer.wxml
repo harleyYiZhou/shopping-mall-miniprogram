@@ -1,3 +1,3 @@
-<template name="spacer">
+<template name="block-spacer">
   <view style="height: {{item.height}}px"></view>
 </template>

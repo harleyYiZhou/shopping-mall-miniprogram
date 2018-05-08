@@ -1,0 +1,22 @@
+/* pages/components/block-title/block-title.wxss */
+
+.zan-panel {
+   margin-top: 0;
+   padding-top: 5rpx;
+   padding-bottom: 5rpx;
+}
+
+.zan-cell {
+   padding: 10rpx 30rpx;
+}
+
+.zan-cell__text {
+   font-size: 36rpx;
+   /* font-weight: bold; */
+   color: #000;
+}
+
+.zan-cell__desc {
+   margin-top: 5rpx;
+   font-size: 24rpx;
+}

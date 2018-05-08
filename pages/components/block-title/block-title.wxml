@@ -1,6 +1,6 @@
-<!--pages/components/titleBar/titleBar.wxml-->
-<template name="title">
-  <view class="zan-panel" bindtap="linkTo" data-items="{{item.items[0]}}"> 
+<!--pages/components/block-title/block-title.wxml-->
+<template name="block-title">
+  <view class="zan-panel" bindtap="linkTo" data-title-item="{{item.items[0]}}"> 
     <view class="zan-cell">
       <view class="zan-cell__bd">
         <view class="zan-cell__text">{{item.items[0].title}}</view>

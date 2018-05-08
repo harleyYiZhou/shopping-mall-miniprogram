@@ -38,7 +38,7 @@
 				{
 					"id": -1,
 					"name": "searchFor",
-					"pathName": "pages/components/navbar/navbar",
+					"pathName": "pages/components/page-nav/page-nav",
 					"query": ""
 				},
 				{

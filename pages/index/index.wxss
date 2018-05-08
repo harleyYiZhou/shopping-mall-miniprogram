@@ -1,29 +1,16 @@
-/**index.wxss**/
-@import "../components/searchFor/searchFor";
-@import "../components/navbar/navbar";
-@import "../components/titleBar/titleBar";
-@import "../components/swiper/swiper";
-@import "../components/bottom-nav/bottom-nav";
+/*index.wxss*/
 
-.navigation{
-  margin: 10rpx;
-}
-.productContent{
-  padding: 10rpx 0rpx;
-  background: #ffffff;
-}
-.productName{
-  font-size: 30rpx;
-}
-.productPrice{
-  font-size: 35rpx;
-  color: red;
-}
-.textview{
-  display: -webkit-box ;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  word-break: break-all;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp:2; 
+@import "../components/searchFor/searchFor";
+@import "../components/page-nav/page-nav";
+@import "../components/block-title/block-title";
+@import "../components/bottom-nav/bottom-nav";
+@import "../components/block-productgroup/block-productgroup";
+
+.textview {
+   display: -webkit-box;
+   overflow: hidden;
+   text-overflow: ellipsis;
+   word-break: break-all;
+   -webkit-box-orient: vertical;
+   -webkit-line-clamp: 2;
 }

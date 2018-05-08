@@ -1,6 +1,6 @@
-<!--pages/components/swiper/swiper.wxml-->
+<!--pages/components/banner/banner.wxml-->
 
-<template name="banner">
+<template name="block-banner">
   <view class="swiper">
     <swiper style="height: {{imageArr[0]}}rpx; max-height: 750rpx;" bindchange='bindchange' indicator-dots="true" autoplay="true" interval="5000" duration="1000" circular='true'>
       <block wx:for="{{item.items}}" wx:for-item="swiper" wx:key="swiper">

@@ -1,6 +1,6 @@
 // index.js
 // 获取应用实例
-// var navbar=require("../components/navbar/navbar.js")
+// var page-nav=require("../components/page-nav/page-nav.js")
 const app = getApp();
 var json = require('../../json/page.js');
 const { callApi } = require('../../utils/guzzu-utils.js');
@@ -14,75 +14,23 @@ Page({
 		productCol: 2,
 		page1: json.page1,
 		selected: '0',
-		activeCategoryId: 0
+		pageIndex: 0,
+		pages: null,
+		currentPage: null,
 	},
 	btnNavLink: app.btnNavLink(),
-	onLoad: function () {
-		var that = this;
+	onLoad() {
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
-
-		callApi.get('shopping-malls/{smallid}/pages').then(function (result) {
-			that.setData({
+		callApi.get('shopping-malls/{smallid}/pages').then(result => {
+			this.setData({
 				pages: result
 			});
-			var pageId = that.data.pages[that.data.activeCategoryId]._id;
-			callApi.get('shopping-malls/{smallid}/pages/' + pageId).then(function (res) {
-				that.setData({
-					page: res
-				});
-				for (var i in that.data.page.blocks) {
-					console.log(that.data.page.blocks[i].type);
-					if (that.data.page.blocks[i].type === 'navgroup') {
-						var navlength = that.data.page.blocks[i].items.length;
-					}
-					if (that.data.page.blocks[i].type === 'productgroup') {
-						if (that.data.page.blocks[i].template === 'double') {
-							let productCol = 2;
-							that.setData({
-								productCol: productCol
-							});
-						}
-						if (that.data.page.blocks[i].template === 'single') {
-							let productCol = 1;
-							that.setData({
-								productCol: productCol
-							});
-						}
-						if (that.data.page.blocks[i].template === 'triple') {
-							let productCol = 3;
-							that.setData({
-								productCol: productCol
-							});
-						}
-					}
-					if (that.data.page.blocks[i].type === 'banner') {
-						var imgHeight = that.data.page.blocks[i].items[0].image.medium.height;
-						var imgWidth = that.data.page.blocks[i].items[0].image.medium.width;
-						var height = 750 / imgWidth * imgHeight;
-						var arr = that.data.imageArr;
-						arr.push(height);
-						// console.log(e.detail.width)
-						// console.log(e.detail.height)
-						// console.log(arr);
-						that.setData({
-							imageArr: arr,
-							swiperHeight: height
-						});
-					}
-				}
-				let navwidth = 100 / navlength;
-				let productwidth = 100 / that.data.productCol;
-				let imageHeight = 750 * 0.8 / that.data.productCol;
-				console.log(that.data.page1.items);
-				that.setData({
-					navWidth: navwidth,
-					productwidth: productwidth,
-					imageHeight: imageHeight,
-					selected: app.globalData.selected
-				});
-			});
+			_processCurrentPage(this);
+		});
+		this.setData({
+			selected: app.globalData.selected
 		});
 	},
 	getUserInfo: function (e) {
@@ -94,10 +42,9 @@ Page({
 		});
 	},
 	linkTo: function (e) {
-		var product = e.currentTarget.dataset.product;
-		let linkType = e.currentTarget.dataset.product.linkType;
-		console.log(linkType);
-		let linkId = product._id;
+		let titleItem = e.currentTarget.dataset.titleItem;
+		let linkType = titleItem.linkType;
+		let linkId = titleItem[linkType];
 		switch (linkType) {
 			case 'product':
 				if (linkType) {
@@ -108,7 +55,6 @@ Page({
 				break;
 			case 'shoppingMallCategory':
 				if (linkType) {
-					linkId = product.shoppingMallCategory;
 					wx.navigateTo({
 						url: '/pages/product-detail/product-detail?linkId=' + linkId,
 					});
@@ -116,15 +62,14 @@ Page({
 				break;
 			case 'store':
 				if (linkType) {
-					linkId = product.store;
 					wx.navigateTo({
 						url: '/pages/product-detail/product-detail?linkId=' + linkId,
 					});
 				}
 				break;
-			case 'store-category':
+			case 'category':
 				wx.navigateTo({
-					url: '/store-category/store-category?linkId' + linkId,
+					url: '/category/category?linkId' + linkId,
 				});
 				break;
 			case 'global-category':
@@ -151,67 +96,11 @@ Page({
 				break;
 		}
 	},
-	tabClick: function (e) {
-		var that = this;
+	tabPageNav: function (e) {
 		this.setData({
-			activeCategoryId: e.currentTarget.id
+			pageIndex: e.currentTarget.id
 		});
-		var pageId = that.data.pages[that.data.activeCategoryId]._id;
-		console.log(pageId);
-		callApi.get('shopping-malls/{smallid}/pages/' + pageId).then(function (res) {
-			that.setData({
-				page: res
-			});
-			for (var i in that.data.page.blocks) {
-				if (that.data.page.blocks[i].type === 'navgroup') {
-					var navlength = that.data.page.blocks[i].items.length;
-				}
-				if (that.data.page.blocks[i].type === 'productgroup') {
-					if (that.data.page.blocks[i].template === 'double') {
-						let productCol = 2;
-						that.setData({
-							productCol: productCol
-						});
-					}
-					if (that.data.page.blocks[i].template === 'single') {
-						let productCol = 1;
-						that.setData({
-							productCol: productCol
-						});
-					}
-					if (that.data.page.blocks[i].template === 'triple') {
-						let productCol = 3;
-						that.setData({
-							productCol: productCol
-						});
-					}
-				}
-				if (that.data.page.blocks[i].type === 'banner') {
-					var imgHeight = that.data.page.blocks[i].items[0].image.medium.height;
-					var imgWidth = that.data.page.blocks[i].items[0].image.medium.width;
-					var height = 750 / imgWidth * imgHeight;
-					var arr = that.data.imageArr;
-					arr.push(height);
-					// console.log(e.detail.width)
-					// console.log(e.detail.height)
-					// console.log(arr);
-					that.setData({
-						imageArr: arr,
-						swiperHeight: height
-					});
-				}
-			}
-			let navwidth = 100 / navlength;
-			let productwidth = 100 / that.data.productCol;
-			let imageHeight = 750 * 0.8 / that.data.productCol;
-			console.log(that.data.page1.items);
-			that.setData({
-				navWidth: navwidth,
-				productwidth: productwidth,
-				imageHeight: imageHeight,
-				selected: app.globalData.selected
-			});
-		});
+		_processCurrentPage(this);
 	},
 
 	bindchange: function (e) {
@@ -220,3 +109,54 @@ Page({
 	},
 
 });
+
+function _processCurrentPage(that) {
+	let pageId = that.data.pages[that.data.pageIndex]._id;
+	callApi.get('shopping-malls/{smallid}/pages/' + pageId).then(res => {
+		that.setData({
+			currentPage: res
+		});
+		let blocks = that.data.currentPage.blocks;
+		let navlength;
+		for (let i in blocks) {
+			if (blocks[i].type === 'navgroup') {
+				navlength = blocks[i].items.length;
+			}
+			if (blocks[i].type === 'productgroup') {
+				let productCol;
+				if (blocks[i].template === 'single') {
+					productCol = 1;
+				}
+				if (blocks[i].template === 'double') {
+					productCol = 2;
+				}
+				if (blocks[i].template === 'triple') {
+					productCol = 3;
+				}
+				that.setData({
+					productCol
+				});
+			}
+			if (blocks[i].type === 'banner') {
+				let imgHeight = blocks[i].items[0].image.medium.height;
+				let imgWidth = blocks[i].items[0].image.medium.width;
+				let height = 750 / imgWidth * imgHeight;
+				let arr = that.data.imageArr;
+				arr.push(height);
+				that.setData({
+					imageArr: arr,
+					swiperHeight: height
+				});
+			}
+		}
+
+		// let navWidth = 100 / navlength;
+		let productWidth = 100 / that.data.productCol;
+		let imageHeight = 750 * 0.8 / that.data.productCol;
+		that.setData({
+			// navWidth,
+			productWidth,
+			imageHeight,
+		});
+	});
+}
