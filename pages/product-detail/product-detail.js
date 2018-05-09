@@ -214,15 +214,9 @@ Page({
 
 	},
 	imageLoad: function (e) {
-		var that = this;
 		var height = 750 / e.detail.width * e.detail.height;
-		var arr = that.data.imageArr;
-		arr.push(height);
-		// console.log(e.detail.width)
-		// console.log(e.detail.height)
-		// console.log(arr);
-		that.setData({
-			imageArr: arr
+		this.setData({
+			swiperHeight: height
 		});
 	},
 	bindchange: function (e) {

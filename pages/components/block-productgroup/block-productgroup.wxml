@@ -2,10 +2,10 @@
 <template name="block-productgroup">
 	<view class="layout-row layout-wrap productgroup">
 		<block wx:for="{{item.items}}" wx:for-item="product" wx:key="product">
-			<view style="width:{{productWidth}}%" bindtap="linkTo" data-product="{{product}}"
-			   data-item="{{item}}">
+			<view class="{{item.template=='single' && 'pg-single'}} {{item.template=='double' && 'pg-double'}} {{item.template=='triple' && 'pg-triple'}}"
+			   bindtap="linkTo" data-link-id="{{product._id}}" data-link-type="product">
 				<view class="layout-row layout-wrap layout-justify-center productgroup-inner">
-					<image src="{{product.image.url}}" style="width: 100%;height: {{imageHeight}}rpx;" mode="aspectFill"></image>
+					<image src="{{product.image.url}}" style="width: 100%;height: {{item.imageHeight}}rpx;" mode="aspectFill"></image>
 					<view style='width: 100%;' class="productContent">
 						<view class="productName textview">{{product.name}}</view>
 						<view class="productPrice">￥{{product.price/100}}</view>

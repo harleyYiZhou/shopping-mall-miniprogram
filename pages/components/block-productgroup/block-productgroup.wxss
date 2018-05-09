@@ -11,9 +11,10 @@
 }
 
 .productContent {
-	padding: 10rpx 0rpx;
-	text-align: center;
-   background: #fff;
+   padding: 10rpx 0rpx;
+   text-align: center;
+	background: #fff;
+	line-height: 40rpx;
 }
 
 .productName {
@@ -23,4 +24,16 @@
 .productPrice {
    font-size: 35rpx;
    color: red;
+}
+
+.pg-single {
+   width: 100%;
+}
+
+.pg-double {
+   width: 50%;
+}
+
+.pg-triple {
+   width: 33.33%;
 }

@@ -1,11 +1,11 @@
-<!--pages/components/banner/banner.wxml-->
+<!--pages/components/block-banner/block-banner.wxml-->
 
 <template name="block-banner">
   <view class="swiper">
-    <swiper style="height: {{imageArr[0]}}rpx; max-height: 750rpx;" bindchange='bindchange' indicator-dots="true" autoplay="true" interval="5000" duration="1000" circular='true'>
+    <swiper style="height: {{swiperHeight ?  swiperHeight : item.swiperHeight}}rpx; max-height: 750rpx;" bindchange='bindchange' indicator-dots="true" autoplay="true" interval="5000" duration="1000" circular='true'>
       <block wx:for="{{item.items}}" wx:for-item="swiper" wx:key="swiper">
         <swiper-item>
-          <image src="{{swiper.image.url}}" class="width-100"  mode='widthFix' data-product="{{swiper}}" data-item="{{item}}" bindtap='linkTo' />
+          <image src="{{swiper.image.url}}" class="width-100"  mode='widthFix' data-link-id="{{swiper[swiper.linkType]}}" data-link-type="{{swiper.linkType}}" bindtap='linkTo' />
         </swiper-item>
       </block>
     </swiper>

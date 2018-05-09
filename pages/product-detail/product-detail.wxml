@@ -3,7 +3,7 @@
 
 <view class="page-container">
   <view class="swiper">
-    <template is="banner" data="{{item,imageArr}}"></template>
+    <template is="banner" data="{{item,swiperHeight}}"></template>
   </view>
   <view class="introduction layout-column padding-x-20 padding-y-10">
     <text class="product-title">{{page.name}}</text>

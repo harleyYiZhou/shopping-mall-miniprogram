@@ -1,12 +1,14 @@
 <!--pages/components/block-title/block-title.wxml-->
 <template name="block-title">
-  <view class="zan-panel" bindtap="linkTo" data-title-item="{{item.items[0]}}"> 
-    <view class="zan-cell">
-      <view class="zan-cell__bd">
-        <view class="zan-cell__text">{{item.items[0].title}}</view>
-        <view class="zan-cell__desc" wx:if="{{item.items[0].subtitle}}">{{item.items[0].subtitle}}</view>
-      </view>
-      <view class="zan-cell__ft">{{trans.more}}></view>
-    </view>
-  </view>
+	<block wx:for="{{item.items}}" wx:for-item="comItem" wx:key="comItem">
+		<view class="zan-panel" bindtap="linkTo" data-link-id="{{comItem[comItem.linkType]}}" data-link-type="{{comItem.linkType}}">
+			<view class="zan-cell">
+				<view class="zan-cell__bd">
+					<view class="zan-cell__text">{{comItem.title}}</view>
+					<view class="zan-cell__desc" wx:if="{{comItem.subtitle}}">{{comItem.subtitle}}</view>
+				</view>
+				<view class="zan-cell__ft">{{trans.more}}></view>
+			</view>
+		</view>
+	</block>
 </template>

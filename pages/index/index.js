@@ -1,18 +1,12 @@
 // index.js
 // 获取应用实例
-// var page-nav=require("../components/page-nav/page-nav.js")
 const app = getApp();
-var json = require('../../json/page.js');
 const { callApi } = require('../../utils/guzzu-utils.js');
 
 Page({
 	data: {
 		hasUserInfo: false,
-		navWidth: 0,
-		imageArr: [],
 		current: 0,
-		productCol: 2,
-		page1: json.page1,
 		selected: '0',
 		pageIndex: 0,
 		pages: null,
@@ -34,7 +28,6 @@ Page({
 		});
 	},
 	getUserInfo: function (e) {
-		console.log(e);
 		app.globalData.userInfo = e.detail.userInfo;
 		this.setData({
 			userInfo: e.detail.userInfo,
@@ -42,59 +35,32 @@ Page({
 		});
 	},
 	linkTo: function (e) {
-		let titleItem = e.currentTarget.dataset.titleItem;
-		let linkType = titleItem.linkType;
-		let linkId = titleItem[linkType];
+		let linkId = e.currentTarget.dataset.linkId;
+		let linkType = e.currentTarget.dataset.linkType;
+		if (!linkId || !linkType) {
+			return;
+		}
+		let url;
 		switch (linkType) {
 			case 'product':
-				if (linkType) {
-					wx.navigateTo({
-						url: '/pages/product-detail/product-detail?linkId=' + linkId,
-					});
-				}
+				url = '/pages/product-detail/product-detail?productId=' + linkId;
 				break;
 			case 'shoppingMallCategory':
-				if (linkType) {
-					wx.navigateTo({
-						url: '/pages/product-detail/product-detail?linkId=' + linkId,
-					});
-				}
+				url = '/pages/shopping-mall-category/shopping-mall-category?linkId=' + linkId;
 				break;
 			case 'store':
-				if (linkType) {
-					wx.navigateTo({
-						url: '/pages/product-detail/product-detail?linkId=' + linkId,
-					});
-				}
+				url = 'pages/store/store?slug=' + linkId;
 				break;
 			case 'category':
-				wx.navigateTo({
-					url: '/category/category?linkId' + linkId,
-				});
-				break;
-			case 'global-category':
-				wx.navigateTo({
-					url: '/global-category/global-category?linkId' + linkId,
-				});
-				break;
-			case 'store-top':
-				wx.navigateTo({
-					url: '/store-top/store-top?linkId' + linkId,
-				});
-				break;
-			case 'global-top':
-				wx.navigateTo({
-					url: '../index/index',
-				});
-				break;
-			case 'page':
-				wx.navigateTo({
-					url: '../page/page?linkId' + linkId,
-				});
+				url = '/pages/category/category?slug=' + linkId;
 				break;
 			default:
-				break;
+				console.error('unkown linkType');
+				url = '/pages/index/index';
 		}
+		wx.navigateTo({
+			url,
+		});
 	},
 	tabPageNav: function (e) {
 		this.setData({
@@ -102,9 +68,7 @@ Page({
 		});
 		_processCurrentPage(this);
 	},
-
 	bindchange: function (e) {
-		// console.log(e.detail.current)
 		this.setData({ current: e.detail.current });
 	},
 
@@ -113,50 +77,27 @@ Page({
 function _processCurrentPage(that) {
 	let pageId = that.data.pages[that.data.pageIndex]._id;
 	callApi.get('shopping-malls/{smallid}/pages/' + pageId).then(res => {
-		that.setData({
-			currentPage: res
-		});
-		let blocks = that.data.currentPage.blocks;
-		let navlength;
+		let blocks = res.blocks;
 		for (let i in blocks) {
-			if (blocks[i].type === 'navgroup') {
-				navlength = blocks[i].items.length;
-			}
 			if (blocks[i].type === 'productgroup') {
-				let productCol;
-				if (blocks[i].template === 'single') {
-					productCol = 1;
-				}
+				let productCol = 1;
 				if (blocks[i].template === 'double') {
 					productCol = 2;
 				}
 				if (blocks[i].template === 'triple') {
 					productCol = 3;
 				}
-				that.setData({
-					productCol
-				});
+				blocks[i].imageHeight = 750 * 0.8 / productCol;
 			}
 			if (blocks[i].type === 'banner') {
 				let imgHeight = blocks[i].items[0].image.medium.height;
 				let imgWidth = blocks[i].items[0].image.medium.width;
 				let height = 750 / imgWidth * imgHeight;
-				let arr = that.data.imageArr;
-				arr.push(height);
-				that.setData({
-					imageArr: arr,
-					swiperHeight: height
-				});
+				blocks[i].swiperHeight = height;
 			}
 		}
-
-		// let navWidth = 100 / navlength;
-		let productWidth = 100 / that.data.productCol;
-		let imageHeight = 750 * 0.8 / that.data.productCol;
 		that.setData({
-			// navWidth,
-			productWidth,
-			imageHeight,
+			currentPage: res
 		});
 	});
 }

@@ -15,9 +15,7 @@
             <template is="page-nav" data="{{pages,pageIndex,trans}}" />
       </view>
       <block class="container margin-y-10" wx:for="{{currentPage.blocks}}" wx:key="item">
-            <template wx:if="{{item.type==='banner'}}" is="block-{{item.type}}" data="{{item,imageArr,trans}}" />
-            <template wx:if="{{item.type==='navgroup' || item.type==='title' || item.type==='spacer'}}" is="block-{{item.type}}" data="{{item,trans}}" />
-            <template wx:if="{{item.type==='productgroup'}}" is="block-{{item.type}}" data="{{item,productWidth,imageHeight,trans}}" />
+            <template wx:if="{{item.type}}" is="block-{{item.type}}" data="{{item,trans}}" />
             <!--轮播图-->
             <!-- 图文导航 -->
             <!-- <template is="navgroup" data="{{navigation}}" /> -->
@@ -26,7 +24,7 @@
             <!--标题导航-->
             <!-- <template is="title" data="{{...titleCell}}" /> -->
             <!--商品列表-->
-            <!-- <template is="productgroup" data="{{products,productWidth,imageHeight}}" />   -->
+            <!-- <template is="productgroup" data="{{products}}" />   -->
       </block>
       <view style="height: 100rpx;"></view>
       <template is="bottom-nav" data="{{selected,trans}}" />
