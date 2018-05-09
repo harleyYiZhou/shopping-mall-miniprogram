@@ -14,7 +14,7 @@
     </view>
     <view class="catagory-subtitle flex padding-x-10 padding-y-10 layout-column ">
       <view>
-        <image mode="widthFix" class="width-100" src="{{category[tapIndex].image.url}}"></image>
+        <image mode="widthFix" class="width-100" src="{{category[tapIndex].image.thumb.url}}"></image>
       </view>
       <view class="text-center margin-top-10 margin-bottom-20">
         <text>{{category[tapIndex].description}}</text>

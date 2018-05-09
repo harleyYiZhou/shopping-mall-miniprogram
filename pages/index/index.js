@@ -22,6 +22,8 @@ Page({
 				pages: result
 			});
 			_processCurrentPage(this);
+		}).catch(err => {
+			console.log(err);
 		});
 		this.setData({
 			selected: app.globalData.selected
@@ -37,7 +39,8 @@ Page({
 	linkTo: function (e) {
 		let linkId = e.currentTarget.dataset.linkId;
 		let linkType = e.currentTarget.dataset.linkType;
-		if (!linkId || !linkType) {
+
+		if (!linkId || !linkType && linkType !== 'shoppingMallCategory') {
 			return;
 		}
 		let url;
@@ -46,13 +49,13 @@ Page({
 				url = '/pages/product-detail/product-detail?productId=' + linkId;
 				break;
 			case 'shoppingMallCategory':
-				url = '/pages/shopping-mall-category/shopping-mall-category?linkId=' + linkId;
+				url = 'pages/catagory/catagory';
 				break;
 			case 'store':
 				url = 'pages/store/store?slug=' + linkId;
 				break;
 			case 'category':
-				url = '/pages/category/category?slug=' + linkId;
+				url = '/pages/store-category/store-category?slug=' + linkId;
 				break;
 			default:
 				console.error('unkown linkType');
@@ -99,5 +102,7 @@ function _processCurrentPage(that) {
 		that.setData({
 			currentPage: res
 		});
+	}).catch(err => {
+		console.log(err);
 	});
 }

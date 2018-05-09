@@ -18,13 +18,9 @@
             <template wx:if="{{item.type}}" is="block-{{item.type}}" data="{{item,trans}}" />
             <!--轮播图-->
             <!-- 图文导航 -->
-            <!-- <template is="navgroup" data="{{navigation}}" /> -->
             <!--图片广告-->
-            <!-- <template is="image-adv" data="{{imgUrls}}" /> -->
             <!--标题导航-->
-            <!-- <template is="title" data="{{...titleCell}}" /> -->
             <!--商品列表-->
-            <!-- <template is="productgroup" data="{{products}}" />   -->
       </block>
       <view style="height: 100rpx;"></view>
       <template is="bottom-nav" data="{{selected,trans}}" />
