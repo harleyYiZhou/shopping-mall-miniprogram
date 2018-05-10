@@ -1,5 +1,4 @@
 /* pages/catagory/catagory.wxss */
-@import "../components/bottom-nav/bottom-nav";
 
 .search{
   background: #eeeeee;

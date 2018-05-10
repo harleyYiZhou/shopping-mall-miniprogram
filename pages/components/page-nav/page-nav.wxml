@@ -3,7 +3,7 @@
   <view class="type-container">
     <scroll-view class="type-navbar" scroll-x="true">
       <view class="type-box" wx:for="{{pages}}" wx:for-item="item" wx:key="id">
-        <view id="{{index}}" class="type-navbar-item {{pageIndex == index ? 'type-item-on' : ''}}" bindtap="tabPageNav" data-items="{{}}">
+        <view class="type-navbar-item {{pageIndex == index ? 'type-item-on' : ''}}" bindtap="tabPageNav" data-id="{{index}}">
           {{item.tabLabel}}
         </view>
       </view>

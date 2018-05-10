@@ -1,6 +1,5 @@
 /* pages/shopping-cart/shopping-cart.wxss */
 @import "../components/cart/cart";
-@import "../components/bottom-nav/bottom-nav";
 
 .container {
   background-color: #F2f2f2;

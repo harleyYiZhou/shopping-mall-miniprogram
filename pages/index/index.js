@@ -67,7 +67,7 @@ Page({
 	},
 	tabPageNav: function (e) {
 		this.setData({
-			pageIndex: e.currentTarget.id
+			pageIndex: e.currentTarget.dataset.id
 		});
 		_processCurrentPage(this);
 	},

@@ -1,5 +1,6 @@
 // guzzu-utils.js
 const config = require('../config.js');
+const { showModal } = require('./util');
 
 /**
  * guzzu storage (run time only quick storage)
@@ -18,19 +19,55 @@ function storageRemove(key) {
 	delete guzzuStorageCache[key];
 }
 
+const session = {
+	check() {
+		return new Promise((resolve, reject) => {
+			let { accessToken, expireAt } = this.get();
+			if (accessToken && new Date(expireAt) <= new Date()) {
+				return resolve(accessToken);
+			}
+			showModal({
+				content: 'common.sessionExpired',
+				success: function (res) {
+					if (res.confirm) {
+						login();
+					}
+				}
+			});
+			reject(false);
+		});
+	},
+	set(accessToken) {
+		wx.setStorageSync('accessToken', {
+			accessToken: accessToken,
+			expireAt: new Date(Date.now() + config.session_expire_seconds * 1000)
+		});
+	},
+	get() {
+		return wx.getStorageSync('accessToken') || {
+			accessToken: '',
+			expireAt: ''
+		};
+	}
+};
 const callApi = {
 	get: _request('GET'),
 	post: _request('POST')
 };
 
 function _request(method = 'GET') {
-	return (url, params = {}) => {
+	return (url, params = {}, serve = 3002) => {
+		let serve_url = config.SERVE_URL[config.MODE];
+		let port = '';
+		if (config.MODE === 'localhost') {
+			port = config.PORT[serve];
+		}
+		let api_url = serve_url + port + config.API_PREFIX[serve];
 		return new Promise(function (resolve, reject) {
 			const app = getApp();
-			const API_PREFIX = config.API_URL;
 			const obj = {
 				method,
-				url: API_PREFIX + url.replace(/{\s*smallid\s*}/i, config.shoppingMallId),
+				url: api_url + url.replace(/{\s*smallid\s*}/i, config.shoppingMallId),
 				data: params,
 				header: {
 					'x-guzzu-lang': app.globalData.locale
@@ -62,44 +99,6 @@ function _request(method = 'GET') {
 	};
 }
 
-/**
- * @description 顶层路由
- */
-function btnNavLink() {
-	return function (e) {
-		const app = getApp();
-		let id = e.currentTarget.id;
-		app.globalData.selected = id;
-		if (this.data.selected === id) {
-			return;
-		}
-		wx.showLoading({
-			title: 'loading',
-		});
-		let url;
-		switch (id) {
-			case '0':
-				url = '/pages/index/index';
-				break;
-			case '1':
-				url = '/pages/shopping-cart/shopping-cart';
-				break;
-			case '2':
-				url = '/pages/catagory/catagory';
-				break;
-			case '3':
-				url = '/pages/user-center/user-center';
-				break;
-		}
-		if (url) {
-			wx.redirectTo({
-				url,
-			});
-		}
-		wx.hideLoading();
-	};
-}
-
 function checkLogin(err) {
 	if (err && err.detail && err.detail.message === 'signin required') {
 		wx.showModal({
@@ -125,9 +124,28 @@ function checkLogin(err) {
 	}
 }
 
+// ------------------------------------------------------
+
+function toLogin() {
+	if (getCurrentPages().reverse()[0].route.indexOf('bind-phone') < 0) {
+		wx.showModal({
+			title: '提示',
+			content: '登录超时，\n请重新登录',
+			success(res) {
+				if (res.confirm) {
+					wx.navigateTo({
+						url: '/pages/bind-phone/bind-phone'
+					});
+				}
+			}
+		});
+	}
+}
+
 function checkMobilePhone() {
-	return new Promise(function (resolve, reject) {
-		callApi('Auth.getCurrentSession', {}).then(function (result) {
+	return new Promise((resolve, reject) => {
+		console.log('checkMobilePhone', hasLoginSession());
+		callApi('Auth.getCurrentSession', {}).then(result => {
 			console.log('1', result);
 			if (result && result.user && result.user.mobilePhone) {
 				resolve(result);
@@ -137,37 +155,37 @@ function checkMobilePhone() {
 				});
 				resolve(false);
 			}
-		}, function (err) {
+		}, err => {
 			reject(err);
 		});
 	});
 }
 
 function login() {
-	return new Promise(function (resolve, reject) {
-		var code;
+	return new Promise((resolve, reject) => {
+		let code;
 		// 1. login with weixin
-		var loginWx = new Promise(function (_resolve, _reject) {
+		let loginWx = new Promise((_resolve, _reject) => {
 			wx.login({
-				success: function (res) {
+				success(res) {
 					_resolve(res);
 				},
-				fail: function (err) {
+				fail(err) {
 					_reject(err);
 				}
 			});
 		});
 
 		// 2. get weixin user info
-		let getUserInfo = loginWx.then(function (res) {
+		let getUserInfo = loginWx.then(res => {
 			code = res.code;
-			return new Promise(function (_resolve, _reject) {
+			return new Promise((_resolve, _reject) => {
 				if (code) {
 					wx.getUserInfo({
-						success: function (res) {
+						success(res) {
 							_resolve(res);
 						},
-						fail: function (err) {
+						fail(err) {
 							_reject(err);
 						}
 					});
@@ -176,27 +194,26 @@ function login() {
 				}
 			});
 		});
-		getUserInfo.then(function (res) {
+		getUserInfo.then(res => {
 			// 3. login guzzu with weixin info
-			var encryptedData = res.encryptedData;
-			var iv = res.iv;
+			let encryptedData = res.encryptedData;
+			let iv = res.iv;
 			return callApi('WxMiniProgram.signin', {
-				code: code,
-				encryptedData: encryptedData,
-				iv: iv
+				code,
+				encryptedData,
+				iv
 			});
-		}).then(function (result) {
+		}).then(result => {
 			// 4. set guzzu-session-id in local storage
-			wx.setStorageSync('accessToken', result.accessToken);
-			// storageSet('accessToken', result.accessToken);
+			session.set(result.sessionId);
 			return checkMobilePhone();
-		}).then(function (result) {
+		}).then(result => {
 			resolve(result);
-		}, function (err) {
+		}, err => {
 			reject(err);
 		});
 		// 如果获取用户信息失败，判断授权情况
-		getUserInfo.catch((err) => {
+		getUserInfo.catch(err => {
 			wx.openSetting({
 				complete: res => {
 					if (res.authSetting['scope.userInfo']) {
@@ -210,7 +227,7 @@ function login() {
 						wx.showModal({
 							title: '授权失败',
 							content: '是否尝试再次授权？',
-							success: function (res) {
+							success(res) {
 								if (res.confirm) {
 									// 同意授权
 									login().then(result => {
@@ -233,7 +250,7 @@ function login() {
 function bindPhoneNumber(e) {
 	let title = '绑定失败';
 	if (e.detail.errMsg.endsWith('ok')) {
-		var param = {
+		let param = {
 			encryptedData: e.detail.encryptedData,
 			iv: e.detail.iv
 		};
@@ -244,10 +261,10 @@ function bindPhoneNumber(e) {
 				title = '绑定成功';
 			}
 			wx.showModal({
-				title: title,
+				title,
 				content: `新手机号是:${res.data.mobilePhone}`,
 				showCancel: false,
-				success: function (res) {
+				success(res) {
 					if (res.confirm && getCurrentPages().length > 1) {
 						wx.navigateBack();
 					}
@@ -255,20 +272,20 @@ function bindPhoneNumber(e) {
 			});
 		}, err => {
 			wx.showModal({
-				title: title,
+				title,
 				content: err.error,
 				showCancel: false
 			});
 		});
 	} else {
 		wx.showModal({
-			title: title,
+			title,
 			content: '用户不允许授权，请输入手机号码',
 			showCancel: false,
-			success: function (res) {
+			success(res) {
 				let pages = getCurrentPages();
 				let route = pages[pages.length - 1].route;
-				if (res.confirm && !/bind-phone/.test(route)) {
+				if (res.confirm && !(/bind-phone/).test(route)) {
 					wx.navigateTo({
 						url: '/pages/bind-phone/bind-phone'
 					});
@@ -277,6 +294,7 @@ function bindPhoneNumber(e) {
 		});
 	}
 }
+
 Promise.prototype.finally = function (callback) {
 	let P = this.constructor;
 	return this.then(
@@ -292,4 +310,3 @@ module.exports.storageGet = storageGet;
 module.exports.storageSet = storageSet;
 module.exports.storageRemove = storageRemove;
 module.exports.bindPhoneNumber = bindPhoneNumber;
-module.exports.btnNavLink = btnNavLink;

@@ -3,7 +3,6 @@
 @import "../components/searchFor/searchFor";
 @import "../components/page-nav/page-nav";
 @import "../components/block-title/block-title";
-@import "../components/bottom-nav/bottom-nav";
 @import "../components/block-productgroup/block-productgroup";
 
 .textview {

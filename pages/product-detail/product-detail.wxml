@@ -1,17 +1,23 @@
 <!--pages/product-detail/product-detail.wxml-->
 <import src="../components/block-banner/block-banner" />
+<import src="../../utils/wxParse/wxParse.wxml" />
 
-<view class="page-container">
+<view class="page-container color--grey-0">
    <view class="swiper">
-      <template is="block-banner" data="{{item}}"></template>
+      <template is="block-banner" data="{{item:gallery}}"></template>
    </view>
    <view class="introduction layout-column padding-x-20 padding-y-10">
       <text class="product-title">{{product.name}}</text>
       <text class="product-price">￥{{product.price}}</text>
    </view>
-   <view class="option">
-      <view wx:if="{{product.productOptions}}" class="zan-cell zan-cell--access" bindtap="showPopup">
-         <view class="zan-cell__bd">{{trans.selected}}</view>
+   <view wx:if="{{product.productOptions.length>0}}" class="option">
+      <view class="zan-cell zan-cell--access" bindtap="showPopup">
+         <view wx:if="{{selectIndex==-1}}" class="zan-cell__bd">{{trans.selectNone}}</view>
+			<view wx:else class="zan-cell__bd">
+				{{trans.selected}}
+				{{product.productOptions[selectIndex].name}}
+				<text class="option-price">¥ {{product.productOptions[selectIndex].price}}</text>
+			</view>
          <view class="zan-cell__ft"></view>
       </view>
    </view>
@@ -30,28 +36,68 @@
       </view>
    </view>
    <view class="spacer"></view>
-   
 
-   <view class="section layout-row layout-justify-center margin-y-10 padding-bottom-20">
+
+   <view wx:if='{{!showProductDetail}}' class="section layout-row layout-justify-center margin-y-10 padding-bottom-20">
       下拉查看图文详情
    </view>
-   <view hidden='{{showProductDetail}}'>
-      <image src="../../public/images/img/food1.jpg" mode="widthFix"></image>
-      <image src="../../public/images/img/food1.jpg" mode="widthFix"></image>
-      <image src="../../public/images/img/food1.jpg" mode="widthFix"></image>
-      <image src="../../public/images/img/food1.jpg" mode="widthFix"></image>
-      <image src="../../public/images/img/food1.jpg" mode="widthFix"></image>
-      <image src="../../public/images/img/food1.jpg" mode="widthFix"></image>
+   <view wx:if='{{showProductDetail}}' class="margin-y-20">
+      <view class="padding-x-20 padding-y-10">
+         <template is="wxParse" data="{{ wxParseData:description.nodes }}" />
+      </view>
+      <view class="padding-x-20 padding-y-10" wx:if="{{ product.shippingDescription && product.shippingDescription.content }}">
+         <view class="divider margin-x-20 margin-y-10"></view>
+         <view>
+            <text>{{trans.aboutShipping}}</text>
+         </view>
+         <template is="wxParse" data="{{ wxParseData:shippingDescription.nodes }}" />
+      </view>
+      <view class="padding-x-20 padding-y-10" wx:if="{{ terms.pricing }}">
+         <view class="divider margin-x-20 margin-y-10"></view>
+         <view>
+            <text>{{trans.pricing}}</text>
+         </view>
+         <view>
+            <text class="text-muted">{{ terms.pricing }}</text>
+         </view>
+      </view>
+      <view class="padding-x-20 padding-y-10" wx:if="{{ terms.payment }}">
+         <view class="divider margin-x-20 margin-y-10"></view>
+         <view>
+            <text>{{trans.payment}}</text>
+         </view>
+         <view>
+            <text class="text-muted">{{ terms.payment }}</text>
+         </view>
+      </view>
+      <view class="padding-x-20 padding-y-10" wx:if="{{ terms.shipping }}">
+         <view class="divider margin-x-20 margin-y-10"></view>
+         <view>
+            <text>{{trans.shipping}}</text>
+         </view>
+         <view>
+            <text class="text-muted">{{ terms.shipping }}</text>
+         </view>
+      </view>
+      <view class="padding-x-20 padding-y-10" wx:if="{{ terms.returnAndRefund }}">
+         <view class="divider margin-x-20 margin-y-10"></view>
+         <view>
+            <text>{{trans.returnRefund}}</text>
+         </view>
+         <view>
+            <text class="text-muted">{{ terms.returnAndRefund }}</text>
+         </view>
+      </view>
    </view>
 </view>
 <!-- bottom -->
-<view class="footer-box" hidden="{{footerhidden}}">
+<view class="footer-box">
    <view class="layout-row">
-      <view class="width-15 layout-column layout-justify-center layout-align-center mini-btn">
-         <view class="zan-icon zan-icon-like-o"></view>
-         <view>{{trans.collect}}</view>
+      <view class="width-15 layout-column layout-justify-center layout-align-center mini-btn" bindtap='toStore' data-slug="{{product.store.slug}}">
+         <view class="zan-icon zan-icon-points-mall"></view>
+         <view>{{trans.tabBar.store}}</view>
       </view>
-      <view class="width-15 layout-column layout-justify-center layout-align-center mini-btn">
+      <view class="width-15 layout-column layout-justify-center layout-align-center mini-btn" bindtap='toShoppingCart'>
          <view class="zan-icon zan-icon-cart"></view>
          <view>{{trans.cart}}</view>
       </view>
@@ -66,8 +112,8 @@
 <!-- modal -->
 <view class="show-popup" hidden="{{hideShopPopup}}">
    <view class="popup-mask" bindtap="hideShopPopup"></view>
-   <view class="popup-contents">
-      <view class="pop-goods-info layout-row padding-y-10">
+   <view class="popup-contents {{showPopupOptions && 'show'}}">
+      <view class="pop-goods-info layout-row padding-y-10" bindtap="hideShopPopup">
          <view class="">
             <image src="{{product.image.thumb.url}}" mode="widthFix" class="square-120"></image>
          </view>
@@ -79,32 +125,32 @@
 
       <view class="option-list">
          <view class="option-item" wx:for="{{product.productOptions}}" wx:key="{{index}}" bindtap="selectTap" data-index="{{index}}">
-				<view class="margin-x-20" wx:if="{{selectIndex==index}}">
-					<image src="../../public/images/icon/option-check.png" class="square-40"></image>
-				</view>
-				<view class="margin-x-20" wx:else>
-					<image src="../../public/images/icon/option-none.png" class="square-40"></image>
-				</view>
-				<image src="{{item.image.thumb.url}}" class="square-80" />
-				<view class="text-box margin-x-20">
-					<view class="option-title">{{item.name}}</view>
-					<view class="option-price">¥ {{item.price}}</view>
-				</view>
+            <view class="margin-x-20" wx:if="{{selectIndex==index}}">
+               <image src="../../public/images/icon/option-check.png" class="square-40"></image>
+            </view>
+            <view class="margin-x-20" wx:else>
+               <image src="../../public/images/icon/option-none.png" class="square-40"></image>
+            </view>
+            <image src="{{item.image.thumb.url}}" class="square-80" />
+            <view class="text-box margin-x-20">
+               <view class="option-title">{{item.name}}</view>
+               <view class="option-price">¥ {{item.price}}</view>
+            </view>
          </view>
       </view>
 
       <view class="layout-row layout-wrap layout-justify-between goodsNum">
-         <view class="num-label layout-row layout-align-center">{{trans.buyNum}}</view>
+         <view class="num-label layout-row layout-align-center" bindtap="hideShopPopup">{{trans.buyNum}}</view>
          <view class="num-box layout-row layout-wrap layout-justify-end">
-            <view class="num-jian {{buyNumber == buyNumMin ? 'hui': ''}}" bindtap="numJianTap">-</view>
+            <view class="num-jian {{buyNumber == buyNumMin ? 'hui': ''}}" bindtap="numMinus">-</view>
             <view class="num-input">
-               <input type="number" value="{{buyNum}}" bindchange="changeNum" />
+               <input type="number" value="{{buyNum}}" bindinput="changeNum" />
             </view>
-            <view class="num-jia {{buyNumber== buyNumMax ? 'hui': ''}}" bindtap="numJiaTap">+</view>
+            <view class="num-jia {{buyNumber== buyNumMax ? 'hui': ''}}" bindtap="numAdd">+</view>
          </view>
       </view>
       <view class="margin-top-10">
-         <button class="zan-btn zan-btn--danger">{{trans.addToCart}}</button>
+         <button class="zan-btn zan-btn--danger" bindtap="addToCart">{{trans.addToCart}}</button>
       </view>
    </view>
 </view>

@@ -1,5 +1,4 @@
 /* pages/user-center/user-center.wxss */
-@import "../components/bottom-nav/bottom-nav";
 
 .userImg{
   border-radius: 50%;

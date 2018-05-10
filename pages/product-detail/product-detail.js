@@ -1,46 +1,65 @@
 // pages/product-detail/product-detail
 const app = getApp();
 const { callApi } = require('../../utils/guzzu-utils.js');
-const _ = require('../../utils/lodash');
+const { priceFilter } = require('../../utils/util');
 // const _ = require('lodash');
+const WxParse = require('../../utils/wxParse/wxParse.js');
 
 Page({
 	data: {
-		item:null,
-		imageArr: [],
-		footerhidden: false,
+		gallery: null,
 		hideShopPopup: true,
 		buyNum: 1,
-		showProductDetail: true,
+		showProductDetail: false,
 		product: null,
-		selection:1,
+		selectIndex: -1,
+		optionSelected: false,
+		showPopupOptions: false,
+		terms: null,
 	},
 	onLoad(options) {
 		let that = this;
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
-		that.setData({
-			productId: options.productId
-		});
-		callApi.get(`products/${that.data.productId }?populate=store`).then(res => {
+		let productId = options.productId;
+
+		callApi.get(`products/${productId}?populate=store`).then(res => {
 			priceFilter(res);
+			console.log(res);
+
 			let images = res.gallery.concat(res.image);
 			let items = images.map(item => {
 				return {
-					image:item
-				}
-			})
-			let imgHeight =items[0].image.medium.height;
-			let imgWidth =items[0].image.medium.width;
+					image: item
+				};
+			});
+			let imgHeight = items[0].image.medium.height;
+			let imgWidth = items[0].image.medium.width;
 			let swiperHeight = 750 / imgWidth * imgHeight;
 			that.setData({
 				product: res,
-				item: {
+				gallery: {
 					items,
 					swiperHeight
 				}
 			});
+
+			if (res.description) {
+				WxParse.wxParse('description', 'html', res.description, that);
+			}
+			if (res.shippingDescription && res.shippingDescription.content) {
+				WxParse.wxParse('shippingDescription', 'html', res.shippingDescription.content, that);
+			}
+			return callApi.get(`stores/${res.store._id}/profile`);
+		}).then(res => {
+			console.log(res);
+
+			that.setData({
+				terms: res
+			});
+		}).catch(err => {
+			console.error(err);
 		});
 	},
 
@@ -51,41 +70,38 @@ Page({
 	onShow() {
 
 	},
-	imageLoad(e) {
-		let height = 750 / e.detail.width * e.detail.height;
-		this.setData({
-			swiperHeight: height
-		});
-	},
 	bindchange(e) {
 		// console.log(e.detail.current)
 		this.setData({ current: e.detail.current });
 	},
 	showPopup() {
 		this.setData({
-			hideShopPopup: false,
-			footerhidden: true
+			hideShopPopup: false
+		});
+		setTimeout(() => {
+			this.setData({
+				showPopupOptions: true
+			});
 		});
 	},
 	hideShopPopup() {
 		this.setData({
-			hideShopPopup: true,
-			footerhidden: false
+			showPopupOptions: false
 		});
+		setTimeout(() => {
+			this.setData({
+				hideShopPopup: true
+			});
+		}, 300);
 	},
-	labelItemTap(e) {
-		let that = this;
-		let childs = that.data.goodsDetail.properties[e.currentTarget.dataset.propertyindex].childsCurGoods;
-		for (let i = 0; i < childs.length; i++) {
-			that.data.goodsDetail.properties[e.currentTarget.dataset.propertyindex].childsCurGoods[i].active = false;
-		}
-		// 设置当前选中状态
-		that.data.goodsDetail.properties[e.currentTarget.dataset.propertyindex].childsCurGoods[e.currentTarget.dataset.propertychildindex].active = true;
-		that.setData({
-			goodsDetail: that.data.goodsDetail
+	addToCart() {
+		wx.showToast({
+			title: '已加入购物车',
+			duration: 1500
 		});
+		this.hideShopPopup();
 	},
-	numJianTap() {
+	numMinus() {
 		if (this.data.buyNum > 1) {
 			let num = this.data.buyNum;
 			num -= 1;
@@ -94,7 +110,7 @@ Page({
 			});
 		}
 	},
-	numJiaTap() {
+	numAdd() {
 		if (this.data.buyNum) {
 			let num = this.data.buyNum;
 			num += 1;
@@ -104,17 +120,13 @@ Page({
 		}
 	},
 	changeNum(e) {
+		let buyNum = 1;
 		if (e.detail.value > 1) {
-			console.log(e.detail.value);
-			let num = parseInt(e.detail.value);
-			this.setData({
-				buyNum: num
-			});
-		} else {
-			this.setData({
-				buyNum: this.data.buyNum
-			});
+			buyNum = parseInt(e.detail.value);
 		}
+		this.setData({
+			buyNum
+		});
 	},
 	toStore(e) {
 		let slug = e.currentTarget.dataset.slug;
@@ -122,47 +134,27 @@ Page({
 			url: '/pages/store/store?slug=' + slug
 		});
 	},
-	selectTap (e) {
-		var selectIndex = e.currentTarget.dataset.index;
+	toShoppingCart() {
+		app.globalData.selected = '1';
+		wx.reLaunch({
+			url: '/pages/shopping-cart/shopping-cart'
+		});
+	},
+	selectTap(e) {
+		let selectIndex = e.currentTarget.dataset.index;
+		if (selectIndex === this.data.selectIndex) {
+			selectIndex = -1;
+		}
 		this.setData({
 			selectIndex
 		});
-		/*
-		var list = this.data.goodsList.list;
-		if (index !== '' && index != null) {
-			list[parseInt(index)].active = !list[parseInt(index)].active;
-			this.setGoodsList(this.getSaveHide(), this.totalPrice(), this.allSelect(), this.noSelect(), list);
-		}
-		*/
 	},
 	onReachBottom() {
-		console.log(44);
+		if (this.data.showProductDetail) {
+			return;
+		}
 		this.setData({
-			showProductDetail: false
+			showProductDetail: true
 		});
-	}
+	},
 });
-
-function priceFilter(data) {
-	let keyReg = /^price$|^originalPrice$/;
-	if (_.isNumber(data) || _.isString(data)) {
-		return Number(data) / 100..toFixed(2);
-	}
-	if (_.isArray(data)) {
-		data.forEach((item, i) => {
-			if (_.isObject(item)) {
-				priceFilter(data[i]);
-			}
-		});
-	}
-	if (_.isObject(data)) {
-		_.forEach(data, (value, key) => {
-			if (keyReg.test(key)) {
-				data[key] = priceFilter(value);
-			}
-			if (_.isObject(value) || _.isArray(value)) {
-				priceFilter(data[key]);
-			}
-		});
-	}
-}

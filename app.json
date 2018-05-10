@@ -1,7 +1,7 @@
 {
   "pages":[
     "pages/index/index",
-    "pages/logs/logs",
+    "pages/bind-phone/bind-phone",
     "pages/components/searchFor/searchFor",
     "pages/shopping-cart/shopping-cart",
     "pages/user-center/user-center",

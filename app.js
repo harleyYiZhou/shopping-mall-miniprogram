@@ -1,6 +1,6 @@
 // app.js
 const translate = require('./utils/translate.js');
-const { btnNavLink } = require('./utils/guzzu-utils.js');
+const { btnNavLink } = require('./utils/util.js');
 
 App({
 	onLaunch: function () {
