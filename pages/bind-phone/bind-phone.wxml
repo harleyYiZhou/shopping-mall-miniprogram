@@ -1,0 +1,36 @@
+<!-- bind-phone.wxml -->
+<view class="page-container">
+	<view class="margin-y-20 text-center">
+		<text class="text-larger">您的账号尚未绑定手机，请绑定手机</text>
+	</view>
+	<form bindsubmit="submit" class="margin-x-20">
+		<view class="list-bordered">
+			<view class="list-item padding-y-10">
+				<label class="col-3 vertical-center">手机号码</label>
+				<view class="col-5 vertical-center">
+					<input name="mobilePhone" bindinput="verifyMobilePhone" placeholder="请输入手机号码" type="text" />
+				</view>
+				<view class="col-4 vertical-center">
+					<block wx:if="{{ !interval }}">
+						<button bindtap="getVerifyCode" style="font-size:28rpx;" disabled="{{ disableGetVerifyCode }}">获取验证码</button>
+					</block>
+					<block wx:else>
+						<button disabled style="font-size:28rpx;">{{ countdown }}</button>
+					</block>
+				</view>
+			</view>
+			<view class="list-item padding-y-10">
+				<label class="col-3 vertical-center">验证码</label>
+				<view class="col-9 vertical-center">
+					<input name="verifyCode" placeholder="请输入验证码" type="text" />
+				</view>
+			</view>
+		</view>
+		<view class="text-center margin-top-30">
+			<button form-type="submit" class="bind-phone-btn">绑定手机</button>
+		</view>
+		<view class="text-center margin-top-30">
+			<button open-type="getPhoneNumber" bindgetphonenumber="getPhoneNumber">绑定微信手机</button>
+		</view>
+	</form>
+</view>

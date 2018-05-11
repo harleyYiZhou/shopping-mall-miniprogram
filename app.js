@@ -15,11 +15,11 @@ App({
 			});
 		}
 		that.globalData.trans = require(`./locales/${that.globalData.locale}`);
-		// this.login();
 	},
 	translate,
 	btnNavLink,
 	globalData: {
+		firstCheck: true,
 		userInfo: null,
 		selected: '0',
 		locale: 'zh'

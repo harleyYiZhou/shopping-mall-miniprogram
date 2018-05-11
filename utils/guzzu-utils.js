@@ -1,6 +1,6 @@
 // guzzu-utils.js
 const config = require('../config.js');
-const { showModal } = require('./util');
+const { showModal, _ } = require('./util');
 
 /**
  * guzzu storage (run time only quick storage)
@@ -23,24 +23,24 @@ const session = {
 	check() {
 		return new Promise((resolve, reject) => {
 			let { accessToken, expireAt } = this.get();
-			if (accessToken && new Date(expireAt) <= new Date()) {
+			if (accessToken && new Date(expireAt) > new Date()) {
 				return resolve(accessToken);
 			}
-			showModal({
-				content: 'common.sessionExpired',
-				success: function (res) {
-					if (res.confirm) {
-						login();
-					}
-				}
-			});
-			reject(false);
+			resolve(false);
 		});
+	},
+	checkSync() {
+		let { accessToken, expireAt } = this.get();
+		if (accessToken && new Date(expireAt) > new Date()) {
+			return accessToken;
+		}
+		_loginToast();
+		return false;
 	},
 	set(accessToken) {
 		wx.setStorageSync('accessToken', {
 			accessToken: accessToken,
-			expireAt: new Date(Date.now() + config.session_expire_seconds * 1000)
+			expireAt: new Date(Date.now() + config.SESSION_EXPIRE_SECONDS * 1000)
 		});
 	},
 	get() {
@@ -48,7 +48,10 @@ const session = {
 			accessToken: '',
 			expireAt: ''
 		};
-	}
+	},
+	remove() {
+		return wx.removeStorageSync('accessToken');
+	},
 };
 const callApi = {
 	get: _request('GET'),
@@ -57,6 +60,7 @@ const callApi = {
 
 function _request(method = 'GET') {
 	return (url, params = {}, serve = 3002) => {
+		// 设置请求地址
 		let serve_url = config.SERVE_URL[config.MODE];
 		let port = '';
 		if (config.MODE === 'localhost') {
@@ -64,6 +68,7 @@ function _request(method = 'GET') {
 		}
 		let api_url = serve_url + port + config.API_PREFIX[serve];
 		return new Promise(function (resolve, reject) {
+			// request 设置
 			const app = getApp();
 			const obj = {
 				method,
@@ -77,55 +82,62 @@ function _request(method = 'GET') {
 						resolve(res.data);
 					} else if (res.statusCode === '500' || res.statusCode === 500) {
 						reject(res.data);
-						wx.showModal({
-							title: 'error',
-							content: res.data.detail.message,
-							showCancel: false
-						});
+						if (_.get(res, 'data.error') == 'ERR_INVALID_AUTH') {
+							_loginToast();
+						} else {
+							showModal({
+								title: 'common.error',
+								content: res.data.detail.message,
+								showCancel: false
+							});
+						}
 					} else {
 						reject(res);
+						showModal({
+							title: 'common.error',
+							content: res.data.message,
+							showCancel: false
+						});
 					}
 				},
 				fail: function (err) {
 					reject(err);
 				}
 			};
-			let accessToken = wx.getStorageSync('accessToken');
+			// 判断登录状态
+			let accessToken;
+			if (config.SESSION_REQUIRE.indexOf(url) > -1) {
+				accessToken = session.checkSync();
+				console.log('check token', accessToken);
+
+				if (!accessToken) {
+					return reject('signin required');
+				}
+			}
 			if (accessToken) {
-				obj.header['x-guzzu-access-token'] = accessToken;
+				obj.header[config.SESSION_KEY[serve]] = accessToken;
 			}
 			wx.request(obj);
 		});
 	};
 }
 
-function checkLogin(err) {
-	if (err && err.detail && err.detail.message === 'signin required') {
-		wx.showModal({
-			title: 'Your session has expired.',
-			content: 'Please sign in again, thanks.',
-			success: function (res) {
-				if (res.confirm) {
-					login();
-				}
-			}
-		});
-	}
-	if (err && err.detail && err.detail.message === '未登录') {
-		wx.showModal({
-			title: '登录状态超时.',
-			content: '是否重新登录？',
-			success: function (res) {
-				if (res.confirm) {
-					login();
-				}
-			}
-		});
-	}
-}
-
 // ------------------------------------------------------
 
+function _loginToast() {
+	showModal({
+		title: 'common.sessionExpired',
+		content: 'common.reSignin',
+		success: function (res) {
+			if (res.confirm) {
+				login();
+			} else {
+				session.remove();
+			}
+		}
+	});
+}
+/*
 function toLogin() {
 	if (getCurrentPages().reverse()[0].route.indexOf('bind-phone') < 0) {
 		wx.showModal({
@@ -141,11 +153,11 @@ function toLogin() {
 		});
 	}
 }
-
+*/
 function checkMobilePhone() {
 	return new Promise((resolve, reject) => {
-		console.log('checkMobilePhone', hasLoginSession());
-		callApi('Auth.getCurrentSession', {}).then(result => {
+		// console.log('checkMobilePhone', hasLoginSession());
+		callApi.post('Auth.getCurrentSession', {}, 400).then(result => {
 			console.log('1', result);
 			if (result && result.user && result.user.mobilePhone) {
 				resolve(result);
@@ -198,16 +210,17 @@ function login() {
 			// 3. login guzzu with weixin info
 			let encryptedData = res.encryptedData;
 			let iv = res.iv;
-			return callApi('WxMiniProgram.signin', {
+			return callApi.post('WxMiniProgram.signin', {
 				code,
 				encryptedData,
 				iv
-			});
+			}, 400);
 		}).then(result => {
 			// 4. set guzzu-session-id in local storage
 			session.set(result.sessionId);
 			return checkMobilePhone();
 		}).then(result => {
+			getApp().globalData.userInfo = result.user;
 			resolve(result);
 		}, err => {
 			reject(err);
@@ -254,8 +267,7 @@ function bindPhoneNumber(e) {
 			encryptedData: e.detail.encryptedData,
 			iv: e.detail.iv
 		};
-		callApi('WxMiniProgram.getPhoneNumber', param).then(res => {
-			console.log(res);
+		callApi.post('WxMiniProgram.getPhoneNumber', param, 400).then(res => {
 			if (res.data.mobilePhone) {
 				getApp().globalData.mobilePhone = res.data.mobilePhone;
 				title = '绑定成功';
@@ -295,6 +307,36 @@ function bindPhoneNumber(e) {
 	}
 }
 
+function addToShopCarInfo(params) {
+	if (!params || !params.storeId || !params.productId) {
+		console.error(params);
+		throw new ReferenceError('addToShopCarInfo');
+	}
+	let shopCarInfo = wx.getStorageSync('shopCarInfo') || {};
+	// localCart 没对应的店铺，初始化为{}
+	if (!shopCarInfo[params.storeId]) {
+		shopCarInfo[params.storeId] = {};
+	}
+	let storeCart = shopCarInfo[params.storeId];
+	// 如果 params 有选项
+	if (params.productOptionId) {
+		_update(storeCart, params, 'productOptionId');
+		// 如果 params 没选项，直接找对的 productId
+	} else {
+		_update(storeCart, params, 'productId');
+	}
+	function _update(storeCart, params, key) {
+		// local 找出选项，更新数量
+		if (storeCart[params[key]]) {
+			storeCart[params[key]].quantity += params.quantity;
+			// local 没有对应选项，添加 params
+		} else {
+			storeCart[params[key]] = params;
+		}
+	}
+	return Promise.resolve(wx.setStorageSync('shopCarInfo', shopCarInfo));
+}
+
 Promise.prototype.finally = function (callback) {
 	let P = this.constructor;
 	return this.then(
@@ -310,3 +352,5 @@ module.exports.storageGet = storageGet;
 module.exports.storageSet = storageSet;
 module.exports.storageRemove = storageRemove;
 module.exports.bindPhoneNumber = bindPhoneNumber;
+module.exports.session = session;
+module.exports.addToShopCarInfo = addToShopCarInfo;

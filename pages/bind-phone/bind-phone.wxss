@@ -1,0 +1,26 @@
+/* bind-phone.wxss */
+
+.tip-container {
+	margin: 20rpx 0;
+	text-align: center;
+}
+
+.bind-phone-btn {
+	background-color: #44b549;
+	color: #fff;
+	width: 100%;
+	border-radius: 0;
+	height: 100rpx;
+	line-height: 100rpx;
+}
+
+.form-item {
+	height: 100rpx;
+	line-height: 100rpx;
+	border-bottom: 1rpx solid #E0E0E0;
+}
+
+.form-item input {
+	height: 100rpx;
+	line-height: 100rpx;
+}

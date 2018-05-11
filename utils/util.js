@@ -17,7 +17,7 @@ const formatNumber = n => {
 };
 
 const priceFilter = data => {
-	let keyReg = /^price$|^originalPrice$/;
+	let keyReg = /price|originalPrice|shippingCost|subtotal|totalCost/;
 	if (_.isNumber(data) || _.isString(data)) {
 		return (Number(data) / 100).toFixed(2);
 	}
@@ -32,7 +32,6 @@ const priceFilter = data => {
 		_.forEach(data, (value, key) => {
 			if (keyReg.test(key)) {
 				data[key] = priceFilter(value);
-				console.log(key, data[key]);
 			}
 			if (_.isObject(value) || _.isArray(value)) {
 				priceFilter(data[key]);
@@ -95,13 +94,59 @@ const showModal = (data = {}) => {
 	let { globalData: { trans } } = getApp();
 	let keys = ['title', 'content', 'cancelText', 'confirmText'];
 	keys.forEach(key => {
-		params[key] = _.get(trans, params[key]) || params[key];
+		let value = params[key];
+		let localizeTemp = value.replace(/@{([^{^}]*)?}/g, i => {
+			return _.get(trans, i.replace(/@{|}/g, '')) || i;
+		});
+		params[key] = _.get(trans, value) || localizeTemp;
 	});
 	wx.showModal(params);
 };
+
+const showToast = (data = {}) => {
+	let params = Object.assign({
+		title: '',
+		icon: 'success', // "success", "loading", "none"
+		image: '',
+		duration: 1500,
+		mask: false,
+		success: function (res) { },
+		fail: function (res) { },
+		complete: function (res) { },
+	}, data);
+	let { globalData: { trans } } = getApp();
+	let value = params['title'];
+	let localizeTemp = value.replace(/@{([^{^}]*)?}/g, i => {
+		return _.get(trans, i.replace(/@{|}/g, '')) || i;
+	});
+	params['title'] = _.get(trans, value) || localizeTemp;
+	wx.showToast(params);
+};
+
+const showLoading = (data = {}) => {
+	let params = Object.assign({
+		title: '',
+		mask: false,
+		// duration: 1500,
+		success: function (res) { },
+		fail: function (res) { },
+		complete: function (res) { },
+	}, data);
+	let { globalData: { trans } } = getApp();
+	let value = params['title'];
+	let localizeTemp = value.replace(/@{([^{^}]*)?}/g, i => {
+		return _.get(trans, i.replace(/@{|}/g, '')) || i;
+	});
+	params['title'] = _.get(trans, value) || localizeTemp;
+	wx.showLoading(params);
+};
+
 module.exports = {
 	formatTime,
 	priceFilter,
 	btnNavLink,
 	showModal,
+	showToast,
+	showLoading,
+	_,
 };

@@ -16,7 +16,7 @@
 			<view wx:else class="zan-cell__bd">
 				{{trans.selected}}
 				{{product.productOptions[selectIndex].name}}
-				<text class="option-price">¥ {{product.productOptions[selectIndex].price}}</text>
+				<text class="option-price"> ¥{{product.productOptions[selectIndex].price}}x{{buyNum}}</text>
 			</view>
          <view class="zan-cell__ft"></view>
       </view>
@@ -105,7 +105,7 @@
          <button class="zan-btn  zan-btn--danger">{{trans.payment}}</button>
       </view>
       <view class="flex">
-         <button class="zan-btn  zan-btn--warn">{{trans.addToCart}}</button>
+         <button class="zan-btn  zan-btn--warn" bindtap="addToCart">{{trans.addToCart}}</button>
       </view>
    </view>
 </view>

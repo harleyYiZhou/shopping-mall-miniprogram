@@ -1,7 +1,7 @@
 // index.js
 // 获取应用实例
 const app = getApp();
-const { callApi } = require('../../utils/guzzu-utils.js');
+const { callApi, session } = require('../../utils/guzzu-utils.js');
 
 Page({
 	data: {
@@ -14,6 +14,10 @@ Page({
 	},
 	btnNavLink: app.btnNavLink(),
 	onLoad() {
+		if (app.globalData.firstCheck) {
+			session.checkSync();
+			app.globalData.firstCheck = false;
+		}
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}

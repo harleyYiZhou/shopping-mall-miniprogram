@@ -1,5 +1,8 @@
 // index.js
-var app = getApp();
+const app = getApp();
+const { priceFilter, showModal, showToast, showLoading } = require('../../utils/util');
+const { callApi, session, addToShopCarInfo } = require('../../utils/guzzu-utils.js');
+
 Page({
 	data: {
 		goodsList: {
@@ -7,7 +10,8 @@ Page({
 			totalPrice: 0,
 			allSelect: true,
 			noSelect: false,
-			list: []
+			list: [],
+			carts: []
 		},
 		delBtnWidth: 120, // 删除按钮宽度单位（rpx）
 		fakeList: {
@@ -108,6 +112,23 @@ Page({
 		this.initEleWidth();
 		this.onShow();
 		console.log(this.data.goodsList.list);
+		session.check().then(res => {
+			console.log(1);
+			if (res) {
+				console.log(2);
+				return getStoreCarts(this);
+			}
+			return res;
+		}).then(res => {
+			console.log('getAll', res);
+			if (res) {
+				this.setData({
+					carts: res
+				});
+			}
+		}).catch(err => {
+			console.error(err);
+		});
 	},
 	onShow: function () {
 		var shopList = [];
@@ -443,3 +464,33 @@ Page({
 	}
 
 });
+
+function getStoreCarts(that) {
+	showLoading({
+		title: 'common.loading'
+	});
+	return new Promise((resolve, reject) => {
+		callApi.post('StoreCart.getAll', {}, 400).then(data => {
+			let promiseArray = [];
+			data.forEach((tempCart, index) => {
+				let temp = new Promise((resolve_, reject_) => {
+					callApi.post('StoreCart.get', {
+						storeId: tempCart.store._id
+					}, 400).then(resultData => {
+						resultData.store = tempCart.store;
+						priceFilter(resultData);
+						resolve_(resultData);
+					});
+				});
+				promiseArray.push(temp);
+			}); // end each
+			return Promise.all(promiseArray);
+		}).then(value => {
+			resolve(value);
+		}).catch(err => {
+			reject(err);
+		}).finally(() => {
+			wx.hideLoading();
+		});
+	});
+}

@@ -1,8 +1,7 @@
 // pages/product-detail/product-detail
 const app = getApp();
-const { callApi } = require('../../utils/guzzu-utils.js');
-const { priceFilter } = require('../../utils/util');
-// const _ = require('lodash');
+const { callApi, session, addToShopCarInfo } = require('../../utils/guzzu-utils.js');
+const { priceFilter, showModal, showToast } = require('../../utils/util');
 const WxParse = require('../../utils/wxParse/wxParse.js');
 
 Page({
@@ -26,8 +25,7 @@ Page({
 
 		callApi.get(`products/${productId}?populate=store`).then(res => {
 			priceFilter(res);
-			console.log(res);
-
+			console.log('product', res);
 			let images = res.gallery.concat(res.image);
 			let items = images.map(item => {
 				return {
@@ -53,8 +51,7 @@ Page({
 			}
 			return callApi.get(`stores/${res.store._id}/profile`);
 		}).then(res => {
-			console.log(res);
-
+			console.log('profile', res);
 			that.setData({
 				terms: res
 			});
@@ -95,11 +92,48 @@ Page({
 		}, 300);
 	},
 	addToCart() {
-		wx.showToast({
-			title: '已加入购物车',
-			duration: 1500
+		let { product, selectIndex, buyNum: quantity } = this.data;
+		let productOptionId;
+		let params = {
+			storeId: product.store._id,
+			productId: product._id,
+			quantity,
+		};
+		let selectedInfo = {
+			name: product.name,
+			price: product.price
+		};
+		if (selectIndex > -1) {
+			productOptionId = product.productOptions[selectIndex]._id;
+			selectedInfo.name = product.productOptions[selectIndex].name;
+			selectedInfo.price = product.productOptions[selectIndex].price;
+		} else {
+			if (product.productOptions && product.productOptions.length) {
+				return this.showPopup();
+			}
+			params.quantity = 1;
+		}
+
+		if (productOptionId) {
+			params.productOptionId = productOptionId;
+		}
+		session.check().then(res => {
+			if (res) {
+				return callApi.post('StoreCart.addItem', params, 400);
+			}
+			return addToShopCarInfo(Object.assign(params, selectedInfo));
+		}).then(res => {
+			let that = this;
+			showToast({
+				icon: 'none',
+				title: `${selectedInfo.name}\n@{productDetail.addSuccess}`,
+				complete() {
+					that.hideShopPopup();
+				}
+			});
+		}).catch(err => {
+			console.error(err);
 		});
-		this.hideShopPopup();
 	},
 	numMinus() {
 		if (this.data.buyNum > 1) {
