@@ -4,7 +4,7 @@
 		"ignore": []
 	},
 	"setting": {
-		"urlCheck": true,
+		"urlCheck": false,
 		"es6": true,
 		"postcss": true,
 		"minified": true,
@@ -33,7 +33,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": -1,
+			"current": 1,
 			"list": [
 				{
 					"id": -1,
@@ -93,6 +93,18 @@
 					"id": -1,
 					"name": "setting",
 					"pathName": "pages/setting/setting",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "bind-phone",
+					"pathName": "pages/bind-phone/bind-phone",
+					"query": ""
+				},
+				{
+					"id": 11,
+					"name": "user-center",
+					"pathName": "pages/user-center/user-center",
 					"query": ""
 				}
 			]

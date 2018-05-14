@@ -1,39 +1,45 @@
 // pages/user-center/user-center.js
-var app = getApp();
+const app = getApp();
+const { login } = require('../../utils/guzzu-utils.js');
+
 Page({
-
-	/**
-   * 页面的初始数据
-   */
 	data: {
-		selected: '3'
+		selected: '3',
+		userInfo: null,
 	},
-
-	/**
-   * 生命周期函数--监听页面加载
-   */
 	onLoad: function (options) {
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
 	},
-
-	/**
-   * 生命周期函数--监听页面初次渲染完成
-   */
 	onReady: function () {
-
 	},
-
-	/**
-   * 生命周期函数--监听页面显示
-   */
 	onShow: function () {
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
+		this.setData({
+			selected: '3'
+		});
+		app.globalData.login.finally(() => {
+			this.setData({
+				userInfo: app.globalData.userInfo
+			});
+		});
 	},
-
+	toAccount() {
+		app.globalData.login.finally(() => {
+			if (app.globalData.userInfo) {
+				wx.navigateTo({
+					url: '/pages/account/account',
+				});
+			} else {
+				login().then(() => {
+					this.onShow();
+				});
+			}
+		});
+	},
 	/**
    * 生命周期函数--监听页面隐藏
    */

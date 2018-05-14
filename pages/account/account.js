@@ -2,6 +2,8 @@
 const { Actionsheet, extend } = require('../components/actionsheet/actionsheet.js');
 const Zan = require('../index.js');
 var app = getApp();
+const { session } = require('../../utils/guzzu-utils.js');
+const { showToast } = require('../../utils/util');
 
 Page(Object.assign({}, Zan.Dialog, {
 	data: {
@@ -12,6 +14,20 @@ Page(Object.assign({}, Zan.Dialog, {
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
+	},
+	onShow() {
+		this.setData({
+			userInfo: app.globalData.userInfo
+		});
+	},
+	logout() {
+		session.remove();
+		showToast({
+			title: 'common.logoutSuccess'
+		});
+		setTimeout(() => {
+			wx.navigateBack();
+		}, 1500);
 	},
 	toggleBaseDialog() {
 		this.showZanDialog({

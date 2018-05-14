@@ -1,12 +1,13 @@
 // index.js
 const app = getApp();
-const { priceFilter, showModal, showToast, showLoading } = require('../../utils/util');
+const { priceFilter, showModal, showToast, showLoading, debug } = require('../../utils/util');
 const { callApi, session, addToShopCarInfo } = require('../../utils/guzzu-utils.js');
 
 Page({
 	data: {
+		shopCarInfo: null,
 		goodsList: {
-			saveHidden: true,
+			editable: false,
 			totalPrice: 0,
 			allSelect: true,
 			noSelect: false,
@@ -14,75 +15,9 @@ Page({
 			carts: []
 		},
 		delBtnWidth: 120, // 删除按钮宽度单位（rpx）
-		fakeList: {
-
-			'saveHidden': true,
-			'totalPrice': 165,
-			'allSelect': true,
-			'noSelect': false,
-			'list': [
-				{
-					'goodsId': 6748,
-					'pic': 'https://cdn.it120.cc/apifactory/2017/10/30/706ce9a593eafa29f2ded527553dbec9.jpg',
-					'name': '3-5岁可爱袜子',
-					'propertyChildIds': '',
-					'label': '',
-					'price': 85,
-					'left': '',
-					'active': true,
-					'number': 1,
-					'logisticsType': 386,
-					'logistics': {
-						'isFree': true,
-						'feeType': 0,
-						'feeTypeStr': '按件数',
-						'details': [
-							{
-								'addAmount': 0,
-								'addNumber': 1,
-								'firstAmount': 8,
-								'firstNumber': 100,
-								'type': 0,
-								'userId': 951
-							}
-						]
-					},
-					'weight': 0
-				},
-				{
-					'goodsId': 6765,
-					'pic': 'https://cdn.it120.cc/apifactory/2017/10/30/b07ee85fa64f0c68aa9a45fba20ec689.jpg',
-					'name': '1-3岁袜子',
-					'propertyChildIds': '',
-					'label': '',
-					'price': 80,
-					'left': '',
-					'active': true,
-					'number': 1,
-					'logisticsType': 386,
-					'logistics': {
-						'isFree': true,
-						'feeType': 0,
-						'feeTypeStr': '按件数',
-						'details': [
-							{
-								'addAmount': 0,
-								'addNumber': 1,
-								'firstAmount': 8,
-								'firstNumber': 100,
-								'type': 0,
-								'userId': 951
-							}
-						]
-					},
-					'weight': 0
-				}
-			]
-		},
-		// 'delBtnWidth': 51,
-		'__webviewId__': 21,
-		selected: '1'
-
+		fakeList: {},
+		selected: '1',
+		activeItems: [],
 	},
 	btnNavLink: app.btnNavLink(),
 	// 获取元素自适应后的实际宽度
@@ -111,7 +46,7 @@ Page({
 		}
 		this.initEleWidth();
 		this.onShow();
-		console.log(this.data.goodsList.list);
+		debug(this.data.goodsList);
 		session.check().then(res => {
 			console.log(1);
 			if (res) {
@@ -122,8 +57,15 @@ Page({
 		}).then(res => {
 			console.log('getAll', res);
 			if (res) {
+				let activeItems = res.map(() => {
+					return {
+						active: false,
+						items: []
+					};
+				});
 				this.setData({
-					carts: res
+					carts: res,
+					activeItems
 				});
 			}
 		}).catch(err => {
@@ -140,12 +82,13 @@ Page({
 		this.data.goodsList.list = this.data.fakeList;
 		this.setData({
 			goodsList: this.data.fakeList,
-			selected: app.globalData.selected
+			selected: '1',
+			shopCarInfo: shopCarInfoMem,
 		});
 		// this.setGoodsList(this.getSaveHide(), this.totalPrice(), this.allSelect(), this.noSelect(), shopList);
 	},
 	toIndexPage: function () {
-		wx.switchTab({
+		wx.redirectTo({
 			url: '/pages/index/index'
 		});
 	},
@@ -203,12 +146,16 @@ Page({
 		this.setGoodsList(this.getSaveHide(), this.totalPrice(), this.allSelect(), this.noSelect(), list);
 	},
 	selectTap: function (e) {
-		var index = e.currentTarget.dataset.index;
-		var list = this.data.goodsList.list;
-		if (index !== '' && index != null) {
-			list[parseInt(index)].active = !list[parseInt(index)].active;
-			this.setGoodsList(this.getSaveHide(), this.totalPrice(), this.allSelect(), this.noSelect(), list);
-		}
+		let itemIndex = e.currentTarget.dataset.itemIndex;
+		let cartIndex = e.currentTarget.dataset.cartIndex;
+		let activeItems = this.data.activeItems;
+		debug(itemIndex, cartIndex, activeItems);
+
+		activeItems[cartIndex].items[itemIndex] = !activeItems[cartIndex].items[itemIndex];
+		this.setData({
+			activeItems
+		});
+		// this.setGoodsList(this.getSaveHide(), this.totalPrice(), this.allSelect(), this.noSelect(), carts);
 	},
 	totalPrice: function () {
 		var list = this.data.goodsList.list;
@@ -251,10 +198,10 @@ Page({
 			return false;
 		}
 	},
-	setGoodsList: function (saveHidden, total, allSelect, noSelect, list) {
+	setGoodsList: function (editable, total, allSelect, noSelect, list) {
 		this.setData({
 			goodsList: {
-				saveHidden: saveHidden,
+				editable: editable,
 				totalPrice: total,
 				allSelect: allSelect,
 				noSelect: noSelect,
@@ -273,22 +220,24 @@ Page({
 			data: shopCarInfo
 		});
 	},
-	bindAllSelect: function () {
-		var currentAllSelect = this.data.goodsList.allSelect;
-		var list = this.data.goodsList.list;
-		if (currentAllSelect) {
-			for (var i = 0; i < list.length; i++) {
-				var curItem = list[i];
-				curItem.active = false;
-			}
-		} else {
-			for (var i = 0; i < list.length; i++) {
-				var curItem = list[i];
-				curItem.active = true;
-			}
+	bindAllSelect: function (e) {
+		let cartIndex = e.currentTarget.dataset.cartIndex;
+		let activeItems = this.data.activeItems;
+		let carts = this.data.carts;
+		activeItems[cartIndex].active = !activeItems[cartIndex].active;
+		let bool = false;
+		if (activeItems[cartIndex].active) {
+			bool = true;
 		}
-
+		carts[cartIndex].items.forEach((i, j) => {
+			activeItems[cartIndex].items[j] = bool;
+		});
+		this.setData({
+			activeItems
+		});
+		/*
 		this.setGoodsList(this.getSaveHide(), this.totalPrice(), !currentAllSelect, this.noSelect(), list);
+		*/
 	},
 	jiaBtnTap: function (e) {
 		var index = e.currentTarget.dataset.index;
@@ -327,8 +276,8 @@ Page({
 		this.setGoodsList(!this.getSaveHide(), this.totalPrice(), this.allSelect(), this.noSelect(), list);
 	},
 	getSaveHide: function () {
-		var saveHidden = this.data.goodsList.saveHidden;
-		return saveHidden;
+		var editable = this.data.goodsList.editable;
+		return editable;
 	},
 	deleteSelected: function () {
 		var list = this.data.goodsList.list;

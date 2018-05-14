@@ -1,6 +1,7 @@
 // guzzu-utils.js
 const config = require('../config.js');
-const { showModal, _ } = require('./util');
+const { showModal, showToast, _, debug } = require('./util');
+let logining = false;
 
 /**
  * guzzu storage (run time only quick storage)
@@ -26,6 +27,7 @@ const session = {
 			if (accessToken && new Date(expireAt) > new Date()) {
 				return resolve(accessToken);
 			}
+			this.remove();
 			resolve(false);
 		});
 	},
@@ -35,6 +37,7 @@ const session = {
 			return accessToken;
 		}
 		_loginToast();
+		this.remove();
 		return false;
 	},
 	set(accessToken) {
@@ -50,7 +53,8 @@ const session = {
 		};
 	},
 	remove() {
-		return wx.removeStorageSync('accessToken');
+		getApp().globalData.userInfo = null;
+		wx.removeStorageSync('accessToken');
 	},
 };
 const callApi = {
@@ -79,26 +83,26 @@ function _request(method = 'GET') {
 				},
 				success: function (res) {
 					if (res.statusCode === '200' || res.statusCode === 200) {
-						resolve(res.data);
-					} else if (res.statusCode === '500' || res.statusCode === 500) {
+						let accessToken = obj.header[config.SESSION_KEY[serve]];
+						if (accessToken) {
+							session.set(accessToken);
+						}
+						return resolve(res.data);
+					}
+					if (res.statusCode === '500' || res.statusCode === 500) {
 						reject(res.data);
 						if (_.get(res, 'data.error') == 'ERR_INVALID_AUTH') {
 							_loginToast();
-						} else {
-							showModal({
-								title: 'common.error',
-								content: res.data.detail.message,
-								showCancel: false
-							});
+							return;
 						}
 					} else {
 						reject(res);
-						showModal({
-							title: 'common.error',
-							content: res.data.message,
-							showCancel: false
-						});
 					}
+					showModal({
+						title: 'common.error',
+						content: _.get(res, 'data.detail.message') || _.get(res, 'data.message') || _.get(res, 'data.error') || 'unknown error',
+						showCancel: false
+					});
 				},
 				fail: function (err) {
 					reject(err);
@@ -108,8 +112,7 @@ function _request(method = 'GET') {
 			let accessToken;
 			if (config.SESSION_REQUIRE.indexOf(url) > -1) {
 				accessToken = session.checkSync();
-				console.log('check token', accessToken);
-
+				debug(url, accessToken);
 				if (!accessToken) {
 					return reject('signin required');
 				}
@@ -137,28 +140,12 @@ function _loginToast() {
 		}
 	});
 }
-/*
-function toLogin() {
-	if (getCurrentPages().reverse()[0].route.indexOf('bind-phone') < 0) {
-		wx.showModal({
-			title: '提示',
-			content: '登录超时，\n请重新登录',
-			success(res) {
-				if (res.confirm) {
-					wx.navigateTo({
-						url: '/pages/bind-phone/bind-phone'
-					});
-				}
-			}
-		});
-	}
-}
-*/
+
 function checkMobilePhone() {
 	return new Promise((resolve, reject) => {
-		// console.log('checkMobilePhone', hasLoginSession());
+		debug('checkMobilePhone', session.get());
 		callApi.post('Auth.getCurrentSession', {}, 400).then(result => {
-			console.log('1', result);
+			debug('1', result);
 			if (result && result.user && result.user.mobilePhone) {
 				resolve(result);
 			} else {
@@ -174,6 +161,11 @@ function checkMobilePhone() {
 }
 
 function login() {
+	if (logining) {
+		logining = false;
+		return Promise.reject('logining');
+	}
+	logining = true;
 	return new Promise((resolve, reject) => {
 		let code;
 		// 1. login with weixin
@@ -220,48 +212,41 @@ function login() {
 			session.set(result.sessionId);
 			return checkMobilePhone();
 		}).then(result => {
+			logining = false;
+			showToast({
+				title: 'common.signinSuccess'
+			});
 			getApp().globalData.userInfo = result.user;
 			resolve(result);
-		}, err => {
-			reject(err);
-		});
+		})
 		// 如果获取用户信息失败，判断授权情况
-		getUserInfo.catch(err => {
-			wx.openSetting({
-				complete: res => {
-					if (res.authSetting['scope.userInfo']) {
+			.catch(err => {
+				reject(err);
+				wx.openSetting({
+					complete: res => {
+						if (res.authSetting['scope.userInfo']) {
 						// 重新登录
-						login().then(result => {
-							resolve(result);
-						}, err => {
-							reject(err);
-						});
-					} else {
-						wx.showModal({
-							title: '授权失败',
-							content: '是否尝试再次授权？',
-							success(res) {
-								if (res.confirm) {
+							getApp().globalData.login = login();
+						} else {
+							showModal({
+								title: 'common.authorizeFail',
+								content: 'common.retry',
+								success(res) {
+									if (res.confirm) {
 									// 同意授权
-									login().then(result => {
-										resolve(result);
-									}, err => {
-										reject(err);
-									});
-								} else {
-									reject(err);
+										getApp().globalData.login = login();
+									}
 								}
-							}
-						});
+							});
+						}
 					}
-				}
+				});
 			});
-		});
 	});
 }
 
 function bindPhoneNumber(e) {
-	let title = '绑定失败';
+	let title = 'common.bindFail';
 	if (e.detail.errMsg.endsWith('ok')) {
 		let param = {
 			encryptedData: e.detail.encryptedData,
@@ -270,11 +255,11 @@ function bindPhoneNumber(e) {
 		callApi.post('WxMiniProgram.getPhoneNumber', param, 400).then(res => {
 			if (res.data.mobilePhone) {
 				getApp().globalData.mobilePhone = res.data.mobilePhone;
-				title = '绑定成功';
+				title = 'common.bindSuccess';
 			}
-			wx.showModal({
+			showModal({
 				title,
-				content: `新手机号是:${res.data.mobilePhone}`,
+				content: `@{common.newMobilephone}:${res.data.mobilePhone}`,
 				showCancel: false,
 				success(res) {
 					if (res.confirm && getCurrentPages().length > 1) {
@@ -283,16 +268,12 @@ function bindPhoneNumber(e) {
 				}
 			});
 		}, err => {
-			wx.showModal({
-				title,
-				content: err.error,
-				showCancel: false
-			});
+			console.error(err);
 		});
 	} else {
-		wx.showModal({
+		showModal({
 			title,
-			content: '用户不允许授权，请输入手机号码',
+			content: 'common.bindDeny',
 			showCancel: false,
 			success(res) {
 				let pages = getCurrentPages();
@@ -321,7 +302,7 @@ function addToShopCarInfo(params) {
 	// 如果 params 有选项
 	if (params.productOptionId) {
 		_update(storeCart, params, 'productOptionId');
-		// 如果 params 没选项，直接找对的 productId
+		// 如果 params 没选项，直接找对应的 productId
 	} else {
 		_update(storeCart, params, 'productId');
 	}

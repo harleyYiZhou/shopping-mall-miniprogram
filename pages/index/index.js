@@ -1,7 +1,7 @@
 // index.js
 // 获取应用实例
 const app = getApp();
-const { callApi, session } = require('../../utils/guzzu-utils.js');
+const { callApi } = require('../../utils/guzzu-utils.js');
 
 Page({
 	data: {
@@ -14,10 +14,6 @@ Page({
 	},
 	btnNavLink: app.btnNavLink(),
 	onLoad() {
-		if (app.globalData.firstCheck) {
-			session.checkSync();
-			app.globalData.firstCheck = false;
-		}
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
@@ -27,17 +23,10 @@ Page({
 			});
 			_processCurrentPage(this);
 		}).catch(err => {
-			console.log(err);
+			console.error(err);
 		});
 		this.setData({
-			selected: app.globalData.selected
-		});
-	},
-	getUserInfo: function (e) {
-		app.globalData.userInfo = e.detail.userInfo;
-		this.setData({
-			userInfo: e.detail.userInfo,
-			hasUserInfo: true
+			selected: '0'
 		});
 	},
 	linkTo: function (e) {
@@ -107,6 +96,6 @@ function _processCurrentPage(that) {
 			currentPage: res
 		});
 	}).catch(err => {
-		console.log(err);
+		console.error(err);
 	});
 }

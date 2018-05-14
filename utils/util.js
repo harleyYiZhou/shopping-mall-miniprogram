@@ -1,4 +1,5 @@
 const _ = require('./lodash');
+const { MODE } = require('../config');
 
 const formatTime = date => {
 	const year = date.getFullYear();
@@ -91,7 +92,7 @@ const showModal = (data = {}) => {
 		fail: function (res) { },
 		complete: function (res) { },
 	}, data);
-	let { globalData: { trans } } = getApp();
+	let trans = require(`../locales/${wx.getStorageSync('locale')}`);
 	let keys = ['title', 'content', 'cancelText', 'confirmText'];
 	keys.forEach(key => {
 		let value = params[key];
@@ -114,7 +115,7 @@ const showToast = (data = {}) => {
 		fail: function (res) { },
 		complete: function (res) { },
 	}, data);
-	let { globalData: { trans } } = getApp();
+	let trans = require(`../locales/${wx.getStorageSync('locale')}`);
 	let value = params['title'];
 	let localizeTemp = value.replace(/@{([^{^}]*)?}/g, i => {
 		return _.get(trans, i.replace(/@{|}/g, '')) || i;
@@ -132,7 +133,7 @@ const showLoading = (data = {}) => {
 		fail: function (res) { },
 		complete: function (res) { },
 	}, data);
-	let { globalData: { trans } } = getApp();
+	let trans = require(`../locales/${wx.getStorageSync('locale')}`);
 	let value = params['title'];
 	let localizeTemp = value.replace(/@{([^{^}]*)?}/g, i => {
 		return _.get(trans, i.replace(/@{|}/g, '')) || i;
@@ -140,7 +141,18 @@ const showLoading = (data = {}) => {
 	params['title'] = _.get(trans, value) || localizeTemp;
 	wx.showLoading(params);
 };
-
+const debug = (...params) => {
+	if (/^production$/i.test(MODE)) {
+		return;
+	}
+	console.log(...params);
+};
+debug.trace = (...params) => {
+	if (/^production$/i.test(MODE)) {
+		return;
+	}
+	console.trace(...params);
+};
 module.exports = {
 	formatTime,
 	priceFilter,
@@ -149,4 +161,5 @@ module.exports = {
 	showToast,
 	showLoading,
 	_,
+	debug,
 };

@@ -76,7 +76,10 @@ const config = {
 		'UserTicket.get',
 		'UserTicket.getByOrder',
 		'UserTicket.find',
+		'WxMiniProgram.getPhoneNumber',
 	],
 };
-
+if (!/^localhost$|^development$|^production$/i.test(config.MODE)) {
+	throw new TypeError(`Invalid mode:${config.MODE}`);
+}
 module.exports = config;

@@ -1,25 +1,27 @@
 // app.js
 const translate = require('./utils/translate.js');
 const { btnNavLink } = require('./utils/util.js');
+const { login } = require('./utils/guzzu-utils.js');
 
 App({
 	onLaunch: function () {
-		let that = this;
 		var value = wx.getStorageSync('locale');
 		if (value) {
-			that.globalData.locale = value;
+			this.globalData.locale = value;
 		} else {
 			wx.setStorage({
 				key: 'locale',
 				data: 'zh'
 			});
 		}
-		that.globalData.trans = require(`./locales/${that.globalData.locale}`);
+		this.globalData.trans = require(`./locales/${this.globalData.locale}`);
+	},
+	onShow() {
+		this.globalData.login = login();
 	},
 	translate,
 	btnNavLink,
 	globalData: {
-		firstCheck: true,
 		userInfo: null,
 		selected: '0',
 		locale: 'zh'

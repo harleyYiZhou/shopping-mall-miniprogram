@@ -10,22 +10,23 @@
 <template name="cart-goods">
 	<view class="list-top">
 		<view class="label">{{trans.shop}}</view>
-		<view class="edit-btn" hidden="{{!saveHidden}}" bindtap="editTap">{{trans.edit}}</view>
-		<view class="edit-btn" hidden="{{saveHidden}}" bindtap="saveTap">{{trans.complete}}</view>
+		<view class="edit-btn" hidden="{{editable}}" bindtap="editTap">{{trans.edit}}</view>
+		<view class="edit-btn" hidden="{{!editable}}" bindtap="saveTap">{{trans.complete}}</view>
 	</view>
 	<view class="goodsList">
-		<block wx:for="{{carts}}" wx:for-item="cart" wx:key="cartIndex" wx:key="_id">
-			<view class="a-gooods" wx:for="{{cart.items}}" wx:key="itemIndex" wx:key="_id">
-				<view class="a-goods-conts {{item.active? 'active':''}}" bindtap="selectTap" bindtouchstart="touchS" bindtouchmove="touchM"
-				   bindtouchend="touchE" data-index="{{itemIndex}}" style="{{item.left}}">
-					<view class="goods-info">
+		<block wx:for="{{carts}}" wx:for-item="cart" wx:for-index="cartIndex" wx:key="_id">
+			<view class="padding-y-10 padding-left-20 text-primary">{{cart.store.name}}</view>
+			<view class="a-gooods" wx:for="{{cart.items}}" wx:for-index="itemIndex" wx:key="_id">
+				<view class="a-goods-conts {{activeItems[cartIndex].items[itemIndex]? 'active':''}}" bindtap="selectTap" bindtouchstart="touchS" bindtouchmove="touchM"
+				   bindtouchend="touchE" data-item-index="{{itemIndex}}" data-cart-index="{{cartIndex}}" style="{{item.left}}">
+					<view class="goods-info {{itemIndex==0 && 'border-top'}}">
 						<view class="img-box">
 							<image src="{{item.product.image.url }}" class="img" />
 						</view>
 						<view class="text-box">
 							<view class="goods-title">{{item.name}}</view>
 							<view class="margin-bottom-5 text-muted text-smaller" wx:if="{{item.productOption}}">{{item.productOption.name}}</view>
-							<view class="goods-price">¥ {{item.price}}</view>
+							<view class="goods-price">¥{{item.price}}</view>
 							<!--选择数量  -->
 							<view class="buy-num">
 								<view class="jian-btn {{item.number==1? 'disabled' : ''}}" catchtap="jianBtnTap" data-index="{{itemIndex}}">-</view>
@@ -39,7 +40,22 @@
 					</view>
 				</view>
 			</view>
+			<view class="jiesuan-box">
+				<view class="left-price">
+					<view class="all-selected  {{activeItems[cartIndex].active?'active':''}}" data-cart-index="{{cartIndex}}" bindtap="bindAllSelect">
+						{{trans.allSelect}}
+					</view>
+					<view class="total" hidden="{{noSelect}}">{{trans.totalCost}}：¥{{cart.totalCost}}</view>
+				</view>
+				<view class="to-pay-btn {{noSelect?'no-select':''}}" hidden="{{editable}}" bindtap="toPayOrder">
+					{{trans.goToPay}}
+				</view>
+				<view class="to-pay-btn {{noSelect?'no-select':''}}" hidden="{{!editable}}" bindtap="deleteSelected">
+					{{trans.removeTitle}}
+				</view>
+			</view>
 		</block>
+
 		<view class="a-gooods" wx:for="{{list}}" wx:key="{{index}}">
 			<view class="a-goods-conts {{item.active? 'active':''}}" bindtap="selectTap" bindtouchstart="touchS" bindtouchmove="touchM"
 			   bindtouchend="touchE" data-index="{{index}}" style="{{item.left}}">
@@ -50,7 +66,7 @@
 					<view class="text-box">
 						<view class="goods-title">{{item.name}}</view>
 						<view class="goods-label">{{item.label}}</view>
-						<view class="goods-price">¥ {{item.price}}</view>
+						<view class="goods-price">¥{{item.price}}</view>
 						<!-- 选择数量 -->
 						<view class="buy-num">
 							<view class="jian-btn {{item.number==1? 'disabled' : ''}}" catchtap="jianBtnTap" data-index="{{index}}">
@@ -68,13 +84,16 @@
 				</view>
 			</view>
 		</view>
+
 	</view>
+	<!-- 
 	<view class="jiesuan-box">
 		<view class="left-price">
 			<view class="all-selected  {{allSelect?'active':''}}" bindtap="bindAllSelect">{{trans.allSelect}}</view>
-			<view class="total" hidden="{{noSelect}}">{{trans.totalCost}}：¥ {{totalPrice}}</view>
+			<view class="total" hidden="{{noSelect}}">{{trans.totalCost}}：¥{{totalPrice}}</view>
 		</view>
-		<view class="to-pay-btn {{noSelect?'no-select':''}}" hidden="{{!saveHidden}}" bindtap="toPayOrder">{{trans.goToPay}}</view>
-		<view class="to-pay-btn {{noSelect?'no-select':''}}" hidden="{{saveHidden}}" bindtap="deleteSelected">{{trans.removeTitle}}</view>
+		<view class="to-pay-btn {{noSelect?'no-select':''}}" hidden="{{editable}}" bindtap="toPayOrder">{{trans.goToPay}}</view>
+		<view class="to-pay-btn {{noSelect?'no-select':''}}" hidden="{{!editable}}" bindtap="deleteSelected">{{trans.removeTitle}}</view>
 	</view>
+	 -->
 </template>
