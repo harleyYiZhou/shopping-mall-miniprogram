@@ -1,0 +1,17 @@
+<view class="page-container">
+  <view class="title margin-left-10">Time to deliver</view>
+  <view class="margin-left-10 margin-bottom-5">Select Delivery Time</view>
+  <view class="layout-row layout-wrap layout-justify-center">
+    <picker mode="selector" class="selectDate margin-left-10 margin-right-10 " bindchange='bindPickerChange' value="{{index}}" range="{{avalableDate}}">
+    <view class="picker width-100">{{avalableDate[index]}}</view>
+    </picker>
+  </view>
+  <view class="layout-row layout-wrap layout-justify-between margin-top-5 ">
+    <view class="width-45 margin-top-5 margin-buttom-5 margin-left-10 margin-right-5" wx:for="{{hours}}">
+      <button wx:if="{{item.state}}" data-item="{{item}}" bindtap="selectDeliveyTime">{{item.beginTime}} - {{item.endTime}}</button>
+      <button wx:if="{{!item.state}}" disabled class="disable">{{item.beginTime}} - {{item.endTime}}</button>
+    </view> 
+    
+    <!-- <button class="width-45 margin-top-5 margin-buttom-5" wx:for="{{hours}}" >{{item.beginTime}} - {{item.endTime}}</button> -->
+  </view>
+</view>

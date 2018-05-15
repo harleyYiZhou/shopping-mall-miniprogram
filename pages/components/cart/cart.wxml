@@ -29,13 +29,13 @@
 							<view class="goods-price">¥{{item.price}}</view>
 							<!--选择数量  -->
 							<view class="buy-num">
-								<view class="jian-btn {{item.number==1? 'disabled' : ''}}" catchtap="jianBtnTap" data-index="{{itemIndex}}">-</view>
-								<input type="number" value="{{item.quantity}}" disabled/>
-								<view class="jia-btn {{item.number==10? 'disabled' : ''}}" catchtap="jiaBtnTap" data-index="{{itemIndex}}">+</view>
+								<view class="jian-btn {{item.number==1? 'disabled' : ''}}" catchtap="jianBtnTap" data-item-index="{{itemIndex}}" data-cart-index="{{cartIndex}}">-</view>
+								<input type="number" value="{{item.quantity}}" bindblur='inputNum' data-item-index="{{itemIndex}}" data-cart-index="{{cartIndex}}"/>
+								<view class="jia-btn {{item.number==10? 'disabled' : ''}}" catchtap="jiaBtnTap" data-item-index="{{itemIndex}}" data-cart-index="{{cartIndex}}">+</view>
 							</view>
 						</view>
 					</view>
-					<view class="delete-btn" data-index="{{itemIndex}}" catchtap="delItem">
+					<view class="delete-btn" data-item-index="{{itemIndex}}" data-cart-index="{{cartIndex}}" catchtap="delItem">
 						{{trans.removeTitle}}
 					</view>
 				</view>
@@ -45,9 +45,9 @@
 					<view class="all-selected  {{activeItems[cartIndex].active?'active':''}}" data-cart-index="{{cartIndex}}" bindtap="bindAllSelect">
 						{{trans.allSelect}}
 					</view>
-					<view class="total" hidden="{{noSelect}}">{{trans.totalCost}}：¥{{cart.totalCost}}</view>
+					<view class="total" hidden="{{noSelect}}">{{trans.totalCost}}：¥{{activeItems[cartIndex].totalCost}}</view>
 				</view>
-				<view class="to-pay-btn {{noSelect?'no-select':''}}" hidden="{{editable}}" bindtap="toPayOrder">
+				<view class="to-pay-btn {{noSelect?'no-select':''}}" hidden="{{editable}}" bindtap="toPayOrder" data-cart-index="{{cartIndex}}">
 					{{trans.goToPay}}
 				</view>
 				<view class="to-pay-btn {{noSelect?'no-select':''}}" hidden="{{!editable}}" bindtap="deleteSelected">
@@ -55,7 +55,7 @@
 				</view>
 			</view>
 		</block>
-
+<!-- 
 		<view class="a-gooods" wx:for="{{list}}" wx:key="{{index}}">
 			<view class="a-goods-conts {{item.active? 'active':''}}" bindtap="selectTap" bindtouchstart="touchS" bindtouchmove="touchM"
 			   bindtouchend="touchE" data-index="{{index}}" style="{{item.left}}">
@@ -67,7 +67,6 @@
 						<view class="goods-title">{{item.name}}</view>
 						<view class="goods-label">{{item.label}}</view>
 						<view class="goods-price">¥{{item.price}}</view>
-						<!-- 选择数量 -->
 						<view class="buy-num">
 							<view class="jian-btn {{item.number==1? 'disabled' : ''}}" catchtap="jianBtnTap" data-index="{{index}}">
 								-
@@ -84,7 +83,7 @@
 				</view>
 			</view>
 		</view>
-
+ -->
 	</view>
 	<!-- 
 	<view class="jiesuan-box">

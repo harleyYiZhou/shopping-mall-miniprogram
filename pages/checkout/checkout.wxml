@@ -1,0 +1,200 @@
+<!-- checkout.wxml -->
+<view class="page-container color--grey-100">
+	<form bindsubmit="submit">
+		<view class="color--grey-0 padding-x-20 padding-y-10 margin-y-10 flex ">
+			<view bindtap="selectShipping" data-shipping-type="regular" class="layout-row layout-align-center width-100">
+				<image class="icon" src="{{regularPicSrc}}" mode="aspectFit"></image>
+				<text class="padding-x-5">{{trans.regularShipping}}</text>
+			</view>
+			<view wx:if="{{isLocalDelivery}}" bindtap="selectShipping" data-shipping-type="areaShipping" class="layout-row layout-align-center width-100">
+				<image class="icon" src="{{cityPicSrc}}" mode="aspectFit"></image>
+				<text class="padding-x-5">{{trans.cityShipping}}</text>
+			</view>
+			<view wx:if="{{isCustomerPickup}}" bindtap="selectShipping" data-shipping-type="pickup" class="layout-row layout-align-center width-100">
+				<image class="icon" src="{{pickupPicSrc}}" mode="aspectFit"></image>
+				<text class="padding-x-5">{{trans.customerPickup}}</text>
+			</view>
+		</view>
+		<view wx:if="{{isShowAddress}}" class="color--grey-0 padding-x-20 padding-y-10 margin-y-10">
+			<view class="layout-row layout-wrap" wx:if="{{ shippingAddress }}">
+				<text class="text-left width-100 padding-y-5">{{trans.fullAddress}}</text>
+				<view class="layout-row width-100 layout-wrap">
+					<view class="width-100 layout-row layout-justify-between">
+						<text>{{ shippingAddress.name }}</text>
+						<text>{{ shippingAddress.mobilePhone }}</text>
+					</view>
+					<view class="padding-bottom-10">
+						<text class="">{{ shippingAddress.province }} {{ shippingAddress.city }}</text>
+						<text class="" wx:if="{{ shippingAddress.district }}"> {{ shippingAddress.district }}</text>
+						<text> {{shippingAddress.street}}</text>
+						<text class=""> {{ shippingAddress.address }}</text>
+						<text class="" wx:if="{{ item.postalCode }}">（{{ shippingAddress.postalCode }}）</text>
+					</view>
+				</view>
+				<view class="width-100 text-center">
+					<button bindtap="selectAddress" class="select-address-btn">{{trans.selectAddress}}</button>
+				</view>
+			</view>
+			<view class="text-center" wx:else>
+				<text class="margin-y-10 block color-text--grey-300">{{trans.noShippingAddress}}</text>
+				<button bindtap="addAddress" class="select-address-btn">{{trans.addShippingAddress}}</button>
+			</view>
+		</view>
+		<!--pickup begin-->
+		<view wx:if="{{shippingType=='pickup'}}" class="color--grey-0 padding-x-20 padding-y-10 margin-y-10">
+			<view class="layout-row layout-wrap">
+				<text class="text-left width-100 padding-y-5">{{trans.pickupDetail}}</text>
+				<view class="layout-row width-100 layout-wrap">
+					<label for="name" class="width-100 margin-bottom-10">{{trans.pickupName}}</label>
+					<input type="text" name="name" id="name" class="width-100 input-border margin-bottom-10" placeholder="{{shippingAddress.name}}"></input>
+					<label for="mobilePhone" class="width-100 margin-bottom-10">{{trans.mobilePhone}}</label>
+					<input type="text" name="mobilePhone" id="mobilePhone" class="width-100 input-border margin-bottom-10" placeholder="{{shippingAddress.mobilePhone}}"></input>
+					<text class="width-100 margin-bottom-10">{{trans.pickupLocation}}</text>
+					<view class="width-100 pickupAdress layout-row layout-wrap margin-bottom-10">
+						<text class="width-100">{{pickupPlace.name}}</text>
+						<text class="width-100">{{pickupPlace.province}} {{pickupPlace.city}} {{pickupPlace.district}}</text>
+						<text class="width-100">{{pickupPlace.address}}</text>
+						<text class="width-100">{{pickupPlace.mobilePhone}}</text>
+						<view class="width-100" wx:for="{{serviceHours}}">
+							<text wx:for="{{serviceHours[index].weekdays}}">{{weekdays[item-1]}} </text>
+							<text>{{item.beginTime.hour}}:{{item.beginTime.minute}}0 - {{item.endTime.hour}}:{{item.endTime.minute}}0</text>
+						</view>
+						<view class="width-100">{{pickupPlace.description}}</view>
+						<view wx:if="{{pickupPlace.images.length!=0}}">
+							<button bindtap="showShopPic" class="">{{trans.showShopPic}}</button>
+						</view>
+					</view>
+				</view>
+				<view class="width-100 text-center">
+					<button bindtap="selectAddress" class="select-address-btn">{{trans.selectShop}}</button>
+				</view>
+			</view>
+		</view>
+
+		<!--cityShipping begin-->
+		<view class="color--grey-0 margin-y-10 padding-y-10 padding-x-20" wx:if="{{ shippingType=='areaShipping' }}">
+			<view class="layout-row layout-wrap">
+				<text class="text-left width-100 padding-y-5">{{trans.areaDetail}}</text>
+				<view class="width-100 ">
+					<text class="text-center">{{areaShipping.description}}</text>
+					<view class="layout-row layout-justify-center">
+						<image src="{{areaShipping.image.url}}" class="layout-justify-center "></image>
+					</view>
+					<view class="layout-row   layout-wrap">
+						<text class="width-40">{{trans.minPurchase}}</text>
+						<text class="width-60">￥{{areaShipping.minPurchase}}</text>
+					</view>
+					<view class="layout-row   layout-wrap">
+						<text class="width-40">{{trans.deliveryFee}}</text>
+						<text class="width-60">￥{{areaShipping.shippingCost}}</text>
+					</view>
+					<view wx:if="{{areaShipping.enabledAppointment}}" class="layout-row   layout-wrap">
+						<text class="width-40">{{trans.maxDaysInAdvance}}</text>
+						<text class="width-60">{{areaShipping.maxDaysInAdvance}}{{trans.days}}</text>
+					</view>
+					<view wx:if="{{areaShipping.enabledAppointment}}" class="layout-row   layout-wrap">
+						<text class="width-40">{{trans.serviceHours}}</text>
+						<view class="width-60">
+							<view wx:for="{{serviceHours}}">
+								<text wx:for="{{serviceHours[index].weekdays}}">{{trans.weekdays[item]}} </text>
+								<text>{{item.beginTime.hour}}:{{item.beginTime.minute}}0 - {{item.endTime.hour}}:{{item.endTime.minute}}0</text>
+							</view>
+						</view>
+					</view>
+					<view class="layout-row   layout-wrap">
+						<text class="width-40">{{trans.deliveryTime}}</text>
+						<text class="width-60">{{selectTime?selectTime:trans.timeValue}}</text>
+					</view>
+					<view class="width-100 text-center">
+						<button bindtap="selectDeliverTime" class="select-address-btn">{{trans.selectDeliverTime}}</button>
+					</view>
+				</view>
+			</view>
+		</view>
+
+		<!--items begin-->
+		<view class="color--grey-0 margin-y-10 padding-y-10 padding-x-20">
+			<block wx:if="{{ cart.items.length > 0 }}">
+				<!--<view class="text-center padding-bottom-10">
+					<text class="text-primary text-larger">应付金额 ￥{{ (cart.totalCost + cart.shippingCost)  }}</text>
+				</view>
+				<view class="divider-line"></view>-->
+				<view class="layout-row padding-y-10" wx:for="{{ cart.items }}" wx:key="_id">
+					<view class="width-25">
+						<image class="product-image" src="{{ item.product.image.url }}" mode="aspectFit"></image>
+					</view>
+					<view class="flex">
+						<view class="layout-row">
+							<view class="flex">
+								<text class="product-name">{{ item.name }}</text>
+								<text class="product-name" wx:if="{{ item.option }}">{{trans.option}}：{{ item.option.name }}</text>
+							</view>
+							<text class="width-30 text-right text-primary">￥{{ item.price }} × {{ item.quantity }}</text>
+						</view>
+					</view>
+				</view>
+				<view class="divider-line margin-y-10"></view>
+				<!--Discount begin-->
+				<view class="layout-row margin-bottom-5" wx:if="{{discountItems[discountItemsIndex].discountId}}">
+					<view class="width-25">
+						<image class="product-image" src="/public/images/icon/icon-payment.png" mode="aspectFit"></image>
+					</view>
+					<view class="margin-left-10 flex">
+						<view>{{trans.discount}}: {{discountItems[discountItemsIndex].name}}</view>
+						<view class="text-primary discount-info">
+							<text>{{trans.discountMinPurchase}}:¥{{discountItems[discountItemsIndex].condition.minPurchase }}:</text>
+							<text wx:if="{{discountItems[discountItemsIndex].condition.doMoneyOff}}">[{{trans.doMoneyOff}}¥{{discountItems[discountItemsIndex].condition.price }}]</text>
+							<text wx:if="{{discountItems[discountItemsIndex].condition.doFreeShipping}}">[{{trans.doFreeShipping}}]</text>
+							<text wx:if="{{discountItems[discountItemsIndex].condition.doPercentageOff}}">[{{trans.doPercentageOff}}{{discountItems[discountItemsIndex].condition.percentage }}%]</text>
+						</view>
+						<view>
+							<text>{{trans.discountProducts}}:</text>
+							<view wx:for="{{discountItems[discountItemsIndex].itemIndexes}}" wx:for-item="itemIndexe" wx:wx:key="_id" wx:key="_id">
+								[{{cart.items[itemIndexe].name}}]
+							</view>
+						</view>
+					</view>
+				</view>
+				<!--Discount end-->
+				<view class="text-right">
+					<view>
+						<text>{{trans.subtotal}}：</text>
+						<text class="text-primary">￥{{ order.subtotal  }}</text>
+					</view>
+					<view hidden="{{!order.discount}}">
+						<text>{{trans.discount}}：</text>
+						<text class="text-primary">-￥{{ order.discount  }}</text>
+					</view>
+					<view>
+						<text>{{trans.shippingCost}}：</text>
+						<text class="text-primary">￥{{ order.shippingCost  }}</text>
+					</view>
+					<view>
+						<text>{{trans.totalCost}}：</text>
+						<text class="text-primary">￥{{ order.totalCost  }}</text>
+					</view>
+				</view>
+				<view class="row row-padded">
+					<view class="col-3 guzzu-input-label">
+						{{trans.optionalDiscount}}
+					</view>
+					<view class="col-9">
+						<picker class="guzzu-input-control" name="discountItemsIndex" bindchange="selectDiscountItem" range="{{discountItems}}" value="{{discountItemsIndex}}"
+						 range-key="name">
+							<view>{{discountItems[discountItemsIndex].name}}</view>
+						</picker>
+					</view>
+				</view>
+			</block>
+		</view>
+		<view class="color--grey-0 padding-x-20 padding-y-5">
+			<view class="form-item layout-row">
+				<label class="width-25" for="note"> {{trans.note}}</label>
+				<input class="flex" id="note" name="note" type="text" placeholder="{{trans.note}}"></input>
+			</view>
+		</view>
+		<view class="margin-x-10 padding-y-20">
+			<button class="block-btn" form-type="submit">{{trans.submit}}</button>
+		</view>
+	</form>
+</view>

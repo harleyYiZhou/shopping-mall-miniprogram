@@ -106,6 +106,18 @@
 					"name": "user-center",
 					"pathName": "pages/user-center/user-center",
 					"query": ""
+				},
+				{
+					"id": 12,
+					"name": "checkout",
+					"pathName": "pages/checkout/checkout",
+					"query": "storeId=57c4ed03cc4f36bc2c12ab29"
+				},
+				{
+					"id": -1,
+					"name": "order",
+					"pathName": "pages/order/order",
+					"query": "orderId=5afab27135a9f518bd434149"
 				}
 			]
 		}

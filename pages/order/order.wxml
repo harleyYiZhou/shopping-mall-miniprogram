@@ -1,0 +1,190 @@
+<!-- order.wxml -->
+<view class="page-container color--grey-100">
+    <view class="color--grey-0 padding-x-20 padding-y-10 margin-y-10">
+        <view class="layout-row">
+            <text class="flex">{{trans.refId}}：{{ order.refId }}</text>
+            <text class="flex text-right text-muted">{{ order.createdAt }}</text>
+        </view>
+        <!--pending 待付款-->
+        <block wx:if="{{ order.status === 'open' && order.paymentStatus === 'pending' }}">
+            <view class="weui-flex layout-justify-center margin-top-30 margin-bottom-5">
+                <view class="pay-btn weui-flex layout-align-center layout-justify-center" bindtap="tapWxpay">
+                    <image class='wechat-pay-icon' src='/public/images/icon/wechat-pay-light.svg' mode='aspectFit'> </image>
+                </view>
+            </view>
+            <view class="text-center">
+                {{trans.wxpay}}
+            </view>
+            <view class="text-center">
+                <text class="text-muted">{{trans.pendingHint1+timeLeft+trans.pendingHint2}}</text>
+            </view>
+        </block>
+        <!--unshipped  待发货-->
+        <block wx:if="{{ order.paymentStatus === 'paid' && order.shippingStatus === 'unshipped' }}">
+            <view class="weui-flex layout-justify-center margin-top-30 margin-bottom-5">
+                <view class="icon-large weui-flex layout-align-center layout-justify-center">
+                    <image wx:if="{{refundStatus=='pending' || refundStatus=='rejected' }}" class='icon-large' src='/public/images/icon/person-dark.svg' mode='aspectFit'> </image>
+                    <image wx:else class='icon-large' src='/public/images/icon/travel-wallet-dark.svg' mode='aspectFit'> </image>
+                </view>
+            </view>
+            <view class="text-center margin-y-10">
+                <text hidden="{{refundStatus}}" class="">{{trans.paidHint}}</text>
+                <text wx:if="{{refundStatus=='pending'}}">
+					{{trans.requestRefundHint}}\n{{trans.autoRefundHint}}\n{{trans.requestRefundTime}}：{{timestamp}}
+				</text>
+                <text wx:if="{{refundStatus=='rejected'}}">{{trans.rejectRefundRequestHint}},{{trans.rejectNote}}:{{rejectReason}}。</text>
+            </view>
+            <view class="text-center margin-bottom-20 layout-row layout-justify-center">
+                <button hidden="{{refundStatus=='pending'}}"class='bg-skyblue margin-x-5 padding-x-40 padding-y-5' bindtap='contactStore'>{{trans.contactStore}}</button>
+                <button hidden="{{refundStatus}}" class='bg-grey margin-x-5 padding-x-40 padding-y-5' bindtap='showRefundDialog'>{{trans.requestRefund}}</button>
+            </view>
+        </block>
+        <!--退款dialog  -->
+        <view class="modal-mask" bindtap="hideRefundDialog" catchtouchmove="preventTouchMove" wx:if="{{refundDialog}}"></view>
+        <view class="modal-dialog" wx:if="{{refundDialog}}">
+            <form bindsubmit="refundConfirm">
+                <view class="modal-title">{{trans.refundAmount}}:￥{{ order.totalCost / 100 || 0 }}</view>
+                <view class="modal-content">
+                    <view class="modal-input color--grey-200">
+                        <textarea name='refundReason' class="input" placeholder="{{trans.requestRefundReason}}"></textarea>
+                    </view>
+                </view>
+                <view class="modal-footer">
+                    <button class="margin-right-10 bg-skyblue" form-type="submit">{{trans.confirm}}</button>
+                    <view class="bg-grey" bindtap="hideRefundDialog">{{trans.cancel}}</view>
+                </view>
+            </form>
+        </view>
+        <!--shipped  待收货-->
+        <block wx:if="{{ order.shippingStatus === 'shipped' }}">
+            <view class="weui-flex layout-justify-center margin-top-30 margin-bottom-5">
+                <view class="icon-large weui-flex layout-align-center layout-justify-center">
+                    <image class='icon-large' src='/public/images/icon/truck-dark.svg' mode='aspectFit'> </image>
+                </view>
+            </view>
+            <view class="text-center margin-y-5">
+                <text class="block">{{trans.shipped}}</text>
+                <text wx:if="{{ order.shippingProvider }}" class="block text-muted">{{trans.shippingProvider}}：{{ order.shippingProvider.name }}</text>
+                <text wx:if="{{ order.trackingCode }}" class="block text-muted">{{trans.trackingCode}}：{{ order.trackingCode }}</text>
+            </view>
+            <view class="text-center margin-y-10 layout-row layout-justify-center">
+                <button class='bg-skyblue margin-x-5 padding-x-40 padding-y-5' bindtap='showExpress'>{{isShowExpress? trans.closeTrackShipping : trans.trackShipping }}</button>
+                <button class='bg-grey margin-x-5 padding-x-40 padding-y-5' bindtap='confirmReceipt'>{{trans.confirmReceipt}}</button>
+            </view>
+            <view wx:if="{{ order.shippedAt }}" class="text-center margin-y-10">
+                <view hidden="{{isShowExpress}}">
+                    <text class="block text-muted">{{autoConfirmTime}}</text>
+                    <text class="block text-muted">{{trans.shippedHint}}</text>
+                </view>
+            </view>
+            <view wx:if='{{isShowExpress}}' class="margin-y-10 margin-left-10">
+                <view wx:for='{{expressDetails}}' class="margin-y-5">
+                    <view wx:if='{{item.time}}'>{{item.time}}</view>
+                    <view>{{item.context}}</view>
+                </view>
+            </view>
+        </block>
+        <!--received 已完成 -->
+        <block wx:if="{{ order.shippingStatus === 'received' }}">
+            <view class="weui-flex layout-justify-center margin-top-30 margin-bottom-5">
+                <view class="icon-large weui-flex layout-align-center layout-justify-center">
+                    <image class='icon-large' src='/public/images/icon/check-dark.svg' mode='aspectFit'> </image>
+                </view>
+            </view>
+            <view class="text-center margin-y-5">
+                <text class="">{{trans.received}}</text>
+            </view>
+            <view class="text-center margin-y-10 layout-row layout-justify-center">
+                <button class='bg-skyblue margin-x-5 padding-x-40 padding-y-5'>{{trans.reviewOrder}}</button>
+				<view wx:if='{{ order.shippingProvider && order.trackingCode}}'>
+					<button class='bg-grey margin-x-5 padding-x-40 padding-y-5' bindtap='showExpress'>{{isShowExpress? trans.closeTrackShipping : trans.trackShipping }}</button>
+				</view>
+            </view>
+			<view wx:if='{{isShowExpress}}' class="margin-y-10 margin-left-10">
+                <view wx:for='{{expressDetails}}' class="margin-y-5">
+                    <view wx:if='{{item.time}}'>{{item.time}}</view>
+                    <view>{{item.context}}</view>
+                </view>
+            </view>
+        </block>
+        <!--expired  已过期-->
+        <block wx:if="{{ order.paymentStatus === 'expired' }}">
+            <view class="weui-flex layout-justify-center margin-top-30 margin-bottom-5">
+                <view class="icon-large weui-flex layout-align-center layout-justify-center">
+                    <image class='icon-large' src='/public/images/icon/close-dark.svg' mode='aspectFit'> </image>
+                </view>
+            </view>
+            <view class="text-center margin-y-5">
+                <text class="block">{{trans.expired}}</text>
+            </view>
+            <view class="text-center margin-y-10 layout-row layout-justify-center">
+                <button class='bg-skyblue margin-x-5 padding-x-40 padding-y-5' bindtap='tabStore'>{{trans.backToStore}}</button>
+            </view>
+        </block>
+    </view>
+	<!--
+    <view class="color--grey-0 margin-bottom-10 padding-x-20 padding-y-10" wx:if="{{shareCampaignInstance}}">
+        <view class="share-text">你获得了一个优惠链接，快分享给好友吧</view>
+        <view class="share-text">分享人数达到一定数目，你也能获得优惠哦</view>
+        <button class="block-btn share-btn" open-type="share">点击分享{{trans.}}</button>
+    </view>
+  -->
+    <view class="color--grey-0 padding-x-20 padding-y-10">
+        <view class="layout-row padding-top-10" wx:for="{{ order.items }}" wx:key="_id">
+            <view>
+                <image class="product-image" src="{{ item.product.image.url }}" mode="aspectFit"></image>
+            </view>
+            <view class="flex margin-left-10">
+                <view class="layout-row">
+                    <view class="flex">
+                        <text class="product-name">{{ item.name }}</text>
+                        <text class="product-name" wx:if="{{ item.productOption }}">{{trans.option}}：{{ item.productOption.name }}</text>
+                    </view>
+                    <text class="width-30 text-right text-muted">￥{{ item.price /100 }} × {{ item.quantity }}</text>
+                </view>
+            </view>
+        </view>
+        <view class="divider-line"></view>
+        <view class="text-right margin-top-10">
+            <view wx:if="{{ order.taxCost }}">
+                <text>{{trans.taxCost}}：</text>
+                <text class="text-primary">￥{{ order.taxCost / 100 }}</text>
+            </view>
+            <view>
+                <text class="text-muted">{{trans.shippingCost}}：</text>
+                <text class="text-muted">￥{{ order.shippingCost / 100 || 0 }}</text>
+            </view>
+            <view>
+                <text>{{trans.totalCost}}：</text>
+                <text class="text-primary">￥{{ order.totalCost / 100 || 0 }}</text>
+            </view>
+        </view>
+    </view>
+    <!--地址  -->
+    <view class="color--grey-0 margin-y-10 padding-x-20 padding-y-10">
+        <view class="layout-row">
+            <view>
+                <image class="address-icon" src="/public/images/icon/location-dark.svg" mode="aspectFit"></image>
+            </view>
+            <view class="margin-left-10 flex">
+                <view>
+                    <text>{{ order.shippingAddress.name }}</text>
+                    <text> {{ order.shippingAddress.mobilePhone }}</text>
+                </view>
+                <text class="block">{{ order.fullAddress }}</text>
+                <text class="block" wx:if="{{ order.note }}">{{trans.note}}：{{ order.note }}</text>
+            </view>
+        </view>
+    </view>
+
+    <view class="text-center padding-top-20 padding-bottom-10">
+        <button type='button' class='back-btn padding-x-10' bindtap='backToOrders'>{{trans.returnToList}}</button>
+    </view>
+    <view class="padding-x-20 margin-y-10">
+        <text class="block text-muted">{{trans.createdAt}}：{{ order.createdAt }}</text>
+        <text wx:if="{{ order.paidAt }}" class="block text-muted">{{trans.paidAt}}：{{ order.paidAt }}</text>
+        <text wx:if="{{ order.statusPluck.paid.data.trade_no }}" class="block text-muted">{{trans.tradeNo}}：{{ order.statusPluck.paid.data.trade_no }}</text>
+        <text wx:if="{{ order.shippedAt }}" class="block text-muted">{{trans.shippedAt}}：{{ order.shippedAt }}</text>
+        <text wx:if="{{ order.receivedAt }}" class="block text-muted">{{trans.receivedAt}}：{{ order.receivedAt }}</text>
+    </view>
+</view>

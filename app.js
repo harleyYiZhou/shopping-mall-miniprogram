@@ -22,8 +22,17 @@ App({
 	translate,
 	btnNavLink,
 	globalData: {
+		shippingAddress: null,
 		userInfo: null,
 		selected: '0',
-		locale: 'zh'
+		locale: 'zh',
+		selectShopIndex: 0,
+		pickupPlace: null,
+		servicesHours: null,
+		selectTime: null,
+		appointmentTime: {
+			beginTime: new Date(),
+			endTime: new Date()
+		},
 	}
 });

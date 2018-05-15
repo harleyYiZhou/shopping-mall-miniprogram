@@ -1,0 +1,70 @@
+
+/* checkout.wxss */
+
+.form-item {
+	height: 100rpx;
+	line-height: 100rpx;
+}
+
+.form-item input {
+	height: 100rpx;
+	line-height: 100rpx;
+}
+
+.product-image {
+	width: 160rpx;
+	height: 160rpx;
+}
+
+.product-name {
+	display: block;
+	line-height: 40rpx;
+	height: 80rpx;
+	overflow: hidden;
+}
+
+.select-address-btn {
+	display: inline-block;
+	color: #e0e0e0;
+	height: 70rpx;
+	line-height: 70rpx;
+	border: 1rpx solid #e0e0e0;
+	background-color: #424242;
+	font-size: 95%;
+}
+
+.btn-container {
+	height: 60rpx;
+	line-height: 60rpx;
+	overflow: hidden;
+}
+
+.guzzu-input-control {
+  padding: 0;
+  padding-left: 8rpx;
+  width: 100%;
+  font-size: 1rem;
+  border-top: 0 none;
+  border-left: 0 none;
+  border-right: 0 none;
+  border: 1px solid #308ae0;
+  border-radius: 3px;
+  height: 100%;
+  box-sizing:border-box;
+}
+.icon {
+	width: 60rpx;
+	height: 60rpx;
+}
+.map{
+  width: 200px;
+   height: 120px; 
+}
+.input-border{
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+}
+.pickupAdress{
+  padding: 5px 2px 5px 5px;
+  background-color:rgba(200,200,200,0.1);
+}

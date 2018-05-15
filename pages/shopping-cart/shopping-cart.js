@@ -8,7 +8,7 @@ Page({
 		shopCarInfo: null,
 		goodsList: {
 			editable: false,
-			totalPrice: 0,
+			totalCost: 0,
 			allSelect: true,
 			noSelect: false,
 			list: [],
@@ -51,7 +51,7 @@ Page({
 			console.log(1);
 			if (res) {
 				console.log(2);
-				return getStoreCarts(this);
+				return getStoreCarts();
 			}
 			return res;
 		}).then(res => {
@@ -60,6 +60,7 @@ Page({
 				let activeItems = res.map(() => {
 					return {
 						active: false,
+						totalCost: '0.00',
 						items: []
 					};
 				});
@@ -85,7 +86,7 @@ Page({
 			selected: '1',
 			shopCarInfo: shopCarInfoMem,
 		});
-		// this.setGoodsList(this.getSaveHide(), this.totalPrice(), this.allSelect(), this.noSelect(), shopList);
+		// this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), shopList);
 	},
 	toIndexPage: function () {
 		wx.redirectTo({
@@ -102,7 +103,6 @@ Page({
 	},
 	touchM: function (e) {
 		var index = e.currentTarget.dataset.index;
-
 		if (e.touches.length == 1) {
 			var moveX = e.touches[0].clientX;
 			var disX = this.data.startX - moveX;
@@ -119,7 +119,7 @@ Page({
 			var list = this.data.goodsList.list;
 			if (index != '' && index != null) {
 				list[parseInt(index)].left = left;
-				this.setGoodsList(this.getSaveHide(), this.totalPrice(), this.allSelect(), this.noSelect(), list);
+				this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
 			}
 		}
 	},
@@ -135,7 +135,7 @@ Page({
 			var list = this.data.goodsList.list;
 			if (index !== '' && index != null) {
 				list[parseInt(index)].left = left;
-				this.setGoodsList(this.getSaveHide(), this.totalPrice(), this.allSelect(), this.noSelect(), list);
+				this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
 			}
 		}
 	},
@@ -143,46 +143,47 @@ Page({
 		var index = e.currentTarget.dataset.index;
 		var list = this.data.goodsList.list;
 		list.splice(index, 1);
-		this.setGoodsList(this.getSaveHide(), this.totalPrice(), this.allSelect(), this.noSelect(), list);
+		this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
 	},
+	/*
+	updateItem: function (event) {
+		var that = this;
+		var cartIndex = parseInt(event.currentTarget.dataset.cartIndex);
+		var itemIndex = parseInt(event.currentTarget.dataset.itemIndex);
+		var quantity = parseInt(event.currentTarget.dataset.quantity);
+		wx.showLoading({
+			title: that.data.trans.loading
+		});
+		cartUtils.updateItem(that.data.carts[cartIndex], itemIndex, quantity).then(function (result) {
+			// update view
+			if (result) {
+				getStoreCarts().then(function (results) {
+					that.setData({
+						carts: results
+					});
+				}, function (err) {
+					console.log(err);
+				});
+			}
+		}, function (err) {
+			console.log(err);
+		});
+	},
+
+	*/
+
+	// 单个product 选择状态，关联全选
 	selectTap: function (e) {
 		let itemIndex = e.currentTarget.dataset.itemIndex;
 		let cartIndex = e.currentTarget.dataset.cartIndex;
 		let activeItems = this.data.activeItems;
 		debug(itemIndex, cartIndex, activeItems);
-
 		activeItems[cartIndex].items[itemIndex] = !activeItems[cartIndex].items[itemIndex];
-		this.setData({
-			activeItems
-		});
-		// this.setGoodsList(this.getSaveHide(), this.totalPrice(), this.allSelect(), this.noSelect(), carts);
+		this.setGoodsList(activeItems, cartIndex);
+		// this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), carts);
 	},
-	totalPrice: function () {
-		var list = this.data.goodsList.list;
-		var total = 0;
-		for (var i = 0; i < list.length; i++) {
-			var curItem = list[i];
-			if (curItem.active) {
-				total += parseFloat(curItem.price) * curItem.number;
-			}
-		}
-		total = parseFloat(total.toFixed(2));// js浮点计算bug，取两位小数精度
-		return total;
-	},
-	allSelect: function () {
-		var list = this.data.goodsList.list;
-		var allSelect = false;
-		for (var i = 0; i < list.length; i++) {
-			var curItem = list[i];
-			if (curItem.active) {
-				allSelect = true;
-			} else {
-				allSelect = false;
-				break;
-			}
-		}
-		return allSelect;
-	},
+
+	/*
 	noSelect: function () {
 		var list = this.data.goodsList.list;
 		var noSelect = 0;
@@ -198,11 +199,23 @@ Page({
 			return false;
 		}
 	},
+	*/
+
+	// 设置编辑状态，单购物车：全选，总价
+	setGoodsList(activeItems, cartIndex) {
+		let carts = this.data.carts;
+		allSelect(activeItems, cartIndex, carts);
+		totalCost(activeItems, cartIndex, carts);
+		this.setData({
+			activeItems,
+		});
+	},
+	/*
 	setGoodsList: function (editable, total, allSelect, noSelect, list) {
 		this.setData({
 			goodsList: {
 				editable: editable,
-				totalPrice: total,
+				totalCost: total,
 				allSelect: allSelect,
 				noSelect: noSelect,
 				list: list
@@ -220,6 +233,8 @@ Page({
 			data: shopCarInfo
 		});
 	},
+	*/
+	// product 全选/不选
 	bindAllSelect: function (e) {
 		let cartIndex = e.currentTarget.dataset.cartIndex;
 		let activeItems = this.data.activeItems;
@@ -232,32 +247,83 @@ Page({
 		carts[cartIndex].items.forEach((i, j) => {
 			activeItems[cartIndex].items[j] = bool;
 		});
-		this.setData({
-			activeItems
-		});
+		this.setGoodsList(activeItems, cartIndex);
 		/*
-		this.setGoodsList(this.getSaveHide(), this.totalPrice(), !currentAllSelect, this.noSelect(), list);
+		this.setGoodsList(this.getSaveHide(), this.totalCost(), !currentAllSelect, this.noSelect(), list);
 		*/
 	},
+	// +1
 	jiaBtnTap: function (e) {
+		let cartIndex = e.currentTarget.dataset.cartIndex;
+		let itemIndex = e.currentTarget.dataset.itemIndex;
+		let carts = this.data.carts;
+		let quantity = carts[cartIndex].items[itemIndex].quantity + 1;
+		updateItem(carts[cartIndex], itemIndex, quantity).then(carts => {
+			this.setData({
+				carts
+			});
+			this.setGoodsList(this.data.activeItems, cartIndex);
+		}).catch(err => {
+			console.error(err);
+		});
+		/*
 		var index = e.currentTarget.dataset.index;
 		var list = this.data.goodsList.list;
 		if (index !== '' && index != null) {
 			if (list[parseInt(index)].number < 10) {
 				list[parseInt(index)].number++;
-				this.setGoodsList(this.getSaveHide(), this.totalPrice(), this.allSelect(), this.noSelect(), list);
+				this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
 			}
 		}
+		*/
 	},
+	// -1
 	jianBtnTap: function (e) {
+		let cartIndex = e.currentTarget.dataset.cartIndex;
+		let itemIndex = e.currentTarget.dataset.itemIndex;
+		let carts = this.data.carts;
+		let quantity = carts[cartIndex].items[itemIndex].quantity - 1;
+		if (quantity < 1) {
+			return;
+		}
+		updateItem(carts[cartIndex], itemIndex, quantity).then(carts => {
+			this.setData({
+				carts
+			});
+			this.setGoodsList(this.data.activeItems, cartIndex);
+		}).catch(err => {
+			console.error(err);
+		});
+		/*
 		var index = e.currentTarget.dataset.index;
 		var list = this.data.goodsList.list;
 		if (index !== '' && index != null) {
 			if (list[parseInt(index)].number > 1) {
 				list[parseInt(index)].number--;
-				this.setGoodsList(this.getSaveHide(), this.totalPrice(), this.allSelect(), this.noSelect(), list);
+				this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
 			}
 		}
+		*/
+	},
+	inputNum(e) {
+		let cartIndex = e.currentTarget.dataset.cartIndex;
+		let itemIndex = e.currentTarget.dataset.itemIndex;
+		let carts = this.data.carts;
+
+		let quantity = e.detail.value.replace(/\D+/g, '');
+		quantity < 1 && (quantity = 1);
+		if (quantity == carts[cartIndex].items[itemIndex].quantity) {
+			return;
+		}
+
+		updateItem(carts[cartIndex], itemIndex, quantity).then(res => {
+			this.setData({
+				carts: res
+			});
+			this.setGoodsList(this.data.activeItems, cartIndex);
+		}).catch(err => {
+			console.error(err);
+		});
 	},
 	editTap: function () {
 		var list = this.data.goodsList.list;
@@ -265,7 +331,7 @@ Page({
 			var curItem = list[i];
 			curItem.active = false;
 		}
-		this.setGoodsList(!this.getSaveHide(), this.totalPrice(), this.allSelect(), this.noSelect(), list);
+		this.setGoodsList(!this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
 	},
 	saveTap: function () {
 		var list = this.data.goodsList.list;
@@ -273,7 +339,7 @@ Page({
 			var curItem = list[i];
 			curItem.active = true;
 		}
-		this.setGoodsList(!this.getSaveHide(), this.totalPrice(), this.allSelect(), this.noSelect(), list);
+		this.setGoodsList(!this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
 	},
 	getSaveHide: function () {
 		var editable = this.data.goodsList.editable;
@@ -293,10 +359,15 @@ Page({
 		list = list.filter(function (curGoods) {
 			return !curGoods.active;
 		});
-		this.setGoodsList(this.getSaveHide(), this.totalPrice(), this.allSelect(), this.noSelect(), list);
+		this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
 	},
-	toPayOrder: function () {
-		wx.showLoading();
+	toPayOrder(e) {
+		let cartIndex = e.currentTarget.dataset.cartIndex;
+		let storeId = this.data.carts[cartIndex].store._id;
+		wx.navigateTo({
+			url: '/pages/checkout/checkout?storeId=' + storeId
+		});
+		/*
 		var that = this;
 		if (this.data.goodsList.noSelect) {
 			wx.hideLoading();
@@ -404,6 +475,7 @@ Page({
 				});
 			}
 		}
+		*/
 	},
 	navigateToPayOrder: function () {
 		wx.hideLoading();
@@ -414,7 +486,7 @@ Page({
 
 });
 
-function getStoreCarts(that) {
+function getStoreCarts() {
 	showLoading({
 		title: 'common.loading'
 	});
@@ -440,6 +512,50 @@ function getStoreCarts(that) {
 			reject(err);
 		}).finally(() => {
 			wx.hideLoading();
+		});
+	});
+}
+
+// 判断全选状态
+function allSelect(activeItems, cartIndex, carts) {
+	let list = activeItems[cartIndex].items;
+	for (let i = 0; i < carts[cartIndex].items.length; i++) {
+		if (!list[i]) {
+			activeItems[cartIndex].active = false;
+			return;
+		}
+	}
+	activeItems[cartIndex].active = true;
+}
+// 计算总价
+function totalCost(activeItems, cartIndex, carts) {
+	if (activeItems[cartIndex].active) {
+		activeItems[cartIndex].totalCost = carts[cartIndex].totalCost;
+		return;
+	}
+	let total = carts[cartIndex].items.reduce((inc, item, i) => {
+		let itemPrice = 0;
+		if (activeItems[cartIndex].items[i]) {
+			itemPrice = item.quantity * item.price;
+		}
+		inc += itemPrice;
+		return inc;
+	}, 0);
+	activeItems[cartIndex].totalCost = total.toFixed(2);
+}
+
+function updateItem(cart, itemIndex, quantity) {
+	return new Promise(function (resolve, reject) {
+		callApi.post('StoreCart.updateItem', {
+			storeId: cart.store._id || cart.store,
+			itemIndex,
+			quantity
+		}, 400).then(result => {
+			return getStoreCarts(result);
+		}).then(result => {
+			resolve(result);
+		}).catch(err => {
+			reject(err);
 		});
 	});
 }

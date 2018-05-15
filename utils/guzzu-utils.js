@@ -64,6 +64,10 @@ const callApi = {
 
 function _request(method = 'GET') {
 	return (url, params = {}, serve = 3002) => {
+		if (/^\d+$/.test(params)) {
+			serve = params;
+			params = {};
+		}
 		// 设置请求地址
 		let serve_url = config.SERVE_URL[config.MODE];
 		let port = '';
@@ -112,7 +116,6 @@ function _request(method = 'GET') {
 			let accessToken;
 			if (config.SESSION_REQUIRE.indexOf(url) > -1) {
 				accessToken = session.checkSync();
-				debug(url, accessToken);
 				if (!accessToken) {
 					return reject('signin required');
 				}

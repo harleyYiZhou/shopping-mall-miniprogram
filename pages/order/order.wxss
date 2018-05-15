@@ -1,0 +1,129 @@
+/* order.wxss */
+
+.address-icon {
+    width: 80rpx;
+    height: 80rpx;
+}
+
+.product-image {
+    width: 120rpx;
+    height: 120rpx;
+}
+
+.product-name {
+    display: block;
+    line-height: 40rpx;
+    height: 80rpx;
+    overflow: hidden;
+}
+
+.share-text {
+    text-align: center;
+    color: #f33;
+}
+
+.share-btn {
+    margin: 10rpx auto;
+}
+
+.pay-btn {
+    width: 200rpx;
+    height: 200rpx;
+    border-radius: 20rpx;
+    background-color: #3b91f2;
+}
+
+.wechat-pay-icon {
+    width: 120rpx;
+    height: 120rpx;
+}
+
+.back-btn {
+    width: 320rpx;
+    background-color: #9d9d9d;
+    color: #fff;
+}
+
+.bg-skyblue {
+    font-size: 28rpx;
+    background-color: #3b91f2;
+    color: #fff;
+}
+
+.bg-grey {
+    font-size: 28rpx;
+    background-color: #9D9D9D;
+    color: #fff;
+}
+
+.icon-large {
+    width: 200rpx;
+    height: 200rpx;
+}
+
+/* dialog */
+
+.modal-mask {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background: #000;
+    opacity: 0.5;
+    overflow: hidden;
+    z-index: 90;
+    color: #fff;
+}
+
+.modal-dialog {
+    width: 90%;
+    overflow: hidden;
+    position: fixed;
+    top: 10%;
+    left: 5%;
+    z-index: 100;
+    background: #f9f9f9;
+    padding: 20rpx 30rpx;
+    box-sizing: border-box;
+}
+
+.modal-title {
+    padding-top: 20rpx;
+}
+
+.modal-content {
+    padding: 20rpx 0 50rpx;
+}
+
+.modal-input {
+    display: flex;
+    background: #fff;
+    border-radius: 7rpx;
+}
+
+.input {
+    width: 100%;
+    font-size: 28rpx;
+    margin: 20rpx;
+    box-sizing: border-box;
+    color: #333;
+}
+
+.modal-footer {
+    display: flex;
+    flex-direction: row;
+	justify-content: center;
+    height: 86rpx;
+    font-size: 34rpx;
+    line-height: 86rpx;
+}
+
+.modal-footer>view,.modal-footer>button {
+    width: 47%;
+    text-align: center;
+	border-radius: 8rpx;
+	color:#fff;
+    line-height: 86rpx;
+}
+

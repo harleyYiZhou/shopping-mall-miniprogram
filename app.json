@@ -1,7 +1,10 @@
 {
   "pages":[
     "pages/index/index",
-    "pages/bind-phone/bind-phone",
+	 "pages/bind-phone/bind-phone",
+	 "pages/checkout/checkout",
+	 "pages/deliver-time/deliver-time",
+	 "pages/order/order",
     "pages/components/searchFor/searchFor",
     "pages/shopping-cart/shopping-cart",
     "pages/user-center/user-center",

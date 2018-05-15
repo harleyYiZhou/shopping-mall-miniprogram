@@ -18,9 +18,10 @@ const formatNumber = n => {
 };
 
 const priceFilter = data => {
-	let keyReg = /price|originalPrice|shippingCost|subtotal|totalCost/;
+	let keys = ['price', 'originalPrice', 'shippingCost', 'subtotal', 'totalCost', 'discount', 'shippingCost', 'balance', 'minPurchase'];
+	let keyReg = new RegExp('^' + keys.join('$|^') + '$');
 	if (_.isNumber(data) || _.isString(data)) {
-		return (Number(data) / 100).toFixed(2);
+		return /^\d+\.?\d*$|^\d*\.?\d+$/.test(data) ? (Number(data) / 100).toFixed(2) : data;
 	}
 	if (_.isArray(data)) {
 		data.forEach((item, i) => {
@@ -28,6 +29,7 @@ const priceFilter = data => {
 				priceFilter(data[i]);
 			}
 		});
+		return;
 	}
 	if (_.isObject(data)) {
 		_.forEach(data, (value, key) => {
@@ -163,3 +165,49 @@ module.exports = {
 	_,
 	debug,
 };
+
+let data = {
+	price: 5000,
+	name: 'name',
+	totalCost: 100000,
+	items: [
+		{
+			subtotal: 123
+		},
+		{
+			subtotal: 456
+		},
+		{
+			subtotal: 200
+		},
+		{
+			subtotal: 300
+		},
+		{
+			subItem: [
+				{
+					subtotal: 123
+				}, {
+					subtotal: 456
+				}, {
+					subtotal: 200
+				},
+			]
+		},
+		{
+			totalCost2: 123000
+		},
+	]
+};
+let str = JSON.stringify(data);
+let multi = [
+	JSON.parse(str),
+	JSON.parse(str),
+	JSON.parse(str),
+	JSON.parse(str),
+];
+priceFilter(data);
+priceFilter(multi);
+
+console.log(data);
+console.log(multi);
