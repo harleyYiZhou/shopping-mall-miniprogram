@@ -1,7 +1,9 @@
 const guzzuUtils = require('../../utils/guzzu-utils.js');
-const { priceFilter, showModal, showToast, _, debug } = require('../../utils/util');
+const { priceFilter, showLoading, _, debug } = require('../../utils/util');
 const { callApi } = guzzuUtils;
 const app = getApp();
+const pickupKeys = ['name', 'mobilePhone', 'province', 'provinceId', 'city', 'cityId', 'district', 'districtId', 'address'];
+const areaShippingKeys = ['appointmentTime', 'description', 'image', 'minPurchase', 'shippingCost', 'enabledAppointment'];
 
 Page({
 	data: {
@@ -29,39 +31,43 @@ Page({
 		areaShipping_params: {},
 		isLocalDelivery: false,
 		isCustomerPickup: false,
-		isShowAddress: true
+		isShowAddress: true,
+		selectedItems: null,
+		displayItems: [],
 	},
 	onLoad(option) {
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
-		this.setData({
-			storeId: option.storeId,
-			discountItems: [{
-				name: this.data.trans.selectItem
-			}]
+		let storeId = option.storeId;
+		let selectedItems;
+		if (option.selectedItems) {
+			selectedItems = JSON.parse(option.selectedItems);
+			this.setData({
+				selectedItems
+			});
+		}
+
+		let discountItems = [{
+			name: this.data.trans.selectItem
+		}];
+		showLoading({
+			title: 'common.loading'
 		});
 		// 1. get store cart
 		callApi.post('StoreCart.get', {
-			storeId: this.data.storeId
+			storeId
 		}, 400).then(result => {
-			if (result.status === 'empty') {
-				this.setData({
-					cart: null
-				});
-			} else {
-				// result.totalCost = cartUtils.calculateTotalCost(result);
-				priceFilter(result);
-				this.setData({
-					cart: result
-				});
-			}
-			let cart = this.data.cart;
-			if (!cart || cart.items.length < 1) {
+			if (!result || result.items.length < 1) {
 				wx.redirectTo({
 					url: '/pages/shopping-cart/shopping-cart'
 				});
+				throw new TypeError('Empty Order');
 			}
+			priceFilter(result);
+			this.setData({
+				cart: result
+			});
 			return callApi.post('UserAddress.getLastUsed', 400);
 		})// 2. 获取最近使用的地址
 			.then(result => {
@@ -70,7 +76,7 @@ Page({
 				});
 				app.globalData.shippingAddress = result;
 				return callApi.post('StoreApp.checkPermission', {
-					storeId: this.data.storeId,
+					storeId,
 					slug: 'customer-pick-up'
 				}, 400);
 			}) // 3. 判断App 自提 是否可用
@@ -81,7 +87,7 @@ Page({
 					});
 				}
 				return callApi.post('StoreApp.checkPermission', {
-					storeId: this.data.storeId,
+					storeId,
 					slug: 'local-delivery'
 				}, 400);
 			}) // 4. 判断App 本地配送 是否可用
@@ -92,7 +98,7 @@ Page({
 					});
 				}
 				let params = {
-					storeId: this.data.storeId
+					storeId
 				};
 				return callApi.post('PickUpPlace.find', params, 400);
 			}) // 5. 获取自提地址，返回:[]
@@ -103,8 +109,8 @@ Page({
 					return;
 				}
 				let serviceHours = [];
-				for (let i in pickupPlace.serviceHours) {
-					serviceHours.push(pickupPlace.serviceHours[i]);
+				if (pickupPlace.serviceHours) {
+					serviceHours = pickupPlace.serviceHours;
 				}
 				this.setData({
 					pickupPlaceIndex,
@@ -114,7 +120,8 @@ Page({
 			})// 6. 获取可用的优惠
 			.then(() => {
 				// items: 订单里的商品
-				this.data.items = [];
+				let items = [];
+				let displayItems = [];
 				this.data.cart.items.forEach((item, index) => {
 					let itm = {
 						productId: item.productId,
@@ -123,29 +130,36 @@ Page({
 					if (item.productOption) {
 						itm.productOptionId = item.productOption._id;
 					}
-					this.data.items.push(itm);
+					if (selectedItems) {
+						if (selectedItems.indexOf(index) > -1) {
+							items.push(itm);
+							displayItems.push(item);
+						}
+						return;
+					}
+					items.push(itm);
+					displayItems.push(item);
+				});
+				this.setData({
+					items,
+					displayItems
 				});
 				return callApi.post('Discount.findAvailable', {
-					storeId: this.data.storeId,
-					items: this.data.items
+					storeId,
+					items
 				}, 400);
 			})// return []
 			.then(results => {
-				let value = 0;
-				if (results.length) {
-					value = 1;
-				} else {
-					this.setData({
-						discountItems: this.data.discountItems.concat(results)
-					});
-				}
-				this.selectDiscountItem({
-					detail: {
-						value
-					}
+				discountItems = discountItems.concat(results);
+				this.setData({
+					storeId,
+					discountItems,
 				});
+				_previewOrder.call(this);
 			}).catch(err => {
 				console.error(err);
+			}).finally(() => {
+				wx.hideLoading();
 			});
 
 		// init nonce
@@ -154,15 +168,10 @@ Page({
 	onShow() {
 		this.setData(_.pick(app.globalData, ['selectTime', 'shippingAddress', 'pickupPlace', 'serviceHours', 'appointmentTime']));
 		if (this.data.shippingType === 'areaShipping') {
+			let areaShipping_params = _.pick(this.data.areaShipping, areaShippingKeys);
+			areaShipping_params.appointmentTime = app.globalData.appointmentTime;
 			this.setData({
-				areaShipping_params: {
-					description: this.data.areaShipping.description,
-					image: this.data.areaShipping.image,
-					minPurchase: this.data.areaShipping.minPurchase,
-					shippingCost: this.data.areaShipping.shippingCost,
-					enabledAppointment: this.data.areaShipping.enabledAppointment,
-					appointmentTime: app.globalData.appointmentTime
-				}
+				areaShipping_params
 			});
 		}
 	},
@@ -171,62 +180,43 @@ Page({
 		let storeId = this.data.cart.store._id;
 		let value = event.detail.value;
 		let discountId = this.data.discountItems[value.discountItemsIndex].discountId;
+		let { selectedItems, shippingType, shippingAddress } = this.data;
+
 		// prepare order params
 		let params;
-		if (this.data.shippingType === 'regular') {
+		if (shippingType === 'regular') {
 			params = {
-				shippingAddress: this.data.shippingAddress,
+				shippingAddress,
 			};
 		}
-		if (this.data.shippingType === 'areaShipping') {
+		if (shippingType === 'areaShipping') {
 			params = {
-				shippingAddress: this.data.shippingAddress,
+				shippingAddress,
 				areaShipping: this.data.areaShipping_params,
 			};
 		}
-		if (this.data.shippingType === 'pickup') {
+		if (shippingType === 'pickup') {
+			let pickupPlace_params = _.pick(this.data.pickupPlace, pickupKeys);
 			this.setData({
-				pickupPlace_params: {
-					name: this.data.pickupPlace.name,
-					mobilePhone: this.data.pickupPlace.mobilePhone,
-					province: this.data.pickupPlace.province,
-					provinceId: this.data.pickupPlace.provinceId,
-					city: this.data.pickupPlace.city,
-					cityId: this.data.pickupPlace.cityId,
-					district: this.data.pickupPlace.district,
-					districtId: this.data.pickupPlace.districtId,
-					address: this.data.pickupPlace.address
-				}
+				pickupPlace_params
 			});
 			params = {
 				shippingAddress: {
 					name: value.name,
 					mobilePhone: value.mobilePhone
 				},
-				pickUpPlace: this.data.pickupPlace_params,
+				pickUpPlace: pickupPlace_params,
 			};
 		}
 
-		let cartItems = this.data.cart.items;
-		params.items = [];
-		for (let i = 0; i < cartItems.length; ++i) {
-			let cartItem = cartItems[i];
-			let orderItem = {
-				quantity: cartItem.quantity,
-				productId: cartItem.product._id
-			};
-			if (cartItem.productOption) {
-				orderItem.productOptionId = cartItem.productOption._id;
-			}
-			params.items.push(orderItem);
-		}
 		if (discountId) {
 			params.discountId = discountId;
 		}
 		Object.assign(params, {
-			shippingType: this.data.shippingType,
+			shippingType,
 			note: value.note,
 			storeId,
+			items: this.data.items,
 			nonce: guzzuUtils.storageGet('nonce'),
 			clientType: 'mini-program',
 			type: 'default',
@@ -236,9 +226,13 @@ Page({
 		callApi.post('Order.create', params, 400).then(result => {
 			order = result;
 			// clear cart
-			return callApi.post('StoreCart.clear', {
-				storeId
-			}, 400);
+			if (selectedItems) {
+				return _removeItems(selectedItems, storeId);
+			} else {
+				return callApi.post('StoreCart.clear', {
+					storeId
+				}, 400);
+			}
 		}).then(() => {
 			clearNonce();
 			wx.redirectTo({
@@ -291,58 +285,18 @@ Page({
 		});
 	},
 	selectDiscountItem(e) {
-		console.log('e', e);
-		let discountItemsIndex = e.detail.value;
 		this.setData({
-			discountItemsIndex
+			discountItemsIndex: e.detail.value
 		});
-		let discountId = this.data.discountItems[discountItemsIndex].discountId;
-		let params;
-		if (this.data.shippingType === 'regular') {
-			params = {
-				shippingAddress: this.data.shippingAddress,
-			};
-		}
-		if (this.data.shippingType === 'areaShipping') {
-			params = {
-				shippingAddress: this.data.shippingAddress,
-				areaShipping: this.data.areaShipping_params,
-			};
-		}
-		if (this.data.shippingType === 'pickup') {
-			params = {
-				shippingAddress: {
-					name: this.data.shippingAddress.name,
-					mobilePhone: this.data.shippingAddress.mobilePhone
-				},
-				pickUpPlace: this.data.pickupPlace_params,
-			};
-		}
-		if (!params) {
-			throw new TypeError('Invalid params');
-		}
-		if (discountId) {
-			params.discountId = discountId;
-		}
-		Object.assign(params, {
-			storeId: this.data.storeId,
-			items: this.data.items,
-			shippingType: this.data.shippingType,
-			nonce: String(Date.now()),
-			type: 'default',
-		});
-		callApi.post('Order.preview', params, 400).then(result => {
-			priceFilter(result.order);
-			this.setData({
-				order: result.order
-			});
-		});
+		_previewOrder.call(this);
 	},
 	selectShipping(event) {
-		let shippingType = event.currentTarget.dataset.shippingType;
+		let { shippingType } = event.currentTarget.dataset;
 		this.setData({
 			discountItemsIndex: 0
 		});
+		let { storeId } = this.data;
+
 		if (shippingType === 'regular') {
 			this.setData({
 				shippingType,
@@ -351,21 +305,9 @@ Page({
 				cityPicSrc: '/public/images/icon/option-none.png',
 				pickupPicSrc: '/public/images/icon/option-none.png'
 			});
-			var params = {
-				storeId: this.data.storeId,
-				shippingAddress: this.data.shippingAddress,
-				items: this.data.items,
-				shippingType: this.data.shippingType,
-				nonce: String(Date.now()),
-				type: 'default',
-			};
-			callApi.post('Order.preview', params, 400).then(result => {
-				this.setData({
-					order: result.order
-				});
-			});
+			_previewOrder.call(this);
 		}
-		if (shippingType == 'areaShipping') {
+		if (shippingType === 'areaShipping') {
 			this.setData({
 				shippingType,
 				isShowAddress: true,
@@ -374,60 +316,26 @@ Page({
 				pickupPicSrc: '/public/images/icon/option-none.png'
 			});
 
-			var params = {
-				storeId: this.data.storeId
+			let params = {
+				storeId
 			};
 			callApi.post('AreaShipping.get', params, 400).then(result => {
-				this.setData({
-					areaShipping: result
-				});
+				let areaShipping = result;
 				let serviceHours = [];
-				for (let i in result.serviceHours) {
-					// console.log(result.serviceHours[i])
-					serviceHours.push(result.serviceHours[i]);
+				if (areaShipping.serviceHours) {
+					serviceHours = areaShipping.serviceHours;
 				}
 				app.globalData.serviceHours = serviceHours;
+
+				let areaShipping_params = _.pick(areaShipping, areaShippingKeys);
 				this.setData({
-					serviceHours: app.globalData.serviceHours
+					areaShipping,
+					serviceHours,
+					areaShipping_params
 				});
-			}).then(result => {
-				if (this.data.areaShipping.enabledAppointment === false) {
-					this.setData({
-						areaShipping_params: {
-							description: this.data.areaShipping.description,
-							image: this.data.areaShipping.image,
-							minPurchase: this.data.areaShipping.minPurchase,
-							shippingCost: this.data.areaShipping.shippingCost,
-							enabledAppointment: this.data.areaShipping.enabledAppointment
-						}
-					});
-				}
-				if (this.data.areaShipping.enabledAppointment === true) {
-					this.setData({
-						areaShipping_params: {
-							description: this.data.areaShipping.description,
-							image: this.data.areaShipping.image,
-							minPurchase: this.data.areaShipping.minPurchase,
-							shippingCost: this.data.areaShipping.shippingCost,
-							enabledAppointment: this.data.areaShipping.enabledAppointment,
-							appointmentTime: app.globalData.appointmentTime
-						}
-					});
-				}
-				let params = {
-					storeId: this.data.storeId,
-					shippingAddress: this.data.shippingAddress,
-					areaShipping: this.data.areaShipping_params,
-					items: this.data.items,
-					shippingType: this.data.shippingType,
-					nonce: String(Date.now()),
-					type: 'default',
-				};
-				callApi.post('Order.preview', params, 400).then(result => {
-					this.setData({
-						order: result.order
-					});
-				});
+				_previewOrder.call(this);
+			}).catch(err => {
+				console.error(err);
 			});
 		}
 		if (shippingType === 'pickup') {
@@ -440,44 +348,26 @@ Page({
 				pickupPlaceIndex: app.globalData.selectShopIndex
 			});
 
-			var params = {
-				storeId: this.data.storeId
+			let params = {
+				storeId
 			};
 			callApi.post('PickUpPlace.find', params, 400).then(result => {
 				let pickupPlace = result.results[this.data.pickupPlaceIndex];
-				this.setData({
-					pickupPlace,
-					pickupPlace_params: _.pick(pickupPlace, ['name', 'mobilePhone', 'province', 'provinceId', 'city', 'cityId', 'district', 'districtId', 'address'])
-				});
+				let pickupPlace_params = _.pick(pickupPlace, pickupKeys);
 				let serviceHours = [];
-				for (let i in this.data.pickupPlace.serviceHours) {
-					serviceHours.push(this.data.pickupPlace.serviceHours[i]);
+				if (pickupPlace.serviceHours) {
+					serviceHours = pickupPlace.serviceHours;
 				}
+
 				this.setData({
-					serviceHours
+					serviceHours,
+					pickupPlace,
+					pickupPlace_params,
 				});
-				let params = {
-					storeId: this.data.storeId,
-					shippingAddress: {
-						name: this.data.shippingAddress.name,
-						mobilePhone: this.data.shippingAddress.mobilePhone
-					},
-					pickUpPlace: this.data.pickupPlace_params,
-					items: this.data.items,
-					shippingType: this.data.shippingType,
-					nonce: String(Date.now()),
-					type: 'default',
-				};
-				return callApi.post('Order.preview', params, 400);
-			})
-				.then(result => {
-					priceFilter(result.order);
-					this.setData({
-						order: result.order
-					});
-				}).catch(err => {
-					console.error(err);
-				});
+				_previewOrder.call(this);
+			}).catch(err => {
+				console.error(err);
+			});
 		}
 	}
 });
@@ -493,4 +383,80 @@ function initNonce() {
 
 function clearNonce() {
 	guzzuUtils.storageRemove('nonce');
+}
+
+function _previewOrder() {
+	let discountId = this.data.discountItems[this.data.discountItemsIndex].discountId;
+	let params;
+	if (this.data.shippingType === 'regular') {
+		params = {
+			shippingAddress: this.data.shippingAddress,
+		};
+	}
+	if (this.data.shippingType === 'areaShipping') {
+		params = {
+			shippingAddress: this.data.shippingAddress,
+			areaShipping: this.data.areaShipping_params,
+		};
+	}
+	if (this.data.shippingType === 'pickup') {
+		params = {
+			shippingAddress: {
+				name: this.data.shippingAddress.name,
+				mobilePhone: this.data.shippingAddress.mobilePhone
+			},
+			pickUpPlace: this.data.pickupPlace_params,
+		};
+	}
+	if (!params) {
+		throw new TypeError('Invalid params');
+	}
+	if (discountId) {
+		params.discountId = discountId;
+	}
+	Object.assign(params, {
+		storeId: this.data.storeId,
+		items: this.data.items,
+		shippingType: this.data.shippingType,
+		nonce: String(Date.now()),
+		type: 'default',
+	});
+	let preview = callApi.post('Order.preview', params, 400);
+	preview.then(result => {
+		priceFilter(result.order);
+		this.setData({
+			order: result.order
+		});
+	}).catch(err => {
+		console.error(err);
+	});
+	return preview;
+}
+
+function _removeItems(selectedItems, storeId) {
+	let removePromises = [];
+	let selectedCopy = selectedItems.concat();
+	selectedCopy.sort().reverse();
+	selectedCopy.forEach((item, i) => {
+		if (i) {
+			removePromises[i] = new Promise((resolve, rej) => {
+				removePromises[i - 1].then(() => {
+					return callApi.post('StoreCart.removeItem', {
+						storeId,
+						itemIndex: item
+					}, 400);
+				}).then((res) => {
+					resolve(res);
+				}).catch(err => {
+					rej(err);
+				});
+			});
+		} else {
+			removePromises[i] = callApi.post('StoreCart.removeItem', {
+				storeId,
+				itemIndex: item
+			}, 400);
+		}
+	});
+	return removePromises[selectedCopy.length - 1];
 }

@@ -1,6 +1,7 @@
 /**app.wxss**/
 
 @import "./public/styles/index.wxss";
+@import "./public/styles/weui.wxss";
 @import "./pages/components/bottom-nav/bottom-nav";
 /* .container {
   height: 100%;

@@ -85,14 +85,11 @@
 		</view>
  -->
 	</view>
-	<!-- 
-	<view class="jiesuan-box">
+	<view class="jiesuan-box p-fixed" wx:if="{{editable}}">
 		<view class="left-price">
 			<view class="all-selected  {{allSelect?'active':''}}" bindtap="bindAllSelect">{{trans.allSelect}}</view>
-			<view class="total" hidden="{{noSelect}}">{{trans.totalCost}}：¥{{totalPrice}}</view>
+			{{noSelect}}
 		</view>
-		<view class="to-pay-btn {{noSelect?'no-select':''}}" hidden="{{editable}}" bindtap="toPayOrder">{{trans.goToPay}}</view>
-		<view class="to-pay-btn {{noSelect?'no-select':''}}" hidden="{{!editable}}" bindtap="deleteSelected">{{trans.removeTitle}}</view>
+		<view class="to-pay-btn {{noSelect?'no-select':''}}" bindtap="deleteSelected">{{trans.removeTitle}}</view>
 	</view>
-	 -->
 </template>

@@ -9,10 +9,8 @@ Page({
 		goodsList: {
 			editable: false,
 			totalCost: 0,
-			allSelect: true,
+			allSelect: false,
 			noSelect: false,
-			list: [],
-			carts: []
 		},
 		delBtnWidth: 120, // 删除按钮宽度单位（rpx）
 		fakeList: {},
@@ -45,48 +43,46 @@ Page({
 			app.translate.langData(this);
 		}
 		this.initEleWidth();
-		this.onShow();
-		debug(this.data.goodsList);
-		session.check().then(res => {
-			console.log(1);
-			if (res) {
-				console.log(2);
-				return getStoreCarts();
-			}
-			return res;
-		}).then(res => {
-			console.log('getAll', res);
-			if (res) {
-				let activeItems = res.map(() => {
-					return {
-						active: false,
-						totalCost: '0.00',
-						items: []
-					};
-				});
-				this.setData({
-					carts: res,
-					activeItems
-				});
-			}
-		}).catch(err => {
-			console.error(err);
-		});
 	},
 	onShow: function () {
+		app.globalData.login.finally(() => {
+			session.check().then(res => {
+				if (res) {
+					return getStoreCarts();
+				}
+				return res;
+			}).then(res => {
+				if (res) {
+					let activeItems = res.map(() => {
+						return {
+							active: false,
+							totalCost: '0.00',
+							items: []
+						};
+					});
+					this.setData({
+						carts: res,
+						activeItems
+					});
+				}
+			}).catch(err => {
+				console.error(err);
+			});
+		});
 		var shopList = [];
 		// 获取购物车数据
 		var shopCarInfoMem = wx.getStorageSync('shopCarInfo');
 		if (shopCarInfoMem && shopCarInfoMem.shopList) {
 			shopList = shopCarInfoMem.shopList;
 		}
-		this.data.goodsList.list = this.data.fakeList;
+		// this.data.goodsList.list = this.data.fakeList;
 		this.setData({
-			goodsList: this.data.fakeList,
+			// goodsList: this.data.fakeList,
 			selected: '1',
 			shopCarInfo: shopCarInfoMem,
 		});
 		// this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), shopList);
+		debug('cart show');
 	},
 	toIndexPage: function () {
 		wx.redirectTo({
@@ -95,7 +91,7 @@ Page({
 	},
 
 	touchS: function (e) {
-		if (e.touches.length == 1) {
+		if (e.touches.length === 1) {
 			this.setData({
 				startX: e.touches[0].clientX
 			});
@@ -103,7 +99,7 @@ Page({
 	},
 	touchM: function (e) {
 		var index = e.currentTarget.dataset.index;
-		if (e.touches.length == 1) {
+		if (e.touches.length === 1) {
 			var moveX = e.touches[0].clientX;
 			var disX = this.data.startX - moveX;
 			var delBtnWidth = this.data.delBtnWidth;
@@ -248,9 +244,6 @@ Page({
 			activeItems[cartIndex].items[j] = bool;
 		});
 		this.setGoodsList(activeItems, cartIndex);
-		/*
-		this.setGoodsList(this.getSaveHide(), this.totalCost(), !currentAllSelect, this.noSelect(), list);
-		*/
 	},
 	// +1
 	jiaBtnTap: function (e) {
@@ -266,16 +259,6 @@ Page({
 		}).catch(err => {
 			console.error(err);
 		});
-		/*
-		var index = e.currentTarget.dataset.index;
-		var list = this.data.goodsList.list;
-		if (index !== '' && index != null) {
-			if (list[parseInt(index)].number < 10) {
-				list[parseInt(index)].number++;
-				this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
-			}
-		}
-		*/
 	},
 	// -1
 	jianBtnTap: function (e) {
@@ -294,16 +277,6 @@ Page({
 		}).catch(err => {
 			console.error(err);
 		});
-		/*
-		var index = e.currentTarget.dataset.index;
-		var list = this.data.goodsList.list;
-		if (index !== '' && index != null) {
-			if (list[parseInt(index)].number > 1) {
-				list[parseInt(index)].number--;
-				this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
-			}
-		}
-		*/
 	},
 	inputNum(e) {
 		let cartIndex = e.currentTarget.dataset.cartIndex;
@@ -312,7 +285,7 @@ Page({
 
 		let quantity = e.detail.value.replace(/\D+/g, '');
 		quantity < 1 && (quantity = 1);
-		if (quantity == carts[cartIndex].items[itemIndex].quantity) {
+		if (quantity === carts[cartIndex].items[itemIndex].quantity) {
 			return;
 		}
 
@@ -363,119 +336,27 @@ Page({
 	},
 	toPayOrder(e) {
 		let cartIndex = e.currentTarget.dataset.cartIndex;
-		let storeId = this.data.carts[cartIndex].store._id;
-		wx.navigateTo({
-			url: '/pages/checkout/checkout?storeId=' + storeId
-		});
-		/*
-		var that = this;
-		if (this.data.goodsList.noSelect) {
-			wx.hideLoading();
-			return;
+		let { activeItems, carts } = this.data;
+		let storeId = carts[cartIndex].store._id;
+		let url;
+		if (activeItems[cartIndex].active && _checkInventory(carts[cartIndex].items)) {
+			url = '/pages/checkout/checkout?storeId=' + storeId;
+		} else {
+			let selectedItems = [];
+			activeItems[cartIndex].items.forEach((item, i) => {
+				if (item) {
+					selectedItems.push(i);
+				}
+			});
+			if (selectedItems.length && _checkInventory(carts[cartIndex].items, selectedItems)) {
+				url = `/pages/checkout/checkout?storeId=${storeId}&selectedItems=${JSON.stringify(selectedItems)}`;
+			}
 		}
-		// 重新计算价格，判断库存
-		var shopList = [];
-		var shopCarInfoMem = wx.getStorageSync('shopCarInfo');
-		if (shopCarInfoMem && shopCarInfoMem.shopList) {
-			// shopList = shopCarInfoMem.shopList
-			shopList = shopCarInfoMem.shopList.filter(entity => {
-				return entity.active;
+		if (url) {
+			wx.navigateTo({
+				url
 			});
 		}
-		if (shopList.length == 0) {
-			wx.hideLoading();
-			return;
-		}
-		var isFail = false;
-		var doneNumber = 0;
-		var needDoneNUmber = shopList.length;
-		for (let i = 0; i < shopList.length; i++) {
-			if (isFail) {
-				wx.hideLoading();
-				return;
-			}
-			let carShopBean = shopList[i];
-			// 获取价格和库存
-			if (!carShopBean.propertyChildIds || carShopBean.propertyChildIds == '') {
-				wx.request({
-					url: 'https://api.it120.cc/' + app.globalData.subDomain + '/shop/goods/detail',
-					data: {
-						id: carShopBean.goodsId
-					},
-					success: function (res) {
-						doneNumber++;
-						if (res.data.data.properties) {
-							wx.showModal({
-								title: '提示',
-								content: res.data.data.basicInfo.name + ' 商品已失效，请重新购买',
-								showCancel: false
-							});
-							isFail = true;
-							wx.hideLoading();
-							return;
-						}
-						if (res.data.data.basicInfo.stores < carShopBean.number) {
-							wx.showModal({
-								title: '提示',
-								content: res.data.data.basicInfo.name + ' 库存不足，请重新购买',
-								showCancel: false
-							});
-							isFail = true;
-							wx.hideLoading();
-							return;
-						}
-						if (res.data.data.basicInfo.minPrice != carShopBean.price) {
-							wx.showModal({
-								title: '提示',
-								content: res.data.data.basicInfo.name + ' 价格有调整，请重新购买',
-								showCancel: false
-							});
-							isFail = true;
-							wx.hideLoading();
-							return;
-						}
-						if (needDoneNUmber == doneNumber) {
-							that.navigateToPayOrder();
-						}
-					}
-				});
-			} else {
-				wx.request({
-					url: 'https://api.it120.cc/' + app.globalData.subDomain + '/shop/goods/price',
-					data: {
-						goodsId: carShopBean.goodsId,
-						propertyChildIds: carShopBean.propertyChildIds
-					},
-					success: function (res) {
-						doneNumber++;
-						if (res.data.data.stores < carShopBean.number) {
-							wx.showModal({
-								title: '提示',
-								content: carShopBean.name + ' 库存不足，请重新购买',
-								showCancel: false
-							});
-							isFail = true;
-							wx.hideLoading();
-							return;
-						}
-						if (res.data.data.price != carShopBean.price) {
-							wx.showModal({
-								title: '提示',
-								content: carShopBean.name + ' 价格有调整，请重新购买',
-								showCancel: false
-							});
-							isFail = true;
-							wx.hideLoading();
-							return;
-						}
-						if (needDoneNUmber == doneNumber) {
-							that.navigateToPayOrder();
-						}
-					}
-				});
-			}
-		}
-		*/
 	},
 	navigateToPayOrder: function () {
 		wx.hideLoading();
@@ -558,4 +439,41 @@ function updateItem(cart, itemIndex, quantity) {
 			reject(err);
 		});
 	});
+}
+
+function _checkInventory(items, selectedItems) {
+	let bool = true;
+
+	function _checkItem(item) {
+		if (item.productOption) {
+			if (item.quantity > item.productOption.maxQuantity) {
+				return false;
+			}
+		} else if (item.quantity > item.product.maxQuantity) {
+			return false;
+		}
+		return true;
+	}
+
+	if (selectedItems) {
+		selectedItems.forEach(item => {
+			bool = _checkItem(items[item]);
+		});
+	} else {
+		for (let i = 0; i < items.length; i++) {
+			bool = _checkItem(items[i]);
+			if (!bool) {
+				break;
+			}
+		}
+	}
+
+	if (!bool) {
+		showModal({
+			title: 'common.error',
+			content: 'common.error1',
+			showCancel: false
+		});
+	}
+	return bool;
 }

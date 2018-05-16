@@ -55,8 +55,8 @@
 						<text class="width-100">{{pickupPlace.province}} {{pickupPlace.city}} {{pickupPlace.district}}</text>
 						<text class="width-100">{{pickupPlace.address}}</text>
 						<text class="width-100">{{pickupPlace.mobilePhone}}</text>
-						<view class="width-100" wx:for="{{serviceHours}}">
-							<text wx:for="{{serviceHours[index].weekdays}}">{{weekdays[item-1]}} </text>
+						<view class="width-100" wx:for="{{serviceHours}}" wx:key='item'>
+							<text wx:for="{{serviceHours[index].weekdays}}" wx:for-item="subItem" wx:key='subItem'>{{weekdays[subItem-1]}} </text>
 							<text>{{item.beginTime.hour}}:{{item.beginTime.minute}}0 - {{item.endTime.hour}}:{{item.endTime.minute}}0</text>
 						</view>
 						<view class="width-100">{{pickupPlace.description}}</view>
@@ -95,8 +95,8 @@
 					<view wx:if="{{areaShipping.enabledAppointment}}" class="layout-row   layout-wrap">
 						<text class="width-40">{{trans.serviceHours}}</text>
 						<view class="width-60">
-							<view wx:for="{{serviceHours}}">
-								<text wx:for="{{serviceHours[index].weekdays}}">{{trans.weekdays[item]}} </text>
+							<view wx:for="{{serviceHours}}" wx:key='item'>
+								<text wx:for="{{serviceHours[index].weekdays}}" wx:for-item="subItem" wx:key='subItem'>{{trans.weekdays[subItem]}} </text>
 								<text>{{item.beginTime.hour}}:{{item.beginTime.minute}}0 - {{item.endTime.hour}}:{{item.endTime.minute}}0</text>
 							</view>
 						</view>
@@ -114,12 +114,12 @@
 
 		<!--items begin-->
 		<view class="color--grey-0 margin-y-10 padding-y-10 padding-x-20">
-			<block wx:if="{{ cart.items.length > 0 }}">
+			<block wx:if="{{ displayItems.length > 0 }}">
 				<!--<view class="text-center padding-bottom-10">
 					<text class="text-primary text-larger">应付金额 ￥{{ (cart.totalCost + cart.shippingCost)  }}</text>
 				</view>
 				<view class="divider-line"></view>-->
-				<view class="layout-row padding-y-10" wx:for="{{ cart.items }}" wx:key="_id">
+				<view class="layout-row padding-y-10" wx:for="{{ displayItems }}" wx:key="_id">
 					<view class="width-25">
 						<image class="product-image" src="{{ item.product.image.url }}" mode="aspectFit"></image>
 					</view>
@@ -149,8 +149,8 @@
 						</view>
 						<view>
 							<text>{{trans.discountProducts}}:</text>
-							<view wx:for="{{discountItems[discountItemsIndex].itemIndexes}}" wx:for-item="itemIndexe" wx:wx:key="_id" wx:key="_id">
-								[{{cart.items[itemIndexe].name}}]
+							<view wx:for="{{discountItems[discountItemsIndex].itemIndexes}}" wx:for-item="itemIndexe" wx:key="_id">
+								[{{displayItems[itemIndexe].name}}]
 							</view>
 						</view>
 					</view>
