@@ -1,63 +1,73 @@
 <!--pages/order/order.wxml-->
 <view>
-  <view class="layout-row layout-wrap layout-justify-center width-100 order-nav">
-    <view class="flex {{item.selected? 'border' :''}}" wx:for="{{orderStatus}}">
-      <view class="order-text">{{item.text}}</view>
-    </view>
-  </view>
-  <view class="orders">
-    <view class="no-order layout-align-center" hidden="{{orderList ? true : false}}">
-      <view class="zan-icon zan-icon-records no-order-icon"></view>
-      <view class="text">暂无订单</view>
-    </view>
-    <view class="" hidden="{{orderList ? false : true}}">
-      <view class="zan-cell">
-        <view class="zan-cell__bd">
-          <view class="zan-cell__text">订单日期：2018/00/24 16:45</view>
-          <view class="zan-cell__desc">订单即将关闭</view>
-        </view>
-        <view class="zan-cell__ft">待付款</view>
-      </view>
-      <view class="zan-card">
-        <!-- 卡片左侧商品图片 -->
-        <view class="zan-card__thumb">
-          <image class="zan-card__img " src="https://img.yzcdn.cn/upload_files/2016/11/25/FpqPXlrMRjKwJs8VdTu3ZDJCj4j5.jpeg?imageView2/2/w/200/h/200/q/90/format/jpeg" mode="aspectFit"></image>
-        </view>
-        <!-- 卡片右侧详情描述 -->
-        <view class="zan-card__detail">
-          <!-- 商品标题行 -->
-          <!-- 每行可以使用 zan-card__detail-row 来控制展示区域 -->
-          <!-- 每行里面可以用 zan-card__left-col zan-card__right-col 来控制左右展示 -->
-          <view class="zan-card__detail-row">
-            <view class="zan-card__right-col">¥ 999.99</view>
-            <view class="zan-card__left-col zan-ellipsis--l2">
-              红烧牛肉【虚拟商品】【有库存】【有sku】
-            </view>
-          </view>
-          <!-- 商品附属信息展示行 -->
-          <view class="zan-card__detail-row zan-c-gray-darker">
-            <view class="zan-card__right-col">x2</view>
-            <view class="zan-card__left-col">
-              3000克 50%
-            </view>
-          </view>
-        </view>
-      </view>
-      <view class="zan-cell">
-        <view class="zan-cell__bd">
-          <view class="zan-cell__text"></view>
-        </view>
-        <view class="zan-cell__ft" style="color:#000000;">共{{}}件商品，总金额<text style="color:red;">{{}}元</text></view>
-      </view>
-      <view class="zan-cell">
-       <view class="zan-cell__bd">
-          <view class="zan-cell__text"></view>
-        </view>
-        <view class="zan-cell__ft layout-row layout-align-between">
-          <button class="zan-btn zan-btn--small zan-btn--warn">{{trans.cancel}}</button>
-           <button class="zan-btn zan-btn--small zan-btn--primary">{{trans.goToPay}}</button>
-        </view>
-      </view>
-    </view>
-  </view>
+	<view class="layout-row layout-wrap layout-justify-center width-100 order-nav">
+		<view class="flex {{item.selected? 'border' :''}}" wx:for="{{orderStatus}}" wx:key="item">
+			<view class="order-text" data-status='{{index}}' bindtap="switchStatus">{{item.text}}</view>
+		</view>
+	</view>
+	<view class="orders">
+		<view class="no-order layout-align-center" hidden="{{orders.length ? true : false}}">
+			<view class="zan-icon zan-icon-records no-order-icon"></view>
+			<view class="text">暂无订单</view>
+		</view>
+		<view class="" hidden="{{orders.length ? false : true}}" wx:for="{{orders}}" wx:for-item="order" wx:key="order">
+			<view class="zan-cell">
+				<view class="zan-cell__bd">
+					<view class="zan-cell__text">订单日期：{{order.createdAt}}</view>
+					<view class="zan-cell__desc" wx:if="{{currStatus=='pending'}}">订单即将关闭</view>
+				</view>
+				<view class="zan-cell__ft" wx:if="{{currStatus=='pending'}}">{{trans.pending}}</view>
+				<view class="zan-cell__ft" wx:if="{{currStatus=='unshipped'}}">{{trans.unshipped}}</view>
+				<view class="zan-cell__ft" wx:if="{{currStatus=='shipped'}}">{{trans.shipped}}</view>
+				<view class="zan-cell__ft" wx:if="{{currStatus=='received'}}">{{trans.finished}}</view>
+				<view class="zan-cell__ft" wx:if="{{currStatus=='allOrders'}}">{{order.paymentStatus}}</view>
+			</view>
+
+			<view class="zan-card" wx:for="{{order.items}}" wx:for-item="item" wx:key="item">
+				<!-- 卡片左侧商品图片 -->
+				<view class="zan-card__thumb">
+					<image class="zan-card__img " src="{{item.product.image.thumb.url}}" mode="aspectFit"></image>
+				</view>
+				<!-- 卡片右侧详情描述 -->
+				<view class="zan-card__detail">
+					<!-- 商品标题行 -->
+					<!-- 每行可以使用 zan-card__detail-row 来控制展示区域 -->
+					<!-- 每行里面可以用 zan-card__left-col zan-card__right-col 来控制左右展示 -->
+					<view class="zan-card__detail-row">
+						<view class="zan-card__right-col">¥{{item.price}}</view>
+						<view class="zan-card__left-col zan-ellipsis--l2">
+							{{item.name}}
+						</view>
+					</view>
+					<!-- 商品附属信息展示行 -->
+					<view class="zan-card__detail-row zan-c-gray-darker">
+						<view class="zan-card__right-col">x{{item.quantity}}</view>
+						<view class="zan-card__left-col" wx:if="{{item.productOption}}">
+							{{item.productOption.name}}
+						</view>
+					</view>
+				</view>
+			</view>
+
+			<view class="zan-cell">
+				<view class="zan-cell__bd">
+					<view class="zan-cell__text"></view>
+				</view>
+				<view class="zan-cell__ft" style="color:#000000;">共{{order.items.length}}件商品，总金额
+					<text style="color:red;">{{order.totalCost}}元</text>
+				</view>
+			</view>
+			<view class="zan-cell">
+				<view class="zan-cell__bd">
+					<view class="zan-cell__text"></view>
+				</view>
+				<view class="zan-cell__ft layout-row layout-align-between">
+					<button class="zan-btn zan-btn--small zan-btn--warn">{{trans.cancel}}</button>
+					<navigator url="/pages/order/order?orderId={{order._id}}">
+						<button class="zan-btn zan-btn--small zan-btn--primary">{{trans.goToPay}}</button>
+					</navigator>
+				</view>
+			</view>
+		</view>
+	</view>
 </view>

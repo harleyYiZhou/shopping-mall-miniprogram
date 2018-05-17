@@ -54,9 +54,7 @@ const btnNavLink = () => {
 		if (this.data.selected === id) {
 			return;
 		}
-		wx.showLoading({
-			title: 'loading',
-		});
+		showLoading();
 		let url;
 		switch (id) {
 			case '0':
@@ -90,9 +88,9 @@ const showModal = (data = {}) => {
 		cancelColor: '#000000',
 		confirmText: 'common.showModal.confirm',
 		confirmColor: '#3CC51F',
-		success: function (res) { },
-		fail: function (res) { },
-		complete: function (res) { },
+		success(res) { },
+		fail(res) { },
+		complete(res) { },
 	}, data);
 	let trans = require(`../locales/${wx.getStorageSync('locale')}`);
 	let keys = ['title', 'content', 'cancelText', 'confirmText'];
@@ -113,9 +111,9 @@ const showToast = (data = {}) => {
 		image: '',
 		duration: 1500,
 		mask: false,
-		success: function (res) { },
-		fail: function (res) { },
-		complete: function (res) { },
+		success(res) { },
+		fail(res) { },
+		complete(res) { },
 	}, data);
 	let trans = require(`../locales/${wx.getStorageSync('locale')}`);
 	let value = params['title'];
@@ -128,12 +126,12 @@ const showToast = (data = {}) => {
 
 const showLoading = (data = {}) => {
 	let params = Object.assign({
-		title: '',
+		title: 'common.loading',
 		mask: false,
 		// duration: 1500,
-		success: function (res) { },
-		fail: function (res) { },
-		complete: function (res) { },
+		success(res) { },
+		fail(res) { },
+		complete(res) { },
 	}, data);
 	let trans = require(`../locales/${wx.getStorageSync('locale')}`);
 	let value = params['title'];

@@ -57,7 +57,8 @@ module.exports = {
 		setting: 'Setting',
 		service: 'Service Center',
 		coupon: 'Coupon',
-		membershipCard: 'Menbership Card'
+		membershipCard: 'Menbership Card',
+		signin: 'Sign In',
 	},
 	addAddress: {
 		navBarTitle: 'Add address',

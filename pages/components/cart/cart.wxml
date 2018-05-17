@@ -8,12 +8,12 @@
 </template>
 
 <template name="cart-goods">
-	<view class="list-top">
+	<view class="list-top {{editable && 'p-fixed-top'}}">
 		<view class="label">{{trans.shop}}</view>
 		<view class="edit-btn" hidden="{{editable}}" bindtap="editTap">{{trans.edit}}</view>
 		<view class="edit-btn" hidden="{{!editable}}" bindtap="editExit">{{trans.complete}}</view>
 	</view>
-	<view class="goodsList">
+	<view class="goodsList {{editable && 'goodsList-margin'}}">
 		<block wx:for="{{carts}}" wx:for-item="cart" wx:for-index="cartIndex" wx:key="_id">
 			<view class="padding-y-10 padding-left-20 text-primary">{{cart.store.name}}</view>
 			<view class="a-gooods" wx:for="{{cart.items}}" wx:for-index="itemIndex" wx:key="_id">

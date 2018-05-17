@@ -1,12 +1,16 @@
 // pages/order/order.js
-var app = getApp();
-Page({
+const app = getApp();
+const { priceFilter, showModal, showToast, showLoading, debug } = require('../../utils/util');
+const { callApi, session, addToShopCarInfo, removeItems } = require('../../utils/guzzu-utils.js');
+const statuses = ['allOrders', 'pending', 'unshipped', 'shipped', 'received'];
 
-	/**
-   * 页面的初始数据
-   */
+Page({
 	data: {
 		orderStatus: [
+			{
+				text: '全部',
+				selected: true
+			},
 			{
 				text: '待付款',
 				selected: true
@@ -20,98 +24,107 @@ Page({
 				selected: false
 			},
 			{
-				text: '待评价',
-				selected: false
-			},
-			{
 				text: '已完成',
 				selected: false
 			}
 		],
 		orderList: [
-			{id: '123'}
+			{ id: '123' }
 		]
 	},
-
-	/**
-   * 生命周期函数--监听页面加载
-   */
-	onLoad: function (options) {
+	onShow() {
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
+		let status = wx.getStorageSync('status');
+		let orderStatus = [
+			{
+				text: this.data.trans.allOrders,
+				selected: false
+			},
+			{
+				text: this.data.trans.pending,
+				selected: false
+			},
+			{
+				text: this.data.trans.unshipped,
+				selected: false
+			},
+			{
+				text: this.data.trans.shipped,
+				selected: false
+			},
+			{
+				text: this.data.trans.finished,
+				selected: false
+			}
+		];
+		orderStatus[status].selected = true;
+		let currStatus = statuses[status];
 		this.setData({
-			orderStatus: [
-				{
-					text: this.data.trans.allOrders,
-					selected: true
-				},
-				{
-					text: this.data.trans.pending,
-					selected: false
-				},
-				{
-					text: this.data.trans.unshipped,
-					selected: false
-				},
-				{
-					text: this.data.trans.shipped,
-					selected: false
-				},
-				{
-					text: this.data.trans.finished,
-					selected: false
-				}
-			]
+			orderStatus,
+			currStatus,
+		});
+		showLoading();
+		let params = {
+			page: 1,
+			pageSize: this.data.pageSize,
+			filters: {
+				type: 'default'
+			}
+		};
+		if (this.data.currStatus !== 'allOrders') {
+			params.tab = this.data.currStatus;
+		}
+		callApi.post('Order.find', params, 400).then(data => {
+			let orders = data.results;
+			let filterOrders = [];
+			for (let i = 0; i < orders.length; ++i) {
+				orders[i].createdAt = new Date(orders[i].createdAt);
+				orders[i].createdAt = orders[i].createdAt.getFullYear() + '-' +
+				(orders[i].createdAt.getMonth() + 1) + '-' +
+				orders[i].createdAt.getDate() + '- ' + orders[i].createdAt.getHours() + ':' + orders[i].createdAt.getMinutes();
+				filterOrders.push(orders[i]);
+			}
+			this.setData({
+				currentPage: 1,
+				lastPageLength: data.results.length,
+				totalPages: data.totalPages,
+				orders: filterOrders
+			});
+		}).catch(err => {
+			console.error(err);
+		}).finally(() => {
+			wx.stopPullDownRefresh();
+			wx.hideNavigationBarLoading();
+			wx.hideLoading();
 		});
 	},
-
-	/**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-	onReady: function () {
-
+	switchStatus(e) {
+		let { status } = e.currentTarget.dataset;
+		wx.setStorageSync('status', status);
+		this.onShow();
 	},
-
-	/**
-   * 生命周期函数--监听页面显示
-   */
-	onShow: function () {
-
+	onPullDownRefresh() {
 	},
-
-	/**
-   * 生命周期函数--监听页面隐藏
-   */
-	onHide: function () {
-
+	onReachBottom() {
 	},
-
-	/**
-   * 生命周期函数--监听页面卸载
-   */
-	onUnload: function () {
-
-	},
-
-	/**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-	onPullDownRefresh: function () {
-
-	},
-
-	/**
-   * 页面上拉触底事件的处理函数
-   */
-	onReachBottom: function () {
-
-	},
-
-	/**
-   * 用户点击右上角分享
-   */
-	onShareAppMessage: function () {
-
-	}
 });
+function checkStatus(order) {
+	// 待付款
+	if (order.status === 'open' && order.paymentStatus === 'pending') {
+		return 'pending';
+	}
+	// 待发货
+	if (order.paymentStatus === 'paid' && order.shippingStatus === 'unshipped') {
+		return 'unshipped';
+	}
+	// 待收货
+	if (order.shippingStatus === 'shipped') {
+		return 'shipped';
+	}
+	// 已完成
+	if (order.shippingStatus === 'received') {
+		return 'received';
+	}
+}

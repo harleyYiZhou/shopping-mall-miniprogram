@@ -56,7 +56,8 @@ module.exports = {
 		setting: '设置',
 		service: '服务中心',
 		coupon: '优惠券',
-		membershipCard: '会员卡'
+		membershipCard: '会员卡',
+		signin: '未登录',
 	},
 	addAddress: {
 		navBarTitle: 'Add address',

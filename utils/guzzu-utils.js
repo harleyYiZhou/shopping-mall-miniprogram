@@ -6,7 +6,7 @@ let logining = false;
 /**
  * guzzu storage (run time only quick storage)
  */
-var guzzuStorageCache = {};
+let guzzuStorageCache = {};
 
 function storageGet(key) {
 	return guzzuStorageCache[key];
@@ -42,7 +42,7 @@ const session = {
 	},
 	set(accessToken) {
 		wx.setStorageSync('accessToken', {
-			accessToken: accessToken,
+			accessToken,
 			expireAt: new Date(Date.now() + config.SESSION_EXPIRE_SECONDS * 1000)
 		});
 	},
@@ -85,7 +85,7 @@ function _request(method = 'GET') {
 				header: {
 					'x-guzzu-lang': app.globalData.locale
 				},
-				success: function (res) {
+				success(res) {
 					if (res.statusCode === '200' || res.statusCode === 200) {
 						let accessToken = obj.header[config.SESSION_KEY[serve]];
 						if (accessToken) {
@@ -108,7 +108,7 @@ function _request(method = 'GET') {
 						showCancel: false
 					});
 				},
-				fail: function (err) {
+				fail(err) {
 					reject(err);
 				}
 			};
@@ -134,7 +134,7 @@ function _loginToast() {
 	showModal({
 		title: 'common.sessionExpired',
 		content: 'common.reSignin',
-		success: function (res) {
+		success(res) {
 			if (res.confirm) {
 				login();
 			} else {

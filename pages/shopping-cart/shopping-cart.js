@@ -248,7 +248,6 @@ Page({
 		let { carts, goodsList } = this.data;
 		let bool = goodsList.allSelect;
 		if (e.option) {
-			debug('op', e);
 			bool = e.option.bool;
 		} else {
 			bool = !bool;
@@ -257,7 +256,6 @@ Page({
 			let { cartsInfo } = this.data;
 			cartsInfo[cartIndex].selectAll = bool;
 			cart.items.forEach((i, j) => {
-				debug(goodsList.allSelect, bool, cartsInfo, cartIndex, j);
 				cartsInfo[cartIndex].items[j] = bool;
 			});
 			this.setGoodsList(cartsInfo, cartIndex);
