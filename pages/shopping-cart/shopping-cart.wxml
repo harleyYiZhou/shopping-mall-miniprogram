@@ -4,7 +4,7 @@
 
 <view>
   <view class="container">
-    <template is="{{carts.length > 0 ? 'cart-goods' : 'cart-empty'}}" data="{{...goodsList,carts,activeItems,trans}}"></template>
+    <template is="{{carts.length > 0 ? 'cart-goods' : 'cart-empty'}}" data="{{...goodsList,carts,cartsInfo,removeSelections,trans}}"></template>
   </view>
   <view style="height: 200rpx;"></view>
   <template is="bottom-nav" data="{{selected,trans}}" />

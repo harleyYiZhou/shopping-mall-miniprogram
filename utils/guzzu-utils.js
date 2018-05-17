@@ -321,6 +321,34 @@ function addToShopCarInfo(params) {
 	return Promise.resolve(wx.setStorageSync('shopCarInfo', shopCarInfo));
 }
 
+function removeItems(selectedItems, storeId) {
+	let removePromises = [];
+	let selectedCopy = selectedItems.concat();
+	selectedCopy.sort().reverse();
+	selectedCopy.forEach((item, i) => {
+		if (i) {
+			removePromises[i] = new Promise((resolve, rej) => {
+				removePromises[i - 1].then(() => {
+					return callApi.post('StoreCart.removeItem', {
+						storeId,
+						itemIndex: item
+					}, 400);
+				}).then((res) => {
+					resolve(res);
+				}).catch(err => {
+					rej(err);
+				});
+			});
+		} else {
+			removePromises[i] = callApi.post('StoreCart.removeItem', {
+				storeId,
+				itemIndex: item
+			}, 400);
+		}
+	});
+	return removePromises[selectedCopy.length - 1];
+}
+
 Promise.prototype.finally = function (callback) {
 	let P = this.constructor;
 	return this.then(
@@ -338,3 +366,4 @@ module.exports.storageRemove = storageRemove;
 module.exports.bindPhoneNumber = bindPhoneNumber;
 module.exports.session = session;
 module.exports.addToShopCarInfo = addToShopCarInfo;
+exports.removeItems = removeItems;

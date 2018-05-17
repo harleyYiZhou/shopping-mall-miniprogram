@@ -269,6 +269,7 @@ module.exports = {
 		goToPay: 'Proceed to Checkout',
 		'backToStore': 'Back To Store',
 		removeTitle: 'Remove',
+		removeAll: 'Remove All',
 		removeContent: 'Are you sure you want to remove this product?',
 		error1: 'Order: out of stock'
 	},

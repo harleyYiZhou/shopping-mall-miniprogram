@@ -1,6 +1,6 @@
 const guzzuUtils = require('../../utils/guzzu-utils.js');
 const { priceFilter, showLoading, _, debug } = require('../../utils/util');
-const { callApi } = guzzuUtils;
+const { callApi, removeItems } = guzzuUtils;
 const app = getApp();
 const pickupKeys = ['name', 'mobilePhone', 'province', 'provinceId', 'city', 'cityId', 'district', 'districtId', 'address'];
 const areaShippingKeys = ['appointmentTime', 'description', 'image', 'minPurchase', 'shippingCost', 'enabledAppointment'];
@@ -227,7 +227,7 @@ Page({
 			order = result;
 			// clear cart
 			if (selectedItems) {
-				return _removeItems(selectedItems, storeId);
+				return removeItems(selectedItems, storeId);
 			} else {
 				return callApi.post('StoreCart.clear', {
 					storeId
@@ -431,32 +431,4 @@ function _previewOrder() {
 		console.error(err);
 	});
 	return preview;
-}
-
-function _removeItems(selectedItems, storeId) {
-	let removePromises = [];
-	let selectedCopy = selectedItems.concat();
-	selectedCopy.sort().reverse();
-	selectedCopy.forEach((item, i) => {
-		if (i) {
-			removePromises[i] = new Promise((resolve, rej) => {
-				removePromises[i - 1].then(() => {
-					return callApi.post('StoreCart.removeItem', {
-						storeId,
-						itemIndex: item
-					}, 400);
-				}).then((res) => {
-					resolve(res);
-				}).catch(err => {
-					rej(err);
-				});
-			});
-		} else {
-			removePromises[i] = callApi.post('StoreCart.removeItem', {
-				storeId,
-				itemIndex: item
-			}, 400);
-		}
-	});
-	return removePromises[selectedCopy.length - 1];
 }

@@ -11,13 +11,13 @@
 	<view class="list-top">
 		<view class="label">{{trans.shop}}</view>
 		<view class="edit-btn" hidden="{{editable}}" bindtap="editTap">{{trans.edit}}</view>
-		<view class="edit-btn" hidden="{{!editable}}" bindtap="saveTap">{{trans.complete}}</view>
+		<view class="edit-btn" hidden="{{!editable}}" bindtap="editExit">{{trans.complete}}</view>
 	</view>
 	<view class="goodsList">
 		<block wx:for="{{carts}}" wx:for-item="cart" wx:for-index="cartIndex" wx:key="_id">
 			<view class="padding-y-10 padding-left-20 text-primary">{{cart.store.name}}</view>
 			<view class="a-gooods" wx:for="{{cart.items}}" wx:for-index="itemIndex" wx:key="_id">
-				<view class="a-goods-conts {{activeItems[cartIndex].items[itemIndex]? 'active':''}}" bindtap="selectTap" bindtouchstart="touchS" bindtouchmove="touchM"
+				<view class="a-goods-conts {{cartsInfo[cartIndex].items[itemIndex]? 'active':''}}" bindtap="selectTap" bindtouchstart="touchS" bindtouchmove="touchM"
 				   bindtouchend="touchE" data-item-index="{{itemIndex}}" data-cart-index="{{cartIndex}}" style="{{item.left}}">
 					<view class="goods-info {{itemIndex==0 && 'border-top'}}">
 						<view class="img-box">
@@ -42,15 +42,15 @@
 			</view>
 			<view class="jiesuan-box">
 				<view class="left-price">
-					<view class="all-selected  {{activeItems[cartIndex].active?'active':''}}" data-cart-index="{{cartIndex}}" bindtap="bindAllSelect">
+					<view class="all-selected  {{cartsInfo[cartIndex].selectAll?'active':''}}" data-cart-index="{{cartIndex}}" bindtap="bindAllSelect">
 						{{trans.allSelect}}
 					</view>
-					<view class="total" hidden="{{noSelect}}">{{trans.totalCost}}：¥{{activeItems[cartIndex].totalCost}}</view>
+					<view class="total" hidden="{{editable}}">{{trans.totalCost}}：¥{{cartsInfo[cartIndex].totalCost}}</view>
 				</view>
-				<view class="to-pay-btn {{noSelect?'no-select':''}}" hidden="{{editable}}" bindtap="toPayOrder" data-cart-index="{{cartIndex}}">
+				<view class="to-pay-btn {{cartsInfo[cartIndex].itemSelected?'':'no-select'}}" hidden="{{editable}}" bindtap="toPayOrder" data-cart-index="{{cartIndex}}">
 					{{trans.goToPay}}
 				</view>
-				<view class="to-pay-btn {{noSelect?'no-select':''}}" hidden="{{!editable}}" bindtap="deleteSelected">
+				<view class="to-pay-btn {{cartsInfo[cartIndex].itemSelected?'':'no-select'}}" hidden="{{!editable}}" bindtap="removeSelections" data-cart-index="{{cartIndex}}">
 					{{trans.removeTitle}}
 				</view>
 			</view>
@@ -87,9 +87,8 @@
 	</view>
 	<view class="jiesuan-box p-fixed" wx:if="{{editable}}">
 		<view class="left-price">
-			<view class="all-selected  {{allSelect?'active':''}}" bindtap="bindAllSelect">{{trans.allSelect}}</view>
-			{{noSelect}}
+			<view class="all-selected  {{allSelect?'active':''}}" bindtap="toggleTotalSelected">{{trans.allSelect}}</view>
 		</view>
-		<view class="to-pay-btn {{noSelect?'no-select':''}}" bindtap="deleteSelected">{{trans.removeTitle}}</view>
+		<view class="to-pay-btn {{allSelect?'':'no-select'}}" bindtap="deleteSelected">{{trans.removeAll}}</view>
 	</view>
 </template>

@@ -1,21 +1,20 @@
 // index.js
 const app = getApp();
 const { priceFilter, showModal, showToast, showLoading, debug } = require('../../utils/util');
-const { callApi, session, addToShopCarInfo } = require('../../utils/guzzu-utils.js');
+const { callApi, session, addToShopCarInfo, removeItems } = require('../../utils/guzzu-utils.js');
 
 Page({
 	data: {
 		shopCarInfo: null,
 		goodsList: {
 			editable: false,
-			totalCost: 0,
 			allSelect: false,
 			noSelect: false,
 		},
 		delBtnWidth: 120, // 删除按钮宽度单位（rpx）
 		fakeList: {},
 		selected: '1',
-		activeItems: [],
+		cartsInfo: [],
 	},
 	btnNavLink: app.btnNavLink(),
 	// 获取元素自适应后的实际宽度
@@ -53,16 +52,18 @@ Page({
 				return res;
 			}).then(res => {
 				if (res) {
-					let activeItems = res.map(() => {
+					let cartsInfo = res.map(() => {
 						return {
-							active: false,
+							selectAll: false,
+							itemSelected: false,
 							totalCost: '0.00',
+							selectedItems: [],
 							items: []
 						};
 					});
 					this.setData({
 						carts: res,
-						activeItems
+						cartsInfo
 					});
 				}
 			}).catch(err => {
@@ -115,7 +116,7 @@ Page({
 			var list = this.data.goodsList.list;
 			if (index != '' && index != null) {
 				list[parseInt(index)].left = left;
-				this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
+				// this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
 			}
 		}
 	},
@@ -131,7 +132,7 @@ Page({
 			var list = this.data.goodsList.list;
 			if (index !== '' && index != null) {
 				list[parseInt(index)].left = left;
-				this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
+				// this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
 			}
 		}
 	},
@@ -139,7 +140,7 @@ Page({
 		var index = e.currentTarget.dataset.index;
 		var list = this.data.goodsList.list;
 		list.splice(index, 1);
-		this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
+		// this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
 	},
 	/*
 	updateItem: function (event) {
@@ -172,10 +173,10 @@ Page({
 	selectTap: function (e) {
 		let itemIndex = e.currentTarget.dataset.itemIndex;
 		let cartIndex = e.currentTarget.dataset.cartIndex;
-		let activeItems = this.data.activeItems;
-		debug(itemIndex, cartIndex, activeItems);
-		activeItems[cartIndex].items[itemIndex] = !activeItems[cartIndex].items[itemIndex];
-		this.setGoodsList(activeItems, cartIndex);
+		let cartsInfo = this.data.cartsInfo;
+		debug(itemIndex, cartIndex, cartsInfo);
+		cartsInfo[cartIndex].items[itemIndex] = !cartsInfo[cartIndex].items[itemIndex];
+		this.setGoodsList(cartsInfo, cartIndex);
 		// this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), carts);
 	},
 
@@ -198,12 +199,14 @@ Page({
 	*/
 
 	// 设置编辑状态，单购物车：全选，总价
-	setGoodsList(activeItems, cartIndex) {
-		let carts = this.data.carts;
-		allSelect(activeItems, cartIndex, carts);
-		totalCost(activeItems, cartIndex, carts);
+	setGoodsList(cartsInfo, cartIndex) {
+		let { carts, goodsList } = this.data;
+		ckeckSelected(cartsInfo, cartIndex, carts);
+		totalCost(cartsInfo, cartIndex, carts);
+		checkTotalSelected(cartsInfo, goodsList);
 		this.setData({
-			activeItems,
+			cartsInfo,
+			goodsList,
 		});
 	},
 	/*
@@ -233,17 +236,32 @@ Page({
 	// product 全选/不选
 	bindAllSelect: function (e) {
 		let cartIndex = e.currentTarget.dataset.cartIndex;
-		let activeItems = this.data.activeItems;
+		let cartsInfo = this.data.cartsInfo;
 		let carts = this.data.carts;
-		activeItems[cartIndex].active = !activeItems[cartIndex].active;
-		let bool = false;
-		if (activeItems[cartIndex].active) {
-			bool = true;
-		}
+		cartsInfo[cartIndex].selectAll = !cartsInfo[cartIndex].selectAll;
 		carts[cartIndex].items.forEach((i, j) => {
-			activeItems[cartIndex].items[j] = bool;
+			cartsInfo[cartIndex].items[j] = cartsInfo[cartIndex].selectAll;
 		});
-		this.setGoodsList(activeItems, cartIndex);
+		this.setGoodsList(cartsInfo, cartIndex);
+	},
+	toggleTotalSelected(e) {
+		let { carts, goodsList } = this.data;
+		let bool = goodsList.allSelect;
+		if (e.option) {
+			debug('op', e);
+			bool = e.option.bool;
+		} else {
+			bool = !bool;
+		}
+		carts.forEach((cart, cartIndex) => {
+			let { cartsInfo } = this.data;
+			cartsInfo[cartIndex].selectAll = bool;
+			cart.items.forEach((i, j) => {
+				debug(goodsList.allSelect, bool, cartsInfo, cartIndex, j);
+				cartsInfo[cartIndex].items[j] = bool;
+			});
+			this.setGoodsList(cartsInfo, cartIndex);
+		});
 	},
 	// +1
 	jiaBtnTap: function (e) {
@@ -255,7 +273,7 @@ Page({
 			this.setData({
 				carts
 			});
-			this.setGoodsList(this.data.activeItems, cartIndex);
+			this.setGoodsList(this.data.cartsInfo, cartIndex);
 		}).catch(err => {
 			console.error(err);
 		});
@@ -273,7 +291,7 @@ Page({
 			this.setData({
 				carts
 			});
-			this.setGoodsList(this.data.activeItems, cartIndex);
+			this.setGoodsList(this.data.cartsInfo, cartIndex);
 		}).catch(err => {
 			console.error(err);
 		});
@@ -285,7 +303,7 @@ Page({
 
 		let quantity = e.detail.value.replace(/\D+/g, '');
 		quantity < 1 && (quantity = 1);
-		if (quantity === carts[cartIndex].items[itemIndex].quantity) {
+		if (quantity == carts[cartIndex].items[itemIndex].quantity) {
 			return;
 		}
 
@@ -293,32 +311,59 @@ Page({
 			this.setData({
 				carts: res
 			});
-			this.setGoodsList(this.data.activeItems, cartIndex);
+			this.setGoodsList(this.data.cartsInfo, cartIndex);
 		}).catch(err => {
 			console.error(err);
 		});
 	},
-	editTap: function () {
-		var list = this.data.goodsList.list;
-		for (var i = 0; i < list.length; i++) {
-			var curItem = list[i];
-			curItem.active = false;
-		}
-		this.setGoodsList(!this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
+	removeSelections: function (e) {
+		let cartIndex = e.currentTarget.dataset.cartIndex;
+		let { cartsInfo, carts } = this.data;
+		let storeId = carts[cartIndex].store._id;
+		let { selectedItems } = cartsInfo[cartIndex];
+		let that = this;
+		showModal({
+			title: 'shoppingCart.removeTitle',
+			content: 'shoppingCart.removeContent',
+			success: function (res) {
+				if (res.confirm) {
+					removeItems(selectedItems, storeId).then(() => {
+						return getStoreCarts();
+					}).then(carts => {
+						that.setData({
+							carts
+						});
+					}).catch(err => {
+						console.error(err);
+					});
+				}
+			}
+		});
 	},
-	saveTap: function () {
-		var list = this.data.goodsList.list;
-		for (var i = 0; i < list.length; i++) {
-			var curItem = list[i];
-			curItem.active = true;
-		}
-		this.setGoodsList(!this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
+	editTap() {
+		let { goodsList } = this.data;
+		goodsList.editable = true;
+		this.setData({
+			goodsList
+		});
 	},
-	getSaveHide: function () {
+	editExit() {
+		let { goodsList } = this.data;
+		goodsList.editable = false;
+		this.setData({
+			goodsList
+		});
+		this.toggleTotalSelected({
+			option: {
+				bool: false
+			}
+		});
+	},
+	getSaveHide() {
 		var editable = this.data.goodsList.editable;
 		return editable;
 	},
-	deleteSelected: function () {
+	deleteSelected() {
 		var list = this.data.goodsList.list;
 		/*
      for(let i = 0 ; i < list.length ; i++){
@@ -334,16 +379,17 @@ Page({
 		});
 		this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
 	},
+
 	toPayOrder(e) {
 		let cartIndex = e.currentTarget.dataset.cartIndex;
-		let { activeItems, carts } = this.data;
+		let { cartsInfo, carts } = this.data;
 		let storeId = carts[cartIndex].store._id;
 		let url;
-		if (activeItems[cartIndex].active && _checkInventory(carts[cartIndex].items)) {
+		if (cartsInfo[cartIndex].selectAll && _checkInventory(carts[cartIndex].items)) {
 			url = '/pages/checkout/checkout?storeId=' + storeId;
 		} else {
 			let selectedItems = [];
-			activeItems[cartIndex].items.forEach((item, i) => {
+			cartsInfo[cartIndex].items.forEach((item, i) => {
 				if (item) {
 					selectedItems.push(i);
 				}
@@ -397,32 +443,43 @@ function getStoreCarts() {
 	});
 }
 
-// 判断全选状态
-function allSelect(activeItems, cartIndex, carts) {
-	let list = activeItems[cartIndex].items;
+// 判断全选状态，列表中是否有选中的状态
+function ckeckSelected(cartsInfo, cartIndex, carts) {
+	let list = cartsInfo[cartIndex].items;
+	let itemSelected = false;
+	let selectAll = true;
+	let selectedItems = [];
 	for (let i = 0; i < carts[cartIndex].items.length; i++) {
-		if (!list[i]) {
-			activeItems[cartIndex].active = false;
-			return;
+		if (list[i]) {
+			if (!itemSelected) {
+				itemSelected = true;
+			}
+			selectedItems.push(i);
+		} else {
+			if (selectAll) {
+				selectAll = false;
+			}
 		}
 	}
-	activeItems[cartIndex].active = true;
+	cartsInfo[cartIndex].selectedItems = selectedItems;
+	cartsInfo[cartIndex].itemSelected = itemSelected;
+	cartsInfo[cartIndex].selectAll = selectAll;
 }
 // 计算总价
-function totalCost(activeItems, cartIndex, carts) {
-	if (activeItems[cartIndex].active) {
-		activeItems[cartIndex].totalCost = carts[cartIndex].totalCost;
+function totalCost(cartsInfo, cartIndex, carts) {
+	if (cartsInfo[cartIndex].selectAll) {
+		cartsInfo[cartIndex].totalCost = carts[cartIndex].totalCost;
 		return;
 	}
 	let total = carts[cartIndex].items.reduce((inc, item, i) => {
 		let itemPrice = 0;
-		if (activeItems[cartIndex].items[i]) {
+		if (cartsInfo[cartIndex].items[i]) {
 			itemPrice = item.quantity * item.price;
 		}
 		inc += itemPrice;
 		return inc;
 	}, 0);
-	activeItems[cartIndex].totalCost = total.toFixed(2);
+	cartsInfo[cartIndex].totalCost = total.toFixed(2);
 }
 
 function updateItem(cart, itemIndex, quantity) {
@@ -476,4 +533,18 @@ function _checkInventory(items, selectedItems) {
 		});
 	}
 	return bool;
+}
+// prepare for remove
+function checkTotalSelected(cartsInfo, goodsList) {
+	if (!goodsList.editable) {
+		return;
+	}
+	let bool = true;
+	for (let item of cartsInfo) {
+		if (!item.itemSelected) {
+			bool = false;
+			break;
+		}
+	}
+	goodsList.allSelect = bool;
 }

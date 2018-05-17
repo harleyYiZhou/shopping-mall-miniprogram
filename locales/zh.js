@@ -269,6 +269,7 @@ module.exports = {
 		goToPay: '前往结账',
 		backToStore: '返回上一级',
 		removeTitle: '移除商品',
+		removeAll: '全部移除',
 		removeContent: '您确定要移除该商品吗？',
 		error1: '订单：商品库存不足'
 	},
