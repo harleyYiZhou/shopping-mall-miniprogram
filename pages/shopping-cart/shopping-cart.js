@@ -18,11 +18,11 @@ Page({
 	},
 	btnNavLink: app.btnNavLink(),
 	// 获取元素自适应后的实际宽度
-	getEleWidth: function (w) {
-		var real = 0;
+	getEleWidth(w) {
+		let real = 0;
 		try {
-			var res = wx.getSystemInfoSync().windowWidth;
-			var scale = (750 / 2) / (w / 2); // 以宽度750px设计稿做宽度的自适应
+			let res = wx.getSystemInfoSync().windowWidth;
+			let scale = (750 / 2) / (w / 2); // 以宽度750px设计稿做宽度的自适应
 			// console.log(scale);
 			real = Math.floor(res / scale);
 			return real;
@@ -31,19 +31,19 @@ Page({
 			// Do something when catch error
 		}
 	},
-	initEleWidth: function () {
-		var delBtnWidth = this.getEleWidth(this.data.delBtnWidth);
+	initEleWidth() {
+		let delBtnWidth = this.getEleWidth(this.data.delBtnWidth);
 		this.setData({
-			delBtnWidth: delBtnWidth
+			delBtnWidth
 		});
 	},
-	onLoad: function () {
+	onLoad() {
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
 		this.initEleWidth();
 	},
-	onShow: function () {
+	onShow() {
 		app.globalData.login.finally(() => {
 			session.check().then(res => {
 				if (res) {
@@ -52,8 +52,9 @@ Page({
 				return res;
 			}).then(res => {
 				if (res) {
-					let cartsInfo = res.map(() => {
+					let cartsInfo = res.map(item => {
 						return {
+							storeId: item.store._id,
 							selectAll: false,
 							itemSelected: false,
 							totalCost: '0.00',
@@ -70,9 +71,9 @@ Page({
 				console.error(err);
 			});
 		});
-		var shopList = [];
+		let shopList = [];
 		// 获取购物车数据
-		var shopCarInfoMem = wx.getStorageSync('shopCarInfo');
+		let shopCarInfoMem = wx.getStorageSync('shopCarInfo');
 		if (shopCarInfoMem && shopCarInfoMem.shopList) {
 			shopList = shopCarInfoMem.shopList;
 		}
@@ -85,26 +86,26 @@ Page({
 		// this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), shopList);
 		debug('cart show');
 	},
-	toIndexPage: function () {
+	toIndexPage() {
 		wx.redirectTo({
 			url: '/pages/index/index'
 		});
 	},
 
-	touchS: function (e) {
+	touchS(e) {
 		if (e.touches.length === 1) {
 			this.setData({
 				startX: e.touches[0].clientX
 			});
 		}
 	},
-	touchM: function (e) {
-		var index = e.currentTarget.dataset.index;
+	touchM(e) {
+		let index = e.currentTarget.dataset.index;
 		if (e.touches.length === 1) {
-			var moveX = e.touches[0].clientX;
-			var disX = this.data.startX - moveX;
-			var delBtnWidth = this.data.delBtnWidth;
-			var left = '';
+			let moveX = e.touches[0].clientX;
+			let disX = this.data.startX - moveX;
+			let delBtnWidth = this.data.delBtnWidth;
+			let left = '';
 			if (disX == 0 || disX < 0) { // 如果移动距离小于等于0，container位置不变
 				left = 'margin-left:0px';
 			} else if (disX > 0) { // 移动距离大于0，container left值等于手指移动距离
@@ -113,7 +114,7 @@ Page({
 					left = 'left:-' + delBtnWidth + 'px';
 				}
 			}
-			var list = this.data.goodsList.list;
+			let list = this.data.goodsList.list;
 			if (index != '' && index != null) {
 				list[parseInt(index)].left = left;
 				// this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
@@ -121,29 +122,29 @@ Page({
 		}
 	},
 
-	touchE: function (e) {
-		var index = e.currentTarget.dataset.index;
+	touchE(e) {
+		let index = e.currentTarget.dataset.index;
 		if (e.changedTouches.length == 1) {
-			var endX = e.changedTouches[0].clientX;
-			var disX = this.data.startX - endX;
-			var delBtnWidth = this.data.delBtnWidth;
+			let endX = e.changedTouches[0].clientX;
+			let disX = this.data.startX - endX;
+			let delBtnWidth = this.data.delBtnWidth;
 			// 如果距离小于删除按钮的1/2，不显示删除按钮
-			var left = disX > delBtnWidth / 2 ? 'margin-left:-' + delBtnWidth + 'px' : 'margin-left:0px';
-			var list = this.data.goodsList.list;
+			let left = disX > delBtnWidth / 2 ? 'margin-left:-' + delBtnWidth + 'px' : 'margin-left:0px';
+			let list = this.data.goodsList.list;
 			if (index !== '' && index != null) {
 				list[parseInt(index)].left = left;
 				// this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
 			}
 		}
 	},
-	delItem: function (e) {
-		var index = e.currentTarget.dataset.index;
-		var list = this.data.goodsList.list;
+	delItem(e) {
+		let index = e.currentTarget.dataset.index;
+		let list = this.data.goodsList.list;
 		list.splice(index, 1);
 		// this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
 	},
 	/*
-	updateItem: function (event) {
+	updateItem(event) {
 		var that = this;
 		var cartIndex = parseInt(event.currentTarget.dataset.cartIndex);
 		var itemIndex = parseInt(event.currentTarget.dataset.itemIndex);
@@ -170,18 +171,17 @@ Page({
 	*/
 
 	// 单个product 选择状态，关联全选
-	selectTap: function (e) {
+	selectTap(e) {
 		let itemIndex = e.currentTarget.dataset.itemIndex;
 		let cartIndex = e.currentTarget.dataset.cartIndex;
 		let cartsInfo = this.data.cartsInfo;
-		debug(itemIndex, cartIndex, cartsInfo);
 		cartsInfo[cartIndex].items[itemIndex] = !cartsInfo[cartIndex].items[itemIndex];
 		this.setGoodsList(cartsInfo, cartIndex);
 		// this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), carts);
 	},
 
 	/*
-	noSelect: function () {
+	noSelect() {
 		var list = this.data.goodsList.list;
 		var noSelect = 0;
 		for (var i = 0; i < list.length; i++) {
@@ -210,7 +210,7 @@ Page({
 		});
 	},
 	/*
-	setGoodsList: function (editable, total, allSelect, noSelect, list) {
+	setGoodsList(editable, total, allSelect, noSelect, list) {
 		this.setData({
 			goodsList: {
 				editable: editable,
@@ -234,7 +234,7 @@ Page({
 	},
 	*/
 	// product 全选/不选
-	bindAllSelect: function (e) {
+	bindAllSelect(e) {
 		let cartIndex = e.currentTarget.dataset.cartIndex;
 		let cartsInfo = this.data.cartsInfo;
 		let carts = this.data.carts;
@@ -264,11 +264,14 @@ Page({
 		});
 	},
 	// +1
-	jiaBtnTap: function (e) {
+	jiaBtnTap(e) {
 		let cartIndex = e.currentTarget.dataset.cartIndex;
 		let itemIndex = e.currentTarget.dataset.itemIndex;
 		let carts = this.data.carts;
 		let quantity = carts[cartIndex].items[itemIndex].quantity + 1;
+		if (!_checkInventory(carts[cartIndex].items, [itemIndex], quantity)) {
+			return;
+		}
 		updateItem(carts[cartIndex], itemIndex, quantity).then(carts => {
 			this.setData({
 				carts
@@ -279,7 +282,7 @@ Page({
 		});
 	},
 	// -1
-	jianBtnTap: function (e) {
+	jianBtnTap(e) {
 		let cartIndex = e.currentTarget.dataset.cartIndex;
 		let itemIndex = e.currentTarget.dataset.itemIndex;
 		let carts = this.data.carts;
@@ -306,7 +309,9 @@ Page({
 		if (quantity == carts[cartIndex].items[itemIndex].quantity) {
 			return;
 		}
-
+		if (!_checkInventory(carts[cartIndex].items, [itemIndex], quantity)) {
+			return;
+		}
 		updateItem(carts[cartIndex], itemIndex, quantity).then(res => {
 			this.setData({
 				carts: res
@@ -316,25 +321,61 @@ Page({
 			console.error(err);
 		});
 	},
-	removeSelections: function (e) {
+	removeSelections(e) {
 		let cartIndex = e.currentTarget.dataset.cartIndex;
 		let { cartsInfo, carts } = this.data;
 		let storeId = carts[cartIndex].store._id;
-		let { selectedItems } = cartsInfo[cartIndex];
+		let { selectedItems, selectAll } = cartsInfo[cartIndex];
 		let that = this;
+		if (!selectAll && !selectedItems.length) {
+			return;
+		}
 		showModal({
 			title: 'shoppingCart.removeTitle',
 			content: 'shoppingCart.removeContent',
-			success: function (res) {
+			success(res) {
 				if (res.confirm) {
-					removeItems(selectedItems, storeId).then(() => {
+					let params = {
+						storeId,
+						selectAll,
+						selectedItems,
+					};
+					removeItems(params).then(() => {
 						return getStoreCarts();
 					}).then(carts => {
 						that.setData({
 							carts
 						});
+						removeCartsInfo(cartsInfo, cartIndex);
+						that.setGoodsList(cartsInfo, cartIndex);
 					}).catch(err => {
 						console.error(err);
+					});
+				}
+			}
+		});
+	},
+	removeTotal() {
+		let { carts } = this.data;
+		let promises = [];
+		let that = this;
+		showModal({
+			title: 'shoppingCart.removeTitle',
+			content: 'shoppingCart.removeContent',
+			success(res) {
+				if (res.confirm) {
+					for (let i = carts.length - 1; i >= 0; i--) {
+						let params = {
+							storeId: carts[i].store._id,
+							selectAll: true,
+						};
+						promises.push(removeItems(params));
+					}
+					Promise.all(promises).then(() => {
+						that.setData({
+							carts: [],
+							cartsInfo: []
+						});
 					});
 				}
 			}
@@ -360,11 +401,11 @@ Page({
 		});
 	},
 	getSaveHide() {
-		var editable = this.data.goodsList.editable;
+		let editable = this.data.goodsList.editable;
 		return editable;
 	},
 	deleteSelected() {
-		var list = this.data.goodsList.list;
+		let list = this.data.goodsList.list;
 		/*
      for(let i = 0 ; i < list.length ; i++){
            let curItem = list[i];
@@ -385,18 +426,12 @@ Page({
 		let { cartsInfo, carts } = this.data;
 		let storeId = carts[cartIndex].store._id;
 		let url;
-		if (cartsInfo[cartIndex].selectAll && _checkInventory(carts[cartIndex].items)) {
-			url = '/pages/checkout/checkout?storeId=' + storeId;
-		} else {
-			let selectedItems = [];
-			cartsInfo[cartIndex].items.forEach((item, i) => {
-				if (item) {
-					selectedItems.push(i);
-				}
-			});
-			if (selectedItems.length && _checkInventory(carts[cartIndex].items, selectedItems)) {
-				url = `/pages/checkout/checkout?storeId=${storeId}&selectedItems=${JSON.stringify(selectedItems)}`;
-			}
+		let { selectAll, selectedItems } = cartsInfo[cartIndex];
+		if (!selectedItems.length) {
+			return;
+		}
+		if (_checkInventory(carts[cartIndex].items, selectedItems)) {
+			url = `/pages/checkout/checkout?storeId=${storeId}&selectedItems=${JSON.stringify(selectedItems)}&selectAll=${selectAll}`;
 		}
 		if (url) {
 			wx.navigateTo({
@@ -404,7 +439,7 @@ Page({
 			});
 		}
 	},
-	navigateToPayOrder: function () {
+	navigateToPayOrder() {
 		wx.hideLoading();
 		wx.navigateTo({
 			url: '/pages/to-pay-order/index'
@@ -498,32 +533,26 @@ function updateItem(cart, itemIndex, quantity) {
 	});
 }
 
-function _checkInventory(items, selectedItems) {
+function _checkInventory(items, selectedItems, quantity) {
 	let bool = true;
 
 	function _checkItem(item) {
+		if (!quantity) {
+			quantity = item.quantity;
+		}
 		if (item.productOption) {
-			if (item.quantity > item.productOption.maxQuantity) {
+			if (item.productOption.inventoryPolicy === 'limited' && quantity > item.productOption.maxQuantity) {
 				return false;
 			}
-		} else if (item.quantity > item.product.maxQuantity) {
+		} else if (item.product.inventoryPolicy === 'limited' && quantity > item.product.maxQuantity) {
 			return false;
 		}
 		return true;
 	}
 
-	if (selectedItems) {
-		selectedItems.forEach(item => {
-			bool = _checkItem(items[item]);
-		});
-	} else {
-		for (let i = 0; i < items.length; i++) {
-			bool = _checkItem(items[i]);
-			if (!bool) {
-				break;
-			}
-		}
-	}
+	selectedItems.forEach(item => {
+		bool = _checkItem(items[item]);
+	});
 
 	if (!bool) {
 		showModal({
@@ -541,10 +570,22 @@ function checkTotalSelected(cartsInfo, goodsList) {
 	}
 	let bool = true;
 	for (let item of cartsInfo) {
-		if (!item.itemSelected) {
+		if (!item.itemSelected || !item.selectAll) {
 			bool = false;
 			break;
 		}
 	}
 	goodsList.allSelect = bool;
+}
+function removeCartsInfo(cartsInfo, cartIndex) {
+	let cart = cartsInfo[cartIndex];
+	if (cart.selectAll) {
+		cartsInfo.splice(cartIndex, 1);
+		return;
+	}
+	let selectedCopy = cart.selectedItems.concat();
+	selectedCopy.sort().reverse();
+	selectedCopy.forEach(item => {
+		cartsInfo[cartIndex].items.splice(item, 1);
+	});
 }

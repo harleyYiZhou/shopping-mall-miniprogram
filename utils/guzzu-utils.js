@@ -320,8 +320,18 @@ function addToShopCarInfo(params) {
 	}
 	return Promise.resolve(wx.setStorageSync('shopCarInfo', shopCarInfo));
 }
-
-function removeItems(selectedItems, storeId) {
+/**
+ *
+ * @param {Object} params
+ * @param {String} params.storeId
+ * @param {Boolean} params.selectAll if clear all
+ * @param {Array} params.selectedItems items to be removed
+ */
+function removeItems(params) {
+	let { storeId, selectAll, selectedItems } = params;
+	if (selectAll) {
+		return callApi.post('StoreCart.clear', { storeId }, 400);
+	}
 	let removePromises = [];
 	let selectedCopy = selectedItems.concat();
 	selectedCopy.sort().reverse();

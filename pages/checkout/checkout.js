@@ -32,21 +32,22 @@ Page({
 		isLocalDelivery: false,
 		isCustomerPickup: false,
 		isShowAddress: true,
-		selectedItems: null,
+		selectedItems: [],
+		selectAll: false,
 		displayItems: [],
 	},
 	onLoad(option) {
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
-		let storeId = option.storeId;
-		let selectedItems;
-		if (option.selectedItems) {
-			selectedItems = JSON.parse(option.selectedItems);
-			this.setData({
-				selectedItems
-			});
-		}
+		let { storeId, selectedItems, selectAll } = option;
+		selectedItems = JSON.parse(option.selectedItems);
+		selectAll = JSON.parse(option.selectAll);
+		this.setData({
+			selectedItems,
+			selectAll,
+			storeId,
+		});
 
 		let discountItems = [{
 			name: this.data.trans.selectItem
@@ -152,7 +153,6 @@ Page({
 			.then(results => {
 				discountItems = discountItems.concat(results);
 				this.setData({
-					storeId,
 					discountItems,
 				});
 				_previewOrder.call(this);
@@ -180,7 +180,7 @@ Page({
 		let storeId = this.data.cart.store._id;
 		let value = event.detail.value;
 		let discountId = this.data.discountItems[value.discountItemsIndex].discountId;
-		let { selectedItems, shippingType, shippingAddress } = this.data;
+		let { selectedItems, selectAll, shippingType, shippingAddress } = this.data;
 
 		// prepare order params
 		let params;
@@ -225,14 +225,12 @@ Page({
 		let order;
 		callApi.post('Order.create', params, 400).then(result => {
 			order = result;
-			// clear cart
-			if (selectedItems) {
-				return removeItems(selectedItems, storeId);
-			} else {
-				return callApi.post('StoreCart.clear', {
-					storeId
-				}, 400);
-			}
+			// clear cart | items
+			return removeItems({
+				storeId,
+				selectAll,
+				selectedItems
+			});
 		}).then(() => {
 			clearNonce();
 			wx.redirectTo({

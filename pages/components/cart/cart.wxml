@@ -20,9 +20,11 @@
 				<view class="a-goods-conts {{cartsInfo[cartIndex].items[itemIndex]? 'active':''}}" bindtap="selectTap" bindtouchstart="touchS" bindtouchmove="touchM"
 				   bindtouchend="touchE" data-item-index="{{itemIndex}}" data-cart-index="{{cartIndex}}" style="{{item.left}}">
 					<view class="goods-info {{itemIndex==0 && 'border-top'}}">
+					<navigator url="/pages/product-detail/product-detail?productId={{item.productId}}">
 						<view class="img-box">
 							<image src="{{item.product.image.url }}" class="img" />
 						</view>
+					</navigator>
 						<view class="text-box">
 							<view class="goods-title">{{item.name}}</view>
 							<view class="margin-bottom-5 text-muted text-smaller" wx:if="{{item.productOption}}">{{item.productOption.name}}</view>
@@ -30,7 +32,7 @@
 							<!--选择数量  -->
 							<view class="buy-num">
 								<view class="jian-btn {{item.number==1? 'disabled' : ''}}" catchtap="jianBtnTap" data-item-index="{{itemIndex}}" data-cart-index="{{cartIndex}}">-</view>
-								<input type="number" value="{{item.quantity}}" bindblur='inputNum' data-item-index="{{itemIndex}}" data-cart-index="{{cartIndex}}"/>
+								<input type="number" value="{{item.quantity}}" bindinput='inputNum' data-item-index="{{itemIndex}}" data-cart-index="{{cartIndex}}"/>
 								<view class="jia-btn {{item.number==10? 'disabled' : ''}}" catchtap="jiaBtnTap" data-item-index="{{itemIndex}}" data-cart-index="{{cartIndex}}">+</view>
 							</view>
 						</view>
@@ -89,6 +91,6 @@
 		<view class="left-price">
 			<view class="all-selected  {{allSelect?'active':''}}" bindtap="toggleTotalSelected">{{trans.allSelect}}</view>
 		</view>
-		<view class="to-pay-btn {{allSelect?'':'no-select'}}" bindtap="deleteSelected">{{trans.removeAll}}</view>
+		<view class="to-pay-btn {{allSelect?'':'no-select'}}" bindtap="removeTotal">{{trans.removeAll}}</view>
 	</view>
 </template>
