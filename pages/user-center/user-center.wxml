@@ -38,7 +38,7 @@
 			</view>
 		</view>
 		<view>
-			<navigator url="/pages/addresses/addresses">
+			<navigator url="/pages/select-address/select-address?viewOnly=1">
 				<view class="zan-cell zan-cell--access">
 					<view class="zan-cell__bd">
 						<view class="zan-icon zan-icon-location"></view>

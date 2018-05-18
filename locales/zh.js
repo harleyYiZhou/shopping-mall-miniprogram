@@ -245,7 +245,10 @@ module.exports = {
 		updateSuccess: '成功保存地址',
 		infoNotComplete: '地址信息未填写完整，操作失败！',
 		'edit': '编辑',
-		'addShippingAddress': '新增收货地址'
+		'addShippingAddress': '新增收货地址',
+		removeTitle: '移除地址',
+		removeContent: '您确定要移除该地址吗？',
+
 	},
 	shareCampaignInstance: {},
 	store: {

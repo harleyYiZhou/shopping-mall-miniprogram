@@ -245,7 +245,9 @@ module.exports = {
 		updateSuccess: 'Update address success.',
 		infoNotComplete: 'The address information is not complete.',
 		'edit': 'Edit',
-		'addShippingAddress': 'Add New Address'
+		'addShippingAddress': 'Add New Address',
+		removeTitle: 'Remove Address',
+		removeContent: 'Are you sure you want to remove this address?',
 	},
 	shareCampaignInstance: {},
 	store: {

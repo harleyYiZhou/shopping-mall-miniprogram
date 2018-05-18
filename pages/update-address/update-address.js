@@ -1,14 +1,11 @@
 // update-address.js
-var guzzuUtils = require('../../utils/guzzu-utils');
-var app = getApp();
+const guzzuUtils = require('../../utils/guzzu-utils');
+const { showModal, showToast, showLoading, debug, _ } = require('../../utils/util');
+const app = getApp();
+const callApi = guzzuUtils.callApi.post;
 
 // userAddress.js
-// var zoneUtils = require('../../utils/china_zones.js');
 Page({
-
-	/**
-   * 页面的初始数据
-   */
 	data: {
 		zonesList: [],
 		zones: null,
@@ -20,83 +17,48 @@ Page({
 		currAddress: undefined,
 		state: ''
 	},
-
-	/**
-   * 生命周期函数--监听页面加载
-   */
-	onLoad: function (options) {
+	onLoad(options) {
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
-		var that = this;
 		// 请求获取province
-		var params = {
+		let params = {
 			// provinceId: '440000'
 		};
 		console.log(app.globalData.trans);
 
-		guzzuUtils.callApi('Zone.findProvince', params).then(function (result) {
+		callApi('Zone.findProvince', params, 400).then((result) => {
 			// init zone
-			var zones = result;
-			var provinces = [];
-			for (var i in zones) {
+			let zones = result;
+			let provinces = [];
+			for (let i in zones) {
 				provinces.push({
 					id: i,
 					name: zones[i].name
 				});
 			}
-			that.setData({
-				provinces: provinces,
+			this.setData({
+				provinces,
 				provinces_index: 0,
-				zones: zones
+				zones
 			});
 			console.log(zones);
 			console.log(provinces.length);
 		});
-		var addressId = options.addressId;
+		let addressId = options.addressId;
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
 		if (addressId) {
-			that.editAddress(addressId);
+			this.editAddress(addressId);
 		} else {
-			that.addAddress();
+			this.addAddress();
 		}
 	},
-
-	/**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-	onReady: function () {
-
-	},
-
-	/**
-   * 生命周期函数--监听页面显示
-   */
-	onShow: function () {
-
-	},
-
-	/**
-   * 生命周期函数--监听页面隐藏
-   */
-	onHide: function () {
-
-	},
-
-	/**
-   * 生命周期函数--监听页面卸载
-   */
-	onUnload: function () {
-
-	},
-
-	selectZone: function (event, analog_level, analog_index) {
-		var that = this;
-		var level = analog_level || Number(event.target.dataset.level); // 1:province;2:city;3:area;
-		var index = 0;
-		that.setData({
+	selectZone(event, analog_level, analog_index) {
+		let level = analog_level || Number(event.target.dataset.level); // 1:province;2:city;3:area;
+		let index = 0;
+		this.setData({
 			state: ''
 		});
 		if (analog_index != null) {
@@ -104,127 +66,124 @@ Page({
 		} else {
 			index = event.detail.value;
 		}
-		var item = [];
-		// var parent = [];
+		let item = [];
+		let parent = [];
 		if (level === 1) {
-			item = that.data.provinces[index];
+			item = this.data.provinces[index];
 			// 请求获取city
-			var params = {
-				provinceId: that.data.provinces[index].id
+			let params = {
+				provinceId: this.data.provinces[index].id
 			};
-			guzzuUtils.callApi('Zone.findCity', params).then(function (result) {
+			callApi('Zone.findCity', params, 400).then(result => {
 				// init zone
-				var zones = result;
-				var citys = [];
-				for (var i in zones) {
+				let zones = result;
+				let citys = [];
+				for (let i in zones) {
 					citys.push({
 						id: i,
 						name: zones[i].name
 					});
 				}
-				that.setData({
-					citys: citys,
-					citys_index: 0
-					// zones: zones
+				let level1 = citys.length === 0 ? level : level + 1;
+				this.setData({
+					zoneLevel: level1,
+					citys,
+					citys_index: 0,
 				});
-				var level1 = citys.length === 0 ? level : level + 1;
-				that.setData({
-					zoneLevel: level1
-				});
-				// console.log(zones)
-				// console.log(that.data.zoneLevel);
 			});
-			// parent = that.data.zones[item.id];
+			parent = this.data.zones[item.id];
 		} else if (level === 2) {
-			item = that.data.citys[index];
-			var params = {
-				cityId: that.data.citys[index].id
+			item = this.data.citys[index];
+			let params = {
+				cityId: this.data.citys[index].id
 			};
-			guzzuUtils.callApi('Zone.findDistrict', params).then(function (result) {
+			callApi('Zone.findDistrict', params, 400).then(result => {
 				// init zone
-				var zones = result;
-				var areas = [];
-				for (var i in zones) {
+				let zones = result;
+				let areas = [];
+				for (let i in zones) {
 					areas.push({
 						id: i,
 						name: zones[i].name
 					});
 				}
-				that.setData({
-					areas: areas,
+				this.setData({
+					areas,
 					areas_index: 0
 				});
-				var level1 = areas.length === 0 ? level : level + 1;
-				that.setData({
+				let level1 = areas.length === 0 ? level : level + 1;
+				this.setData({
 					zoneLevel: level1
 				});
-				console.log(that.data.zoneLevel);
+				console.log(this.data.zoneLevel);
 
-				if (that.data.areas.length === 1) {
-					console.log(that.data.zoneLevel);
-					var params = {
-						districtId: that.data.areas[0].id
+				if (this.data.areas.length === 1) {
+					console.log(this.data.zoneLevel);
+					let params = {
+						districtId: this.data.areas[0].id
 					};
-					guzzuUtils.callApi('Zone.findStreet', params).then(function (result) {
-						console.log(result);
-						that.setData({
-							zoneLevel: 4,
-							state: 'none'
-						});
-						// init zone
-						var zones = result;
-						var streets = [];
-						for (var i in zones) {
-							streets.push({
-								id: i,
-								name: zones[i].name
-							});
-						}
-						that.setData({
-							streets: streets,
-							streets_index: 0
-						});
-					});
+					return callApi('Zone.findStreet', params, 400);
 				}
-			});
-			console.log(that.data.zoneLevel);
-		} else if (level === 3) {
-			var params = {
-				districtId: that.data.areas[index].id
-			};
-			guzzuUtils.callApi('Zone.findStreet', params).then(function (result) {
+			}).then(result => {
+				if (!result) {
+					return;
+				}
+				console.log(result);
+				this.setData({
+					zoneLevel: 4,
+					state: 'none'
+				});
 				// init zone
-				var zones = result;
-				var streets = [];
-				for (var i in zones) {
+				let zones = result;
+				let streets = [];
+				for (let i in zones) {
 					streets.push({
 						id: i,
 						name: zones[i].name
 					});
 				}
-				that.setData({
-					streets: streets,
+				this.setData({
+					streets,
 					streets_index: 0
 				});
-				that.data.zoneLevel = streets.length === 0 ? level : level + 1;
-				that.setData({
-					zoneLevel: that.data.zoneLevel
+			});
+		} else if (level === 3) {
+			let params = {
+				districtId: this.data.areas[index].id
+			};
+			callApi('Zone.findStreet', params, 400).then((result) => {
+				// init zone
+				let zones = result;
+				let streets = [];
+				for (let i in zones) {
+					streets.push({
+						id: i,
+						name: zones[i].name
+					});
+				}
+				this.setData({
+					streets,
+					streets_index: 0
+				});
+				this.data.zoneLevel = streets.length === 0 ? level : level + 1;
+				this.setData({
+					zoneLevel: this.data.zoneLevel
 				});
 			});
 		} else if (level === 4) {
-			if (that.data.areas.length === 1) {
-				that.setData({
+			if (this.data.areas.length === 1) {
+				this.setData({
 					state: 'none'
 				});
 			}
-			that.setData({
+			this.setData({
 				streets_index: index
 			});
 		}
-
-		var subItems = [];
+		// subItems???
+		let subItems = [];
 		if (parent.subItems) {
-			for (var i in parent.subItems) {
+			for (let i in parent.subItems) {
 				subItems.push({
 					id: i,
 					name: parent.subItems[i].name
@@ -234,54 +193,44 @@ Page({
 
 		switch (level) {
 			case 1:
-				that.data.provinces_index = index;
-				that.data.citys_index = 0;
-				that.data.citys = subItems;
+				this.data.provinces_index = index;
+				this.data.citys_index = 0;
+				this.data.citys = subItems;
 				break;
 			case 2:
-				that.data.citys_index = index;
-				that.data.areas_index = 0;
-				that.data.areas = subItems;
+				this.data.citys_index = index;
+				this.data.areas_index = 0;
+				this.data.areas = subItems;
 				break;
 			case 3:
-				that.data.areas_index = index;
-				that.data.streets_index = 0;
+				this.data.areas_index = index;
+				this.data.streets_index = 0;
 				break;
 			case 4:
-				that.data.streets_index = index;
+				this.data.streets_index = index;
 				console.log(index);
-			default:
-				break;
 		}
-
-		that.setData({
-			provinces_index: that.data.provinces_index,
-			citys_index: that.data.citys_index,
-			areas_index: that.data.areas_index,
-			streets_index: that.data.streets_index,
-			provinces: that.data.provinces,
-			citys: that.data.citys,
-			areas: that.data.areas
-			// zoneLevel: that.data.zoneLevel
-		});
+		let datas = _.pick(this.data, ['provinces_index', 'citys_index', 'areas_index', 'streets_index', 'provinces', 'citys', 'areas']);
+		debug('datas', datas);
+		this.setData(datas);
 	},
 
-	submit: function (event) {
-		var that = this;
-		var value = event.detail.value;
+	submit(event) {
+		let value = event.detail.value;
 		if (!value.name || !value.mobilePhone || !value.province ||
-      !value.city || !value.address || !that.data.citys || !that.data.areas) {
-			wx.showModal({
-				title: that.data.trans.error,
-				content: that.data.trans.infoNotComplete,
+      !value.city || !value.address || !this.data.citys || !this.data.areas) {
+			debug.trace(value);
+			showModal({
+				title: 'common.error',
+				content: 'updateAddress.infoNotComplete',
 				showCancel: false
 			});
 		} else {
-			var params_province = that.data.provinces[value.province];
-			var params_city = that.data.citys[value.city];
-			var params_district = that.data.areas && that.data.areas[value.district];
-			var params_street = that.data.streets[value.street];
-			var params = {
+			let params_province = this.data.provinces[value.province];
+			let params_city = this.data.citys[value.city];
+			let params_district = this.data.areas && this.data.areas[value.district];
+			let params_street = this.data.streets[value.street];
+			let params = {
 				name: value.name,
 				country: 'CHN',
 				province: params_province.name,
@@ -296,328 +245,172 @@ Page({
 				mobilePhone: value.mobilePhone,
 				mobilePhoneCountry: 'CHN'
 			};
-			var uri = 'UserAddress.create';
+			let uri = 'UserAddress.create';
 			if (value.userAddressId) {
 				params.userAddressId = value.userAddressId;
 				uri = 'UserAddress.update';
 			}
-			wx.showLoading({
-				title: that.data.trans.updating
+			showLoading({
+				title: 'updateAddress.updating'
 			});
-			guzzuUtils.callApi(uri, params).then(function (result) {
+			callApi(uri, params, 400).then(result => {
 				app.globalData.shippingAddress = result;
-				that.setData({
+				this.setData({
 					currAddress: result
 				});
-				wx.showToast({
-					title: that.data.trans.updateSuccess,
+				showToast({
+					title: 'updateAddress.updateSuccess',
 					icon: 'success',
 					duration: 1500,
-					success: function () {
+					success() {
 						wx.navigateBack();
 					}
 				});
-			}, function (err) {
-				console.log(err);
-				wx.showModal({
-					title: that.data.trans.error,
-					content: that.data.trans.updateFailed,
+			}).catch(err => {
+				console.error(err);
+				showModal({
+					title: 'common.error',
+					content: 'updateAddress.updateFailed',
 					showCancel: false
 				});
 			});
 		}
 	},
 
-	editAddress: function (addressid) {
-		var that = this;
-		wx.showLoading({
-			title: that.data.trans.loading
-		});
-		var params = {
+	editAddress(addressid) {
+		showLoading();
+		let params = {
 			userAddressId: addressid
 		};
-		guzzuUtils.callApi('UserAddress.get', params).then(function (result) {
+		let userAddress;
+		let index = 0;
+		callApi('UserAddress.get', params, 400).then(result => {
 			console.log(result);
+			userAddress = result;
 			wx.hideLoading();
-			that.data.currAddress = result;
-			that.setData(that.data);
-			var index = 0;
-			for (var i in that.data.zones) {
+			this.data.currAddress = result;
+			this.setData(this.data);
+			for (let i in this.data.zones) {
 				if (i === result.provinceId) {
-					that.selectZone(null, 1, index);
-
+					this.selectZone(null, 1, index);
 					break;
 				}
 				index++;
 			}
 
 			if (result.cityId) {
-				var params1 = {
+				let params1 = {
 					provinceId: result.provinceId
 				};
-				guzzuUtils.callApi('Zone.findCity', params1).then(function (result1) {
-					// init zone
-					var zones = result1;
-					var citys = [];
-					for (var i in zones) {
-						citys.push({
-							id: i,
-							name: zones[i].name
-						});
-					}
-					that.setData({
-						citys: citys,
-						citys_index: 0
-						// zones: zones
-					});
-					var index1 = 0;
-					for (var i in zones) {
-						if (i === result.cityId) {
-							that.selectZone(null, 2, index1);
-							break;
-						}
-						index1++;
-					}
-
-					if (result.districtId) {
-						var params2 = {
-							cityId: result.cityId
-						};
-						guzzuUtils.callApi('Zone.findDistrict', params2).then(function (result2) {
-							// init zone
-							var zones = result2;
-							var areas = [];
-							for (var i in zones) {
-								areas.push({
-									id: i,
-									name: zones[i].name
-								});
-							}
-							that.setData({
-								areas: areas,
-								areas_index: 0
-								// zones: zones
-							});
-							index = 0;
-							for (var i in zones) {
-								if (i === result.districtId) {
-									that.selectZone(null, 3, index);
-									break;
-								}
-								index++;
-							}
-							if (result.streetId) {
-								var params = {
-									districtId: result.districtId
-								};
-								guzzuUtils.callApi('Zone.findStreet', params).then(function (result3) {
-									// init zone
-									var zones = result3;
-									var streets = [];
-									for (var i in zones) {
-										streets.push({
-											id: i,
-											name: zones[i].name
-										});
-									}
-									that.setData({
-										streets: streets,
-										streets_index: 0
-									});
-									index = 0;
-									for (var i in zones) {
-										if (i === result.streetId) {
-											that.selectZone(null, 4, index);
-											break;
-										}
-										index++;
-									}
-									console.log(that.data.areas.length);
-									if (that.data.areas.length === 1) {
-										that.setData({
-											state: 'none'
-										});
-									}
-								});
-							}
-						});
-					}
+				return callApi('Zone.findCity', params1, 400);
+			}
+		}).then(result => {
+			if (!result) {
+				return;
+			}
+			// init zone
+			let zones = result;
+			let citys = [];
+			for (let i in zones) {
+				citys.push({
+					id: i,
+					name: zones[i].name
 				});
 			}
+			this.setData({
+				citys,
+				citys_index: 0
+			});
+			index = 0;
+			for (let i in zones) {
+				if (i === userAddress.cityId) {
+					this.selectZone(null, 2, index);
+					break;
+				}
+				index++;
+			}
+
+			if (userAddress.districtId) {
+				let params = {
+					cityId: userAddress.cityId
+				};
+				return callApi('Zone.findDistrict', params, 400);
+			}
+		}).then((result) => {
+			if (!result) {
+				return;
+			}
+			// init zone
+			let zones = result;
+			let areas = [];
+			for (let i in zones) {
+				areas.push({
+					id: i,
+					name: zones[i].name
+				});
+			}
+			this.setData({
+				areas,
+				areas_index: 0
+				// zones: zones
+			});
+			index = 0;
+			for (let i in zones) {
+				if (i === userAddress.districtId) {
+					this.selectZone(null, 3, index);
+					break;
+				}
+				index++;
+			}
+			if (userAddress.streetId) {
+				let params = {
+					districtId: userAddress.districtId
+				};
+				callApi('Zone.findStreet', params, 400);
+			}
+		}).then((result) => {
+			if (!result) {
+				return;
+			}
+			// init zone
+			let zones = result;
+			let streets = [];
+			for (let i in zones) {
+				streets.push({
+					id: i,
+					name: zones[i].name
+				});
+			}
+			this.setData({
+				streets,
+				streets_index: 0
+			});
+			index = 0;
+			for (let i in zones) {
+				if (i === userAddress.streetId) {
+					this.selectZone(null, 4, index);
+					break;
+				}
+				index++;
+			}
+			console.log(this.data.areas.length);
+			if (this.data.areas.length === 1) {
+				this.setData({
+					state: 'none'
+				});
+			}
+		}).catch(err => {
+			console.error(err);
 		});
 	},
-
-	addAddress: function (event) {
-		var that = this;
-		that.data.currAddress = {};
-		that.data.zoneLevel = 1;
-		that.data.provinces_index = 0;
-		that.data.citys_index = 0;
-		that.data.areas_index = 0;
-		that.data.citys = null;
-		that.data.areas = null;
-		that.setData(that.data);
+	addAddress(event) {
+		this.data.currAddress = {};
+		this.data.zoneLevel = 1;
+		this.data.provinces_index = 0;
+		this.data.citys_index = 0;
+		this.data.areas_index = 0;
+		this.data.citys = null;
+		this.data.areas = null;
+		this.setData(this.data);
 	}
 });
-// var app = getApp();
-// Page({
-// 	data: {
-// 		chinaZones: null,
-// 		shippingAddress: null,
-// 		provinceIndex: -1,
-// 		cityIndex: -1,
-// 		districtIndex: -1
-// 	},
-// 	onLoad: function (options) {
-// 		var that = this;
-// 		var addressId = options.addressId;
-// 		guzzuUtils.callApi("UserAddress.get", {
-// 			userAddressId: addressId
-// 		}).then(function (result) {
-// 			that.setData({
-// 				shippingAddress: result
-// 			});
-// 			app.globalData.shippingAddress = result;
-// 			return getChinaZones();
-// 		}).then(function (result) {
-// 			// parse the JSON file
-// 			var chinaZones = [];
-// 			var i, j, k;
-// 			for (i in result) {
-// 				var cities = [];
-// 				for (j in result[i].city) {
-// 					var areas = [];
-// 					for (k in result[i].city[j].area) {
-// 						areas.push(result[i].city[j].area[k]);
-// 					}
-// 					cities.push({
-// 						cityName: result[i].city[j].city_name,
-// 						areas: areas
-// 					});
-// 				}
-// 				chinaZones.push({
-// 					provinceName: result[i].province_name,
-// 					cities: cities
-// 				});
-// 			}
-// 			that.setData({
-// 				chinaZones: chinaZones
-// 			});
-
-// 			// set the original selection of address
-// 			var shippingAddress = that.data.shippingAddress;
-// 			for (i in chinaZones) {
-// 				for (j in chinaZones[i].cities) {
-// 					for (k in chinaZones[i].cities[j].areas) {
-// 						if (shippingAddress.district ==== chinaZones[i].cities[j].areas[k]) {
-// 							that.setData({
-// 								districtIndex: k
-// 							});
-// 							break;
-// 						}
-// 					}
-// 					if (shippingAddress.city ==== chinaZones[i].cities[j].cityName) {
-// 						that.setData({
-// 							cityIndex: j
-// 						});
-// 						break;
-// 					}
-// 				}
-// 				if (shippingAddress.province ==== chinaZones[i].provinceName) {
-// 					that.setData({
-// 						provinceIndex: i
-// 					});
-// 					break;
-// 				}
-// 			}
-// 		});
-// 	},
-// 	provinceChange: function (event) {
-// 		var that = this;
-// 		that.setData({
-// 			provinceIndex: event.detail.value,
-// 			cityIndex: -1,
-// 			districtIndex: -1
-// 		});
-// 	},
-// 	cityChange: function (event) {
-// 		var that = this;
-// 		that.setData({
-// 			cityIndex: event.detail.value,
-// 			districtIndex: -1
-// 		});
-// 	},
-// 	districtChange: function (event) {
-// 		var that = this;
-// 		that.setData({
-// 			districtIndex: event.detail.value
-// 		});
-// 	},
-// 	submit: function (event) {
-// 		var that = this;
-// 		var value = event.detail.value;
-// 		if (!value.name || !value.mobilePhone || !value.province ||
-// 			!value.city || !value.address || !value.postalCode) {
-// 			wx.showModal({
-// 				title: "错误",
-// 				content: "地址信息未填写完整，操作失败！",
-// 				showCancel: false,
-// 			});
-// 		} else {
-// 			var params = {
-// 				userAddressId: that.data.shippingAddress._id,
-// 				name: value.name,
-// 				mobilePhone: value.mobilePhone,
-// 				country: "CHN",
-// 				province: that.data.chinaZones[value.province].provinceName,
-// 				city: that.data.chinaZones[value.province].cities[value.city].cityName,
-// 				district: that.data.chinaZones[value.province].cities[value.city].areas[value.district],
-// 				address: value.address,
-// 				postalCode: value.postalCode,
-// 				mobilePhoneCountry: "+86"
-// 			};
-
-// 			guzzuUtils.callApi("UserAddress.update", params).then(function (result) {
-// 				app.globalData.shippingAddress = result;
-// 				that.setData({
-// 					shippingAddress: result
-// 				});
-// 				wx.showToast({
-// 					title: '成功更改地址',
-// 					icon: 'success',
-// 					duration: 1500,
-// 					success: function () {
-// 						wx.navigateBack();
-// 					}
-// 				});
-// 			}, function (err) {
-// 				console.log(err);
-// 				wx.showModal({
-// 					title: "错误",
-// 					content: "更改地址失败！",
-// 					showCancel: false,
-// 				});
-// 			});
-// 		}
-// 	}
-// });
-
-// function getChinaZones() {
-// 	return new Promise(function (resolve, reject) {
-// 		var file = "https://m.guzzu.cn/js/china_zones.json";
-// 		wx.request({
-// 			url: file,
-// 			method: "GET",
-// 			success: function (res) {
-// 				if (res.statusCode ==== 200 || res.statusCode ==== "200") {
-// 					resolve(res.data);
-// 				} else {
-// 					reject(res);
-// 				}
-// 			},
-// 			fail: function (err) {
-// 				reject(err);
-// 			}
-// 		});
-// 	});
-// }

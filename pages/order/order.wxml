@@ -88,7 +88,7 @@
         <block wx:if="{{ order.shippingStatus === 'received' }}">
             <view class="weui-flex layout-justify-center margin-top-30 margin-bottom-5">
                 <view class="icon-large weui-flex layout-align-center layout-justify-center">
-                    <image class='icon-large' src='/public/images/icon/check-dark.svg' mode='aspectFit'> </image>
+                    <image class='icon-large' src='/public/images/icon/option-check.png' mode='aspectFit'> </image>
                 </view>
             </view>
             <view class="text-center margin-y-5">

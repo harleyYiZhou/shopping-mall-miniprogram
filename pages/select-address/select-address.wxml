@@ -1,0 +1,32 @@
+<!-- select-address.wxml -->
+<view class="page-container color--grey-100">
+	<view class="color--grey-0 list-bordered padding-x-20">
+		<view class="list-item padding-top-20 padding-bottom-10" wx:for="{{ userAddresses }}" wx:key="_id">
+			<view bindtap="tapAddress" data-index="{{ index }}" class="layout-row layout-align-center">
+				<view wx:if="{{!viewOnly}}">
+					<image class="icon" wx:if="{{ index === selectedIndex }}" src="/public/images/icon/option-check.png" mode="aspectFit"></image>
+					<image class="icon" wx:else src="/public/images/icon/option-none.png" mode="aspectFit"></image>
+				</view>
+				<view class="flex margin-left-5">
+					<text class="block">{{ item.name }} {{ item.mobilePhone }}</text>
+					<text>{{ item.province }} {{ item.city }}</text>
+					<text wx:if="{{ item.district }}"> {{ item.district }}</text>
+          <text>{{ item.street}}</text>
+					<text>  {{ item.address }}</text>
+					<text wx:if="{{ item.postalCode }}">（{{ item.postalCode }}）</text>
+				</view>
+			</view>
+			<view class="layout-row layout-align-center layout-justify-end margin-top-20">
+				<view>
+					<button bindtap="updateAddress" data-address-id="{{ item._id }}" class="btn update-btn">{{trans.edit}}</button>
+				</view>
+				<view bindtap="removeAddress" data-index="{{ index }}" class="inline-block remove-btn margin-left-10">
+					<view class="zan-icon zan-icon-delete color-text--red-600"></view>
+				</view>
+			</view>
+		</view>
+		<view class="padding-bottom-10 padding-top-20 text-center">
+			<button bindtap="addAddress" class="btn width-60">{{trans.addShippingAddress}}</button>
+		</view>
+	</view>
+</view>

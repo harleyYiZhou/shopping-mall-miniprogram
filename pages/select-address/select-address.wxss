@@ -1,0 +1,27 @@
+/* select-address.wxss */
+
+.icon {
+	width: 60rpx;
+	height: 60rpx;
+}
+
+.update-btn {
+	display:block;
+	width: 150rpx;
+	height: 62rpx;
+	line-height: 62rpx;
+}
+
+.remove-btn {
+	border-radius: 10rpx;
+	border: 1rpx solid #f85;
+	width: 60rpx;
+	height: 58rpx;
+	line-height: 60rpx;
+	text-align: center;
+}
+.btn{
+	background-color: #f85;
+	border-color: #f85;
+	color:#fff;
+}

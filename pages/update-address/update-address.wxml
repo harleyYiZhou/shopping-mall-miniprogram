@@ -45,7 +45,7 @@
 				<input class="flex" id="postalCode" name="postalCode" type="text" value="{{ currAddress.postalCode }}" placeholder="请输入邮政编码"></input>
 			</view>-->
 		</view>
-		<button form-type="submit" class="block-btn">{{trans.updateShippingAddress}}</button>
+		<button form-type="submit" class="zan-btn zan-btn--warn">{{trans.updateShippingAddress}}</button>
 	</form>
 </view>
 
