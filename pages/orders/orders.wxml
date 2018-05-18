@@ -1,6 +1,6 @@
 <!--pages/order/order.wxml-->
 <view>
-	<view class="layout-row layout-wrap layout-justify-center width-100 order-nav">
+	<view class="layout-row layout-wrap layout-justify-between width-100 order-nav">
 		<view class="flex {{item.selected? 'border' :''}}" wx:for="{{orderStatus}}" wx:key="item">
 			<view class="order-text" data-status='{{index}}' bindtap="switchStatus">{{item.text}}</view>
 		</view>
@@ -16,11 +16,7 @@
 					<view class="zan-cell__text">订单日期：{{order.createdAt}}</view>
 					<view class="zan-cell__desc" wx:if="{{currStatus=='pending'}}">订单即将关闭</view>
 				</view>
-				<view class="zan-cell__ft" wx:if="{{currStatus=='pending'}}">{{trans.pending}}</view>
-				<view class="zan-cell__ft" wx:if="{{currStatus=='unshipped'}}">{{trans.unshipped}}</view>
-				<view class="zan-cell__ft" wx:if="{{currStatus=='shipped'}}">{{trans.shipped}}</view>
-				<view class="zan-cell__ft" wx:if="{{currStatus=='received'}}">{{trans.finished}}</view>
-				<view class="zan-cell__ft" wx:if="{{currStatus=='allOrders'}}">{{order.paymentStatus}}</view>
+				<view class="zan-cell__ft">{{trans[order.exStatus]}}</view>
 			</view>
 
 			<view class="zan-card" wx:for="{{order.items}}" wx:for-item="item" wx:key="item">
@@ -51,7 +47,7 @@
 
 			<view class="zan-cell">
 				<view class="zan-cell__bd">
-					<view class="zan-cell__text"></view>
+					<view class="zan-cell__text">{{trans.refId}}{{order.refId}}</view>
 				</view>
 				<view class="zan-cell__ft" style="color:#000000;">共{{order.items.length}}件商品，总金额
 					<text style="color:red;">{{order.totalCost}}元</text>
@@ -62,9 +58,10 @@
 					<view class="zan-cell__text"></view>
 				</view>
 				<view class="zan-cell__ft layout-row layout-align-between">
-					<button class="zan-btn zan-btn--small zan-btn--warn">{{trans.cancel}}</button>
+					<!-- <button class="zan-btn zan-btn--small zan-btn--warn">{{trans.cancel}}</button> -->
 					<navigator url="/pages/order/order?orderId={{order._id}}">
-						<button class="zan-btn zan-btn--small zan-btn--primary">{{trans.goToPay}}</button>
+						<button wx:if="{{order.exStatus==='pending'}}" class="zan-btn zan-btn--small zan-btn--primary">{{trans.goToPay}}</button>
+						<button wx:else class="zan-btn zan-btn--small zan-btn--primary">{{trans.viewDetails}}</button>
 					</navigator>
 				</view>
 			</view>

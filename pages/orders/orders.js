@@ -55,7 +55,7 @@ Page({
 				selected: false
 			},
 			{
-				text: this.data.trans.finished,
+				text: this.data.trans.received,
 				selected: false
 			}
 		];
@@ -84,6 +84,7 @@ Page({
 				orders[i].createdAt = orders[i].createdAt.getFullYear() + '-' +
 				(orders[i].createdAt.getMonth() + 1) + '-' +
 				orders[i].createdAt.getDate() + '- ' + orders[i].createdAt.getHours() + ':' + orders[i].createdAt.getMinutes();
+				orders[i].exStatus = checkStatus(orders[i]);
 				filterOrders.push(orders[i]);
 			}
 			this.setData({
@@ -125,6 +126,6 @@ function checkStatus(order) {
 	}
 	// 已完成
 	if (order.shippingStatus === 'received') {
-		return 'received';
+		return 'closed';
 	}
 }

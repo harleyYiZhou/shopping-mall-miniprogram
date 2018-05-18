@@ -52,6 +52,7 @@ module.exports = {
 		shipped: '待收货',
 		unComment: '待评价',
 		refund: '退款订单',
+		received: '已完成',
 		myFavorite: '我的收藏',
 		setting: '设置',
 		service: '服务中心',
@@ -208,16 +209,16 @@ module.exports = {
 		pending: '待付款',
 		unshipped: '待发货',
 		shipped: '待收货',
-		finished: '已完成',
+		received: '已收货',
 		refId: '订单号',
 		option: '选项',
 		totalCost: '订单合计',
-		closed: '交易已完成',
+		closed: '已完成',
 		viewDetails: '详细',
 		cancel: '取消订单',
 		goToPay: '去支付',
 		emptyCart: '购物车里目前没有商品',
-		emptyCartHint: '请到店铺首页逛逛吧！'
+		emptyCartHint: '请到首页逛逛吧！'
 	},
 	pageLayout: {},
 	productDetail: {

@@ -25,16 +25,16 @@
 				<view class="order-name">{{trans.pending}}</view>
 			</view>
 			<view bindtap='toOrders' data-status='2' class="layout-column layout-align-center flex">
-				<view class="zan-icon zan-icon-edit order-icon"></view>
+				<view class="zan-icon zan-icon-tosend order-icon"></view>
 				<view class="order-name">{{trans.unshipped}}</view>
 			</view>
 			<view bindtap='toOrders' data-status='3' class="layout-column layout-align-center flex">
 				<view class="zan-icon zan-icon-logistics order-icon"></view>
 				<view class="order-name">{{trans.shipped}}</view>
 			</view>
-			<view bindtap='toOrders' data-status='1' class="layout-column layout-align-center flex">
-				<view class="zan-icon zan-icon-gold-coin order-icon"></view>
-				<view class="order-name">{{trans.refund}}</view>
+			<view bindtap='toOrders' data-status='4' class="layout-column layout-align-center flex">
+				<view class="zan-icon zan-icon-completed order-icon"></view>
+				<view class="order-name">{{trans.received}}</view>
 			</view>
 		</view>
 		<view>
@@ -48,6 +48,7 @@
 				</view>
 			</navigator>
 		</view>
+		<!--
 		<view>
 			<view class="zan-cell zan-cell--access">
 				<view class="zan-cell__bd">
@@ -66,6 +67,7 @@
 				<view class="zan-cell__ft"></view>
 			</view>
 		</view>
+		  -->
 		<view>
 			<view class="zan-cell zan-cell--access">
 				<view class="zan-cell__bd">
