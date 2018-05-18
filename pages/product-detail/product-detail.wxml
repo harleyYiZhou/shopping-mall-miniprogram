@@ -8,7 +8,9 @@
    </view>
    <view class="introduction layout-column padding-x-20 padding-y-10">
       <text class="product-title">{{product.name}}</text>
-      <text class="product-price">￥{{product.price}}</text>
+      <text wx:if="{{product.hasProductOptions && locale=='en'}}" class="product-price">From ￥{{product.price}}</text>
+      <text wx:if="{{product.hasProductOptions && locale=='zh'}}" class="product-price">￥{{product.price}} 起</text>
+      <text wx:if="{{product.hasProductOptions==false}}" class="product-price">￥{{product.price}}</text>
    </view>
    <view wx:if="{{product.productOptions.length>0}}" class="option">
       <view class="zan-cell zan-cell--access" bindtap="showPopup">
@@ -37,8 +39,7 @@
    </view>
    <view class="spacer"></view>
 
-
-   <view wx:if='{{!showProductDetail}}' class="section layout-row layout-justify-center margin-y-10 padding-bottom-20">
+   <view wx:if='{{!showProductDetail && product.description}}' class="section layout-row layout-justify-center margin-y-10 padding-bottom-20">
       下拉查看图文详情
    </view>
    <view wx:if='{{showProductDetail}}' class="margin-y-20">
@@ -102,7 +103,7 @@
          <view>{{trans.cart}}</view>
       </view>
       <view class="flex">
-         <button class="zan-btn  zan-btn--danger">{{trans.payment}}</button>
+         <button class="zan-btn  zan-btn--danger" bindtap="checkout">{{trans.payment}}</button>
       </view>
       <view class="flex">
          <button class="zan-btn  zan-btn--warn" bindtap="addToCart">{{trans.addToCart}}</button>
@@ -149,8 +150,13 @@
             <view class="num-jia {{buyNumber== buyNumMax ? 'hui': ''}}" bindtap="numAdd">+</view>
          </view>
       </view>
-      <view class="margin-top-10">
-         <button class="zan-btn zan-btn--danger" bindtap="addToCart">{{trans.addToCart}}</button>
-      </view>
+      <view class="margin-top-10 layout-row">
+         <view class="flex">
+				<button class="zan-btn  zan-btn--danger" bindtap="checkout">{{trans.payment}}</button>
+			</view>
+			<view class="flex">
+				<button class="zan-btn  zan-btn--warn" bindtap="addToCart">{{trans.addToCart}}</button>
+			</view>
+		</view>
    </view>
 </view>

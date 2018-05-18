@@ -4,8 +4,8 @@ const { btnNavLink } = require('./utils/util.js');
 const { login } = require('./utils/guzzu-utils.js');
 
 App({
-	onLaunch: function () {
-		var value = wx.getStorageSync('locale');
+	onLaunch() {
+		let value = wx.getStorageSync('locale');
 		if (value) {
 			this.globalData.locale = value;
 		} else {

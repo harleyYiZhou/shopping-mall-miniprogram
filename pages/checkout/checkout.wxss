@@ -25,11 +25,11 @@
 
 .select-address-btn {
 	display: inline-block;
-	color: #e0e0e0;
+	color: #fff;
 	height: 70rpx;
 	line-height: 70rpx;
 	border: 1rpx solid #e0e0e0;
-	background-color: #424242;
+	background-color: #f85;
 	font-size: 95%;
 }
 
@@ -67,4 +67,20 @@
 .pickupAdress{
   padding: 5px 2px 5px 5px;
   background-color:rgba(200,200,200,0.1);
+}
+
+.footer-box {
+	position: fixed;
+	display: flex;
+	justify-content: flex-end;
+	align-items: center;
+   bottom: 0px;
+   left: 0px;
+   width: 100%;
+	z-index: 10;
+	border-top: 1rpx solid #e0e0e0;
+   background: #fff;
+}
+.page-container{
+	padding-bottom: 100rpx;
 }

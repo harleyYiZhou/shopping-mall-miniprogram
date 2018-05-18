@@ -1,7 +1,7 @@
 // pages/product-detail/product-detail
 const app = getApp();
-const { callApi, session, addToShopCarInfo } = require('../../utils/guzzu-utils.js');
-const { priceFilter, showModal, showToast } = require('../../utils/util');
+const { callApi, session, addToShopCarInfo, checkInventory } = require('../../utils/guzzu-utils.js');
+const { priceFilter, debug, showToast } = require('../../utils/util');
 const WxParse = require('../../utils/wxParse/wxParse.js');
 
 Page({
@@ -25,7 +25,6 @@ Page({
 
 		callApi.get(`products/${productId}?populate=store`).then(res => {
 			priceFilter(res);
-			console.log('product', res);
 			let images = res.gallery.concat(res.image);
 			let items = images.map(item => {
 				return {
@@ -35,7 +34,9 @@ Page({
 			let imgHeight = items[0].image.medium.height;
 			let imgWidth = items[0].image.medium.width;
 			let swiperHeight = 750 / imgWidth * imgHeight;
+			let { store } = res;
 			that.setData({
+				store,
 				product: res,
 				gallery: {
 					items,
@@ -49,9 +50,9 @@ Page({
 			if (res.shippingDescription && res.shippingDescription.content) {
 				WxParse.wxParse('shippingDescription', 'html', res.shippingDescription.content, that);
 			}
-			return callApi.get(`stores/${res.store._id}/profile`);
+			return callApi.get(`stores/${store._id}/profile`);
 		}).then(res => {
-			console.log('profile', res);
+			debug.trace('profile', res);
 			that.setData({
 				terms: res
 			});
@@ -59,11 +60,6 @@ Page({
 			console.error(err);
 		});
 	},
-
-	onReady() {
-
-	},
-
 	onShow() {
 
 	},
@@ -182,6 +178,44 @@ Page({
 		this.setData({
 			selectIndex
 		});
+	},
+	checkout() {
+		let { product, selectIndex, buyNum: quantity, store } = this.data;
+		let item = {
+			name: product.name,
+			productId: product._id,
+			price: product.price,
+			quantity,
+			product,
+		};
+		if (selectIndex > -1) {
+			item.name = product.productOptions[selectIndex].name;
+			item.price = product.productOptions[selectIndex].price;
+			item.productOption = product.productOptions[selectIndex];
+		} else {
+			if (product.productOptions && product.productOptions.length) {
+				return this.showPopup();
+			}
+			item.quantity = 1;
+		}
+		let url;
+		let selectedItems = [0];
+		let cart = {
+			store,
+			items: [item]
+		};
+		if (checkInventory(cart.items, selectedItems)) {
+			url = `/pages/checkout/checkout?storeId=${store._id}&selectedItems=${JSON.stringify(selectedItems)}&noStoreCart=1`;
+			wx.setStorageSync('cart', cart);
+		}
+
+		if (url) {
+			if (session.checkSync()) {
+				wx.navigateTo({
+					url,
+				});
+			}
+		}
 	},
 	onReachBottom() {
 		if (this.data.showProductDetail) {

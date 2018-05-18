@@ -174,7 +174,7 @@
 						<text class="text-primary">￥{{ order.totalCost  }}</text>
 					</view>
 				</view>
-				<view class="row row-padded">
+				<view wx:if="{{discountItems.length>1}}" class="row row-padded">
 					<view class="col-3 guzzu-input-label">
 						{{trans.optionalDiscount}}
 					</view>
@@ -193,8 +193,11 @@
 				<input class="flex" id="note" name="note" type="text" placeholder="{{trans.note}}"></input>
 			</view>
 		</view>
-		<view class="margin-x-10 padding-y-20">
-			<button class="block-btn" form-type="submit">{{trans.submit}}</button>
+		<view class="footer-box">
+			<text class="color-text--red-400 margin-right-10">{{trans.totalCost}}:￥{{order.totalCost}}</text>
+			<view class="width-30">
+				<button class="zan-btn zan-btn--danger" form-type="submit">{{trans.submit}}</button>
+			</view>
 		</view>
 	</form>
 </view>

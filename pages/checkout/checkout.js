@@ -14,7 +14,7 @@ Page({
 		provinceIndex: -1,
 		cityIndex: -1,
 		districtIndex: -1,
-		items: [],
+		items: [], // 将要提交的商品的参数从 cart 里提取出来
 		discountItems: [],
 		serviceHours: app.globalData.serviceHours,
 		weekdays: ['周一', '周二', '周三', '周四', '周五', '周六', '周日'],
@@ -35,37 +35,45 @@ Page({
 		selectedItems: [],
 		selectAll: false,
 		displayItems: [],
+		noStoreCart: '',
 	},
 	onLoad(option) {
+		debug('option', option);
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
-		let { storeId, selectedItems, selectAll } = option;
-		selectedItems = JSON.parse(option.selectedItems);
-		selectAll = JSON.parse(option.selectAll);
+		let { storeId, selectedItems = [], selectAll = '', noStoreCart = '' } = option;
+		selectedItems = selectedItems && JSON.parse(selectedItems);
+		selectAll = selectAll && JSON.parse(selectAll);
 		this.setData({
 			selectedItems,
 			selectAll,
 			storeId,
+			noStoreCart
 		});
 
 		let discountItems = [{
 			name: this.data.trans.selectItem
 		}];
-		showLoading({
-			title: 'common.loading'
-		});
+		showLoading();
 		// 1. get store cart
-		callApi.post('StoreCart.get', {
-			storeId
-		}, 400).then(result => {
+		let getCart;
+		if (noStoreCart) {
+			getCart = Promise.resolve(wx.getStorageSync('cart'));
+		} else {
+			getCart = callApi.post('StoreCart.get', {
+				storeId
+			}, 400);
+		}
+		getCart.then(result => {
+			// wx.removeStorageSync('cart');
 			if (!result || result.items.length < 1) {
 				wx.redirectTo({
 					url: '/pages/shopping-cart/shopping-cart'
 				});
 				throw new TypeError('Empty Order');
 			}
-			priceFilter(result);
+			noStoreCart || priceFilter(result);
 			this.setData({
 				cart: result
 			});
@@ -131,7 +139,7 @@ Page({
 					if (item.productOption) {
 						itm.productOptionId = item.productOption._id;
 					}
-					if (selectedItems) {
+					if (!selectAll) {
 						if (selectedItems.indexOf(index) > -1) {
 							items.push(itm);
 							displayItems.push(item);
@@ -180,7 +188,7 @@ Page({
 		let storeId = this.data.cart.store._id;
 		let value = event.detail.value;
 		let discountId = this.data.discountItems[value.discountItemsIndex].discountId;
-		let { selectedItems, selectAll, shippingType, shippingAddress } = this.data;
+		let { selectedItems, selectAll, shippingType, shippingAddress, noStoreCart } = this.data;
 
 		// prepare order params
 		let params;
@@ -226,6 +234,9 @@ Page({
 		callApi.post('Order.create', params, 400).then(result => {
 			order = result;
 			// clear cart | items
+			if (noStoreCart) {
+				return;
+			}
 			return removeItems({
 				storeId,
 				selectAll,

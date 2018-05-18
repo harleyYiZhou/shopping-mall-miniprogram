@@ -1,7 +1,7 @@
 // index.js
 const app = getApp();
 const { priceFilter, showModal, showToast, showLoading, debug } = require('../../utils/util');
-const { callApi, session, addToShopCarInfo, removeItems } = require('../../utils/guzzu-utils.js');
+const { callApi, session, addToShopCarInfo, removeItems, checkInventory } = require('../../utils/guzzu-utils.js');
 
 Page({
 	data: {
@@ -267,7 +267,7 @@ Page({
 		let itemIndex = e.currentTarget.dataset.itemIndex;
 		let carts = this.data.carts;
 		let quantity = carts[cartIndex].items[itemIndex].quantity + 1;
-		if (!_checkInventory(carts[cartIndex].items, [itemIndex], quantity)) {
+		if (!checkInventory(carts[cartIndex].items, [itemIndex], quantity)) {
 			return;
 		}
 		updateItem(carts[cartIndex], itemIndex, quantity).then(carts => {
@@ -307,7 +307,7 @@ Page({
 		if (quantity == carts[cartIndex].items[itemIndex].quantity) {
 			return;
 		}
-		if (!_checkInventory(carts[cartIndex].items, [itemIndex], quantity)) {
+		if (!checkInventory(carts[cartIndex].items, [itemIndex], quantity)) {
 			return;
 		}
 		updateItem(carts[cartIndex], itemIndex, quantity).then(res => {
@@ -428,7 +428,7 @@ Page({
 		if (!selectedItems.length) {
 			return;
 		}
-		if (_checkInventory(carts[cartIndex].items, selectedItems)) {
+		if (checkInventory(carts[cartIndex].items, selectedItems)) {
 			url = `/pages/checkout/checkout?storeId=${storeId}&selectedItems=${JSON.stringify(selectedItems)}&selectAll=${selectAll}`;
 		}
 		if (url) {
@@ -531,36 +531,6 @@ function updateItem(cart, itemIndex, quantity) {
 	});
 }
 
-function _checkInventory(items, selectedItems, quantity) {
-	let bool = true;
-
-	function _checkItem(item) {
-		if (!quantity) {
-			quantity = item.quantity;
-		}
-		if (item.productOption) {
-			if (item.productOption.inventoryPolicy === 'limited' && quantity > item.productOption.maxQuantity) {
-				return false;
-			}
-		} else if (item.product.inventoryPolicy === 'limited' && quantity > item.product.maxQuantity) {
-			return false;
-		}
-		return true;
-	}
-
-	selectedItems.forEach(item => {
-		bool = _checkItem(items[item]);
-	});
-
-	if (!bool) {
-		showModal({
-			title: 'common.error',
-			content: 'common.error1',
-			showCancel: false
-		});
-	}
-	return bool;
-}
 // prepare for remove
 function checkTotalSelected(cartsInfo, goodsList) {
 	if (!goodsList.editable) {

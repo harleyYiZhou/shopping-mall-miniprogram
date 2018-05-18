@@ -146,9 +146,9 @@ function _loginToast() {
 
 function checkMobilePhone() {
 	return new Promise((resolve, reject) => {
-		debug('checkMobilePhone', session.get());
+		// debug('checkMobilePhone', session.get());
 		callApi.post('Auth.getCurrentSession', {}, 400).then(result => {
-			debug('1', result);
+			// debug.trace('1', result);
 			if (result && result.user && result.user.mobilePhone) {
 				resolve(result);
 			} else {
@@ -367,6 +367,37 @@ Promise.prototype.finally = function (callback) {
 	);
 };
 
+function checkInventory(items, selectedItems, quantity) {
+	let bool = true;
+
+	function _checkItem(item) {
+		if (!quantity) {
+			quantity = item.quantity;
+		}
+		if (item.productOption) {
+			if (item.productOption.inventoryPolicy === 'limited' && quantity > item.productOption.maxQuantity) {
+				return false;
+			}
+		} else if (item.product.inventoryPolicy === 'limited' && quantity > item.product.maxQuantity) {
+			return false;
+		}
+		return true;
+	}
+
+	selectedItems.forEach(item => {
+		bool = _checkItem(items[item]);
+	});
+
+	if (!bool) {
+		showModal({
+			title: 'common.error',
+			content: 'common.error1',
+			showCancel: false
+		});
+	}
+	return bool;
+}
+
 module.exports.callApi = callApi;
 module.exports.checkMobilePhone = checkMobilePhone;
 module.exports.login = login;
@@ -377,3 +408,4 @@ module.exports.bindPhoneNumber = bindPhoneNumber;
 module.exports.session = session;
 module.exports.addToShopCarInfo = addToShopCarInfo;
 exports.removeItems = removeItems;
+exports.checkInventory = checkInventory;
