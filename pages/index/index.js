@@ -29,7 +29,7 @@ Page({
 			selected: '0'
 		});
 	},
-	linkTo: function (e) {
+	linkTo(e) {
 		let linkId = e.currentTarget.dataset.linkId;
 		let linkType = e.currentTarget.dataset.linkType;
 
@@ -42,10 +42,10 @@ Page({
 				url = '/pages/product-detail/product-detail?productId=' + linkId;
 				break;
 			case 'shoppingMallCategory':
-				url = 'pages/catagory/catagory';
+				url = '/pages/catagory/catagory';
 				break;
 			case 'store':
-				url = 'pages/store/store?slug=' + linkId;
+				url = '/pages/store/store?slug=' + linkId;
 				break;
 			case 'category':
 				url = '/pages/store-category/store-category?slug=' + linkId;
@@ -54,17 +54,23 @@ Page({
 				console.error('unkown linkType');
 				url = '/pages/index/index';
 		}
+		if (linkType === 'shoppingMallCategory' || linkType === 'index') {
+			wx.redirectTo({
+				url,
+			});
+			return;
+		}
 		wx.navigateTo({
 			url,
 		});
 	},
-	tabPageNav: function (e) {
+	tabPageNav(e) {
 		this.setData({
 			pageIndex: e.currentTarget.dataset.id
 		});
 		_processCurrentPage(this);
 	},
-	bindchange: function (e) {
+	bindchange(e) {
 		this.setData({ current: e.detail.current });
 	},
 

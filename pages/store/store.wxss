@@ -1,0 +1,27 @@
+/* store.wxss */
+/* @import "../../libs/tabBar/tabBar.wxss"; */
+.store-logo {
+    width: 120rpx;
+    height: 120rpx;
+}
+
+.product-card {
+    background-color: #fff;
+}
+
+.product-image {
+    width: 345rpx;
+    height: 345rpx;
+}
+
+.product-name {
+    display: block;
+    line-height: 42rpx;
+    height: 84rpx;
+    overflow: hidden;
+}
+
+.flex-per-40 {
+    flex: 1 1 40%;
+    max-width: 45%;
+}

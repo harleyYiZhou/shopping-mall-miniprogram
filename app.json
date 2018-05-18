@@ -11,6 +11,7 @@
     "pages/orders/orders",
 	 "pages/addresses/addresses",
 	 "pages/select-address/select-address",
+	 "pages/store/store",
     "pages/update-address/update-address",
     "pages/account/account",
     "pages/product-detail/product-detail",

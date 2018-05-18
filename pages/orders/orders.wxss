@@ -10,7 +10,8 @@
   left: 0rpx;
   height: 70rpx;
   width: 100%;
-  z-index: 1000;
+  z-index: 10;
+  background-color: #fff;
 }
 
 .order-text {
@@ -22,6 +23,7 @@
 
 .orders {
   margin-top: 70rpx;
+  background-color: #fff;
 }
 
 .no-order {

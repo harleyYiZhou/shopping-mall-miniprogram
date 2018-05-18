@@ -15,16 +15,20 @@
 	</view>
 	<view class="goodsList {{editable && 'goodsList-margin'}}">
 		<block wx:for="{{carts}}" wx:for-item="cart" wx:for-index="cartIndex" wx:key="_id">
-			<view class="padding-y-10 padding-left-20 text-primary">{{cart.store.name}}</view>
+			<navigator url="/pages/store/store?slug={{cart.store.slug}}" class="layout-row layout-align-center">
+				<view class="zan-icon zan-icon-shop padding-left-10"></view>
+				<view class="padding-y-10 padding-x-5 text-primary">{{cart.store.name}}</view>
+				<view class="zan-icon zan-icon-arrow"></view>
+			</navigator>
 			<view class="a-gooods" wx:for="{{cart.items}}" wx:for-index="itemIndex" wx:key="_id">
 				<view class="a-goods-conts {{cartsInfo[cartIndex].items[itemIndex]? 'active':''}}" bindtap="selectTap" bindtouchstart="touchS" bindtouchmove="touchM"
 				   bindtouchend="touchE" data-item-index="{{itemIndex}}" data-cart-index="{{cartIndex}}" style="{{item.left}}">
 					<view class="goods-info {{itemIndex==0 && 'border-top'}}">
-					<navigator url="/pages/product-detail/product-detail?productId={{item.productId}}">
-						<view class="img-box">
-							<image src="{{item.product.image.url }}" class="img" />
-						</view>
-					</navigator>
+						<navigator url="/pages/product-detail/product-detail?productId={{item.productId}}">
+							<view class="img-box">
+								<image src="{{item.product.image.url }}" class="img" />
+							</view>
+						</navigator>
 						<view class="text-box">
 							<view class="goods-title">{{item.name}}</view>
 							<view class="margin-bottom-5 text-muted text-smaller" wx:if="{{item.productOption}}">{{item.productOption.name}}</view>

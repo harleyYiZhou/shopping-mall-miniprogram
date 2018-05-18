@@ -1,0 +1,28 @@
+<!-- store.wxml -->
+<view class="page-container color--grey-100">
+	<view class="layout-row padding-y-20 layout-align-center layout-justify-center">
+		<image class="store-logo" src="{{ store.logo.thumb.url }}" mode="aspectFit"></image>
+		<text class="margin-x-10 text-title">{{ store.name }}</text>
+		<!--<view class="btn-bar">
+      <button class="follow-btn" bindtap="tapFollow">关注</button>
+      <button class="message-btn" bindtap="tapMessage">客服</button>
+    </view>-->
+	</view>
+	<view class="color--grey-100">
+		<view class="layout-row layout-wrap">
+			<block wx:for="{{ products }}" wx:key="_id">
+				<view class="flex-per-40  margin-y-5 product-card {{index%2===0 ? 'margin-x-10' : 'margin-right-10'}}" bindtap="tapProduct" data-product-id="{{ products[index]._id }}">
+					<image class="product-image" src="{{ products[index].image.url }}" mode="aspectFill"></image>
+					<text class="product-name margin-x-10">{{ products[index].name }}</text>
+					<text class="block margin-x-10 margin-bottom-10 text-primary">￥{{ products[index].price / 100}}</text>
+				</view>
+			</block>
+		</view>
+	</view>
+	<view class="text-center padding-y-20">
+		<image src="/public/images/icon/guzzu-logo-long.svg" style="width:63px;height:20px;vertical-align:middle;"></image>
+	</view>
+	<view class="bottom-toolbar-spacer"></view>
+</view>
+<!-- <import src="../../libs/storeTabBar/storeTabBar.wxml" /> -->
+<!-- <template is='tabBar' data='{{trans}}'></template> -->

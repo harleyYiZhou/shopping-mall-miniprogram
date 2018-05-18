@@ -4,6 +4,7 @@ const { callApi, removeItems } = guzzuUtils;
 const app = getApp();
 const pickupKeys = ['name', 'mobilePhone', 'province', 'provinceId', 'city', 'cityId', 'district', 'districtId', 'address'];
 const areaShippingKeys = ['appointmentTime', 'description', 'image', 'minPurchase', 'shippingCost', 'enabledAppointment'];
+import config from '../../config';
 
 Page({
 	data: {
@@ -187,7 +188,10 @@ Page({
 		// generate order params
 		let storeId = this.data.cart.store._id;
 		let value = event.detail.value;
-		let discountId = this.data.discountItems[value.discountItemsIndex].discountId;
+		let discountId;
+		if (value.discountItemsIndex > -1) {
+			discountId = this.data.discountItems[value.discountItemsIndex].discountId;
+		}
 		let { selectedItems, selectAll, shippingType, shippingAddress, noStoreCart } = this.data;
 
 		// prepare order params
@@ -228,6 +232,7 @@ Page({
 			nonce: guzzuUtils.storageGet('nonce'),
 			clientType: 'mini-program',
 			type: 'default',
+			shoppingMall: config.shoppingMallId
 		});
 		// call api to create order
 		let order;
@@ -429,6 +434,7 @@ function _previewOrder() {
 		shippingType: this.data.shippingType,
 		nonce: String(Date.now()),
 		type: 'default',
+		shoppingMall: config.shoppingMallId
 	});
 	let preview = callApi.post('Order.preview', params, 400);
 	preview.then(result => {
