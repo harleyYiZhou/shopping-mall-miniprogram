@@ -64,20 +64,26 @@ Page({
 		});
 	},
 	backToOrders() {
-		wx.navigateBack({
-			delta: 1
+		let routes = getCurrentPages().reverse();
+		if (routes.length > 1 && routes[1].route.indexOf('orders') > -1) {
+			wx.navigateBack({
+				delta: 1
+			});
+			return;
+		}
+		wx.redirectTo({
+			url: '/pages/orders/orders?status=1'
 		});
 	},
 	tabStore() {
-		let slug = this.data.order.store.slug;
 		wx.redirectTo({
 			url: `/pages/index/index`
 		});
 	},
 	contactStore() {
-		let slug = this.data.order.store.slug;
+		let storeId = this.data.order.store._id;
 		wx.navigateTo({
-			url: `/pages/contact-store/contact-store?slug=${slug}`
+			url: `/pages/contact-store/contact-store?storeId=${storeId}`
 		});
 	},
 	showRefundDialog() {

@@ -6,10 +6,8 @@
 @import "../components/block-productgroup/block-productgroup";
 
 .textview {
-   display: -webkit-box;
+	width: 100%;
    overflow: hidden;
    text-overflow: ellipsis;
-   word-break: break-all;
-   -webkit-box-orient: vertical;
-   -webkit-line-clamp: 2;
+	white-space: nowrap;
 }

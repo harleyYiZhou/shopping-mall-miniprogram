@@ -11,7 +11,7 @@
 				<image class="userImg" mode="widthFix" src="../../public/images/icon/avatar.png"></image>
 			</view>
 			<text wx:if="{{userInfo}}" class="width-60 usertext">{{userInfo.name}}</text>
-			<text wx:else class="width-60 usertext">{{trans.signin}}</text>
+			<text wx:else class="width-60 usertext signin">{{trans.signin}}</text>
 			<text class="width-10 usertext">></text>
 		</view>
 		<!-- orders -->

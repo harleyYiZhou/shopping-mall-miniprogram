@@ -2,8 +2,8 @@
 
 .zan-panel {
    margin-top: 0;
-   padding-top: 5rpx;
-   padding-bottom: 5rpx;
+   padding-top: 8rpx;
+   padding-bottom: 8rpx;
 }
 
 .zan-cell {
@@ -11,7 +11,7 @@
 }
 
 .zan-cell__text {
-   font-size: 36rpx;
+   font-size: 34rpx;
    /* font-weight: bold; */
    color: #000;
 }

@@ -1,83 +1,66 @@
 // pages/catagory/catagory.js
-var app = getApp();
+let app = getApp();
 const { callApi } = require('../../utils/guzzu-utils.js');
 
 Page({
-
-	/**
-   * 页面的初始数据
-   */
 	data: {
 		tapIndex: 0,
 		selected: '2'
 	},
-
-	/**
-   * 生命周期函数--监听页面加载
-   */
-	onLoad: function (options) {
-		var that = this;
+	onLoad(options) {
+		let categoryId = wx.getStorageSync('catagoryId');
+		wx.removeStorageSync('catagoryId');
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
-		console.log(wx.getSystemInfoSync().windowWidth);
-		console.log(wx.getSystemInfoSync().windowHeight);
-		var scrollHeight = wx.getSystemInfoSync().windowHeight / wx.getSystemInfoSync().windowWidth * 750;
-		console.log(scrollHeight);
+		let scrollHeight = wx.getSystemInfoSync().windowHeight / wx.getSystemInfoSync().windowWidth * 750;
 		this.setData({
 			scrollHeight: scrollHeight - 170
 		});
-
-		callApi.get('shopping-malls/{smallid}/categories').then(function (res1) {
-			console.log(res1);
-			var categoryId = res1[that.data.tapIndex]._id;
-			that.setData({
-				category: res1,
-				categoryId: categoryId
-			});
-			callApi.get('shopping-malls/{smallid}/categories/' + categoryId).then(function (res2) {
-				console.log(res2);
-				that.setData({
-					categoryPage: res2
-				});
-			});
-		});
+		_getCategory.bind(this)(categoryId);
 	},
-
-	/**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-	onReady: function () {
-
-	},
-
-	/**
-   * 生命周期函数--监听页面显示
-   */
-	onShow: function () {
+	onShow() {
 		this.setData({
 			selected: '2'
 		});
 	},
 	btnNavLink: app.btnNavLink(),
-	chooseLevel: function (e) {
-		var that = this;
+	chooseLevel(e) {
 		this.setData({
 			tapIndex: e.currentTarget.dataset.index
 		});
-		callApi.get('shopping-malls/{smallid}/categories').then(function (res1) {
-			console.log(res1);
-			var categoryId = res1[that.data.tapIndex]._id;
-			that.setData({
-				category: res1,
-				categoryId: categoryId
-			});
-			callApi.get('shopping-malls/{smallid}/categories/' + categoryId).then(function (res2) {
-				console.log(res2);
-				that.setData({
-					categoryPage: res2
-				});
-			});
-		});
+		_getCategory.bind(this)();
 	}
 });
+
+function _getCategory(categoryId) {
+	callApi.get('shopping-malls/{smallid}/categories').then((results) => {
+		let tapIndex = this.data.tapIndex;
+		if (categoryId) {
+			let bool;
+			results.forEach((elem, i) => {
+				if (bool) {
+					return;
+				}
+				if (elem._id === categoryId) {
+					tapIndex = i;
+					bool = true;
+				}
+			});
+		} else {
+			categoryId = results[tapIndex]._id;
+		}
+		this.setData({
+			category: results,
+			categoryId,
+			tapIndex,
+		});
+		return callApi.get('shopping-malls/{smallid}/categories/' + categoryId);
+	}).then((result) => {
+		this.setData({
+			categoryPage: result
+		});
+	}).catch(err => {
+		console.error(err);
+	});
+}

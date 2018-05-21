@@ -41,14 +41,13 @@ Page({
 			case 'product':
 				url = '/pages/product-detail/product-detail?productId=' + linkId;
 				break;
-			case 'shoppingMallCategory':
-				url = '/pages/catagory/catagory';
-				break;
 			case 'store':
 				url = '/pages/store/store?storeId=' + linkId;
 				break;
 			case 'category':
-				url = '/pages/store-categories/store-categories?storeId=' + linkId;
+				wx.setStorageSync('catagoryId', linkId);
+			case 'shoppingMallCategory':
+				url = '/pages/catagory/catagory';
 				break;
 			default:
 				console.error('unkown linkType');

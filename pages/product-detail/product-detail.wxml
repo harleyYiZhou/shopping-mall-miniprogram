@@ -40,7 +40,7 @@
    <view class="spacer"></view>
 
    <view wx:if='{{!showProductDetail && product.description}}' class="section layout-row layout-justify-center margin-y-10 padding-bottom-20">
-      下拉查看图文详情
+      {{trans.upLoad}}
    </view>
    <view wx:if='{{showProductDetail}}' class="margin-y-20">
       <view class="padding-x-20 padding-y-10">

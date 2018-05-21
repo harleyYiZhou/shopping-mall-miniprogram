@@ -1,6 +1,7 @@
 // pages/user-center/user-center.js
 const app = getApp();
 const { login, session } = require('../../utils/guzzu-utils.js');
+const { showLoading } = require('../../utils/util');
 
 Page({
 	data: {
@@ -34,7 +35,9 @@ Page({
 					url: '/pages/account/account',
 				});
 			} else {
+				showLoading();
 				login().then(() => {
+					wx.hideLoading();
 					this.onShow();
 				});
 			}

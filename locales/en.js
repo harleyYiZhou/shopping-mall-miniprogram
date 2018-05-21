@@ -219,7 +219,10 @@ module.exports = {
 		cancel: 'Cancel',
 		goToPay: 'Checkout',
 		emptyCart: 'The cart is empty',
-		emptyCartHint: 'You can look around in the homepage'
+		emptyCartHint: 'You can look around in the homepage',
+		createdAt: 'Created At',
+		willExpire: 'The order is going to be expired.',
+
 	},
 	pageLayout: {},
 	productDetail: {

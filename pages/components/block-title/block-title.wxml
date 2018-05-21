@@ -7,7 +7,7 @@
 					<view class="zan-cell__text">{{comItem.title}}</view>
 					<view class="zan-cell__desc" wx:if="{{comItem.subtitle}}">{{comItem.subtitle}}</view>
 				</view>
-				<view class="zan-cell__ft">{{trans.more}}></view>
+				<view wx:if="{{comItem.linkType}}" class="zan-cell__ft">{{trans.more}}></view>
 			</view>
 		</view>
 	</block>

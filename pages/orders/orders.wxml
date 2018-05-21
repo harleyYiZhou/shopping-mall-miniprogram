@@ -8,13 +8,13 @@
 	<view class="orders">
 		<view class="no-order layout-align-center" hidden="{{orders.length ? true : false}}">
 			<view class="zan-icon zan-icon-records no-order-icon"></view>
-			<view class="text">暂无订单</view>
+			<view class="text">{{trans.emptyCart}}</view>
 		</view>
 		<view class="" hidden="{{orders.length ? false : true}}" wx:for="{{orders}}" wx:for-item="order" wx:key="order">
 			<view class="zan-cell">
 				<view class="zan-cell__bd">
-					<view class="zan-cell__text">订单日期：{{order.createdAt}}</view>
-					<view class="zan-cell__desc" wx:if="{{currStatus=='pending'}}">订单即将关闭</view>
+					<view class="zan-cell__text">{{trans.createdAt}}：{{order.createdAt}}</view>
+					<view class="zan-cell__desc" wx:if="{{order.exStatus=='pending'}}">{{trans.willExpire}}</view>
 				</view>
 				<view class="zan-cell__ft">{{trans[order.exStatus]}}</view>
 			</view>
@@ -47,10 +47,10 @@
 
 			<view class="zan-cell">
 				<view class="zan-cell__bd">
-					<view class="zan-cell__text">{{trans.refId}}{{order.refId}}</view>
+					<view class="zan-cell__text">{{trans.refId}}:{{order.refId}}</view>
 				</view>
-				<view class="zan-cell__ft" style="color:#000000;">共{{order.items.length}}件商品，总金额
-					<text style="color:red;">{{order.totalCost}}元</text>
+				<view class="zan-cell__ft" style="color:#000000;"><text style="color:#000000;" wx:if="{{locale=='zh'}}">共{{order.items.length}}件商品，</text>{{trans.totalCost}}
+					<text style="color:red;">¥{{order.totalCost}}</text>
 				</view>
 			</view>
 			<view class="zan-cell">
@@ -60,7 +60,7 @@
 				<view class="zan-cell__ft layout-row layout-align-between">
 					<!-- <button class="zan-btn zan-btn--small zan-btn--warn">{{trans.cancel}}</button> -->
 					<navigator url="/pages/order/order?orderId={{order._id}}">
-						<button wx:if="{{order.exStatus==='pending'}}" class="zan-btn zan-btn--small zan-btn--primary">{{trans.goToPay}}</button>
+						<button wx:if="{{order.exStatus==='pending'}}" class="zan-btn zan-btn--small zan-btn--danger">{{trans.goToPay}}</button>
 						<button wx:else class="zan-btn zan-btn--small zan-btn--primary">{{trans.viewDetails}}</button>
 					</navigator>
 				</view>

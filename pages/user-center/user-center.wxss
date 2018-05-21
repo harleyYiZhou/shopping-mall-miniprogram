@@ -8,6 +8,9 @@
   font-size: 35rpx;
   color: #ffffff;
 }
+.signin{
+	color: #E3F8FF;
+}
 .top{
   background: #666666
 }

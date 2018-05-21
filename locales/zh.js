@@ -212,13 +212,15 @@ module.exports = {
 		received: '已收货',
 		refId: '订单号',
 		option: '选项',
-		totalCost: '订单合计',
+		totalCost: '总金额',
 		closed: '已完成',
 		viewDetails: '详细',
 		cancel: '取消订单',
 		goToPay: '去支付',
-		emptyCart: '购物车里目前没有商品',
-		emptyCartHint: '请到首页逛逛吧！'
+		emptyCart: '暂无订单',
+		emptyCartHint: '请到首页逛逛吧！',
+		createdAt: '订单日期',
+		willExpire: '订单即将关闭',
 	},
 	pageLayout: {},
 	productDetail: {

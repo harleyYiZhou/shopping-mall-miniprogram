@@ -2,30 +2,34 @@
 <import src="../components/bottom-nav/bottom-nav" />
 
 <view class="layout-column ">
+	<!--
   <view class="search layout-row layout-wrap ">
     <view class="zan-icon zan-icon-search"></view>
     <input class="input-content" placeholder='出行季 最高减200'></input>
   </view>
-  <view class="catagory layout-row width-100">
-    <view class="catagory-title layout-column">
-      <scroll-view scroll-y style="height: {{scrollHeight}}rpx;" bindscrolltoupper="" bindscrolltolower="" bindscroll="" scroll-into-view="" scroll-top="{{scrollTop}}">
-        <view class="levelOne margin-x-10 text-center {{index===tapIndex?'selecte':'false'}}" wx:for="{{category}}" wx:key="item" data-index="{{index}}" bindtap='chooseLevel'>{{item.name}}</view>
-      </scroll-view>
-    </view>
-    <view class="catagory-subtitle flex padding-x-10 padding-y-10 layout-column ">
-      <view>
-        <image mode="widthFix" class="width-100" src="{{category[tapIndex].image.thumb.url}}"></image>
-      </view>
-      <view class="text-center margin-top-10 margin-bottom-20">
-        <text>{{category[tapIndex].description}}</text>
-      </view>
-      <view class="layout-row layout-wrap  layout-justify-between">
-        <view wx:for="{{categoryPage.products}}" wx:key="item" class="width-30 text-center margin-bottom-10">
-          <image class="square-100 levelSecImg" src="{{item.image.thumb.url}}"></image>
-          <view>{{item.name}}</view>
-        </view>
-      </view>
-    </view>
-  </view>
-</view> 
+    -->
+	<view class="catagory layout-row width-100">
+		<view class="catagory-title layout-column width-30">
+			<scroll-view scroll-y style="height: {{scrollHeight}}rpx;" bindscrolltoupper="" bindscrolltolower="" bindscroll="" scroll-into-view=""
+			   scroll-top="{{scrollTop}}">
+				<view class="levelOne padding-left-10 {{index===tapIndex?'selecte':'false'}}" wx:for="{{category}}" wx:key="item" data-index="{{index}}"
+				   bindtap='chooseLevel'>{{item.name}}</view>
+			</scroll-view>
+		</view>
+		<view class="catagory-subtitle flex padding-x-10 padding-y-10 layout-column ">
+			<view>
+				<image mode="widthFix" class="width-100" src="{{category[tapIndex].image.thumb.url}}"></image>
+			</view>
+			<view class="text-center margin-top-10 margin-bottom-20">
+				<text>{{category[tapIndex].description}}</text>
+			</view>
+			<view class="layout-row layout-wrap  layout-justify-between">
+				<view wx:for="{{categoryPage.products}}" wx:key="item" class="width-30 text-center margin-bottom-10">
+					<image class="square-100 levelSecImg" src="{{item.image.thumb.url}}"></image>
+					<view>{{item.name}}</view>
+				</view>
+			</view>
+		</view>
+	</view>
+</view>
 <template is="bottom-nav" data="{{trans,selected}}"></template>

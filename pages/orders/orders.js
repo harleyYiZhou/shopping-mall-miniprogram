@@ -1,6 +1,6 @@
 // pages/order/order.js
 const app = getApp();
-const { priceFilter, showModal, showToast, showLoading, debug } = require('../../utils/util');
+const { priceFilter, showModal, formatTime, showLoading, debug } = require('../../utils/util');
 const { callApi, session, addToShopCarInfo, removeItems } = require('../../utils/guzzu-utils.js');
 const statuses = ['allOrders', 'pending', 'unshipped', 'shipped', 'received'];
 
@@ -77,13 +77,12 @@ Page({
 			params.tab = this.data.currStatus;
 		}
 		callApi.post('Order.find', params, 400).then(data => {
+			priceFilter(data);
 			let orders = data.results;
 			let filterOrders = [];
 			for (let i = 0; i < orders.length; ++i) {
-				orders[i].createdAt = new Date(orders[i].createdAt);
-				orders[i].createdAt = orders[i].createdAt.getFullYear() + '-' +
-				(orders[i].createdAt.getMonth() + 1) + '-' +
-				orders[i].createdAt.getDate() + '- ' + orders[i].createdAt.getHours() + ':' + orders[i].createdAt.getMinutes();
+				let createdAt = new Date(orders[i].createdAt);
+				orders[i].createdAt = formatTime(createdAt);
 				orders[i].exStatus = checkStatus(orders[i]);
 				filterOrders.push(orders[i]);
 			}
