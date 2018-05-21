@@ -1,0 +1,22 @@
+<!-- store.wxml -->
+<view class="page-container color--grey-100">
+	<view class="layout-row padding-y-20 layout-align-center layout-justify-center">
+		<image class="store-logo" src="{{ store.logo.thumb.url }}" mode="aspectFit" bindtap="tapStore"></image>
+		<text class="margin-x-10 text-title">{{ store.name }}</text>
+	</view>
+	<view class="color--grey-100 text-center">
+		<text wx:if="{{store.address}}" class="block margin-y-10">
+			{{trans.address}}：{{store.address}}
+		</text>
+		<text wx:if="{{store.phone}}" class="block margin-y-10">{{trans.phone}}：{{store.phone}}</text>
+		<text wx:if="{{store.email}}" class="block margin-y-10">{{trans.email}}：{{store.email}}</text>
+		<text wx:if="{{store.weibo}}" class="block margin-y-10">{{trans.weibo}}：{{store.weibo}}</text>
+		<text wx:if="{{store.wechat}}" class="block margin-y-10">
+			{{trans.wechat}}：{{store.wechat}}
+		</text>
+	</view>
+	<view class="text-center padding-y-20">
+		<image src="/public/images/icon/guzzu-logo-long.svg" style="width:63px;height:20px;vertical-align:middle;"></image>
+	</view>
+	<view class="bottom-toolbar-spacer"></view>
+</view>
