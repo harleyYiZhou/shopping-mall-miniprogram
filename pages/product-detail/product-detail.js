@@ -1,6 +1,6 @@
 // pages/product-detail/product-detail
 const app = getApp();
-const { callApi, session, addToShopCarInfo, checkInventory } = require('../../utils/guzzu-utils.js');
+const { callApi, session, checkInventory } = require('../../utils/guzzu-utils.js');
 const { priceFilter, debug, showToast } = require('../../utils/util');
 const WxParse = require('../../utils/wxParse/wxParse.js');
 
@@ -90,21 +90,23 @@ Page({
 		}, 300);
 	},
 	addToCart() {
-		let { product, selectIndex, buyNum: quantity } = this.data;
+		let { product, selectIndex, buyNum: quantity, store } = this.data;
 		let productOptionId;
 		let params = {
-			storeId: product.store._id,
+			storeId: store._id,
 			productId: product._id,
 			quantity,
 		};
 		let selectedInfo = {
 			name: product.name,
-			price: product.price
+			price: product.price,
+			product,
 		};
 		if (selectIndex > -1) {
 			productOptionId = product.productOptions[selectIndex]._id;
 			selectedInfo.name = product.productOptions[selectIndex].name;
 			selectedInfo.price = product.productOptions[selectIndex].price;
+			selectedInfo.productOption = product.productOptions[selectIndex];
 		} else {
 			if (product.productOptions && product.productOptions.length) {
 				return this.showPopup();
@@ -115,11 +117,15 @@ Page({
 		if (productOptionId) {
 			params.productOptionId = productOptionId;
 		}
+		let cartItem = Object.assign({}, params, selectedInfo);
+		if (!checkInventory([cartItem], [0])) {
+			return;
+		}
 		session.check().then(res => {
 			if (res) {
 				return callApi.post('StoreCart.addItem', params, 400);
 			}
-			return addToShopCarInfo(Object.assign(params, selectedInfo));
+			return _addToLocalCart(cartItem, store);
 		}).then(res => {
 			let that = this;
 			showToast({
@@ -229,3 +235,69 @@ Page({
 		});
 	},
 });
+
+/**
+ * @description 离线本地储存 storeCart ，item 的数据结构与在线的完全一致
+ * @param {*} item storeCart 里的 item
+ * @param {*} store
+ */
+function _addToLocalCart(item, store) {
+	if (!item || !item.storeId || !item.productId) {
+		console.error(item);
+		throw new ReferenceError('_addToLocalCart');
+	}
+	let localCart = wx.getStorageSync('localCart') || [];
+	let hasStore = false;
+	let storeIndex = -1;
+	let hasItem = false;
+	let itemIndex = -1;
+	localCart.forEach((cart, i) => {
+		if (hasStore) {
+			return;
+		}
+		if (cart.store._id === store._id) {
+			hasStore = true;
+			storeIndex = i;
+			cart.items.forEach((elem, j) => {
+				if (hasItem) {
+					return;
+				}
+				if (elem.productOptionId && item.productOptionId && elem.productOptionId === item.productOptionId) {
+					hasItem = true;
+					itemIndex = j;
+					return;
+				}
+				if (!elem.productOptionId && !item.productOptionId && elem.productId === item.productId) {
+					hasItem = true;
+					itemIndex = j;
+				}
+			});
+		}
+	});
+
+	if (hasStore) {
+		if (hasItem) {
+			item.quantity += localCart[storeIndex].items[itemIndex].quantity;
+			localCart[storeIndex].items[itemIndex] = item;
+		} else {
+			localCart[storeIndex].items.push(item);
+		}
+		// update totalCost
+		let totalCost = localCart[storeIndex].items.reduce((inc, item) => {
+			inc += item.price * item.quantity;
+			return inc;
+		}, 0);
+		debug.trace(item, totalCost);
+		localCart[storeIndex].totalCost = totalCost.toFixed(2);
+	} else {
+		let storeCart = {
+			store,
+			subtotal: 0,
+			totalCost: (item.price * item.quantity).toFixed(2),
+			items: [item]
+		};
+		localCart.push(storeCart);
+	}
+
+	return Promise.resolve(wx.setStorageSync('localCart', localCart));
+}

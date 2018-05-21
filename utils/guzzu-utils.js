@@ -296,35 +296,6 @@ function bindPhoneNumber(e) {
 	}
 }
 
-function addToShopCarInfo(params) {
-	if (!params || !params.storeId || !params.productId) {
-		console.error(params);
-		throw new ReferenceError('addToShopCarInfo');
-	}
-	let shopCarInfo = wx.getStorageSync('shopCarInfo') || {};
-	// localCart 没对应的店铺，初始化为{}
-	if (!shopCarInfo[params.storeId]) {
-		shopCarInfo[params.storeId] = {};
-	}
-	let storeCart = shopCarInfo[params.storeId];
-	// 如果 params 有选项
-	if (params.productOptionId) {
-		_update(storeCart, params, 'productOptionId');
-		// 如果 params 没选项，直接找对应的 productId
-	} else {
-		_update(storeCart, params, 'productId');
-	}
-	function _update(storeCart, params, key) {
-		// local 找出选项，更新数量
-		if (storeCart[params[key]]) {
-			storeCart[params[key]].quantity += params.quantity;
-			// local 没有对应选项，添加 params
-		} else {
-			storeCart[params[key]] = params;
-		}
-	}
-	return Promise.resolve(wx.setStorageSync('shopCarInfo', shopCarInfo));
-}
 /**
  *
  * @param {Object} params
@@ -411,6 +382,5 @@ module.exports.storageSet = storageSet;
 module.exports.storageRemove = storageRemove;
 module.exports.bindPhoneNumber = bindPhoneNumber;
 module.exports.session = session;
-module.exports.addToShopCarInfo = addToShopCarInfo;
 exports.removeItems = removeItems;
 exports.checkInventory = checkInventory;

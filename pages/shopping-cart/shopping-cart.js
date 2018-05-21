@@ -1,7 +1,7 @@
 // index.js
 const app = getApp();
-const { priceFilter, showModal, showToast, showLoading, debug } = require('../../utils/util');
-const { callApi, session, addToShopCarInfo, removeItems, checkInventory } = require('../../utils/guzzu-utils.js');
+const { priceFilter, showModal, _, showLoading, debug } = require('../../utils/util');
+const { callApi, session, removeItems, checkInventory } = require('../../utils/guzzu-utils.js');
 
 Page({
 	data: {
@@ -12,9 +12,8 @@ Page({
 			noSelect: false,
 		},
 		delBtnWidth: 120, // 删除按钮宽度单位（rpx）
-		fakeList: {},
 		selected: '1',
-		cartsInfo: [],
+		cartsInfo: [], // 记录购物车各种状态：storeCart 是否全选，item 是否选中，记录选中的 items 的 indexes
 	},
 	btnNavLink: app.btnNavLink(),
 	// 获取元素自适应后的实际宽度
@@ -44,12 +43,16 @@ Page({
 		this.initEleWidth();
 	},
 	onShow() {
+		let localCart = wx.getStorageSync('localCart');
 		app.globalData.login.finally(() => {
 			session.check().then(res => {
 				if (res) {
+					if (localCart) {
+						return _synchronizeCart(localCart);
+					}
 					return getStoreCarts();
 				}
-				return res;
+				return localCart;
 			}).then(res => {
 				if (res) {
 					let cartsInfo = res.map(item => {
@@ -71,19 +74,9 @@ Page({
 				console.error(err);
 			});
 		});
-		let shopList = [];
-		// 获取购物车数据
-		let shopCarInfoMem = wx.getStorageSync('shopCarInfo');
-		if (shopCarInfoMem && shopCarInfoMem.shopList) {
-			shopList = shopCarInfoMem.shopList;
-		}
-		// this.data.goodsList.list = this.data.fakeList;
 		this.setData({
-			// goodsList: this.data.fakeList,
 			selected: '1',
-			shopCarInfo: shopCarInfoMem,
 		});
-		// this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), shopList);
 		debug('cart show');
 	},
 	toIndexPage() {
@@ -413,7 +406,7 @@ Page({
      }
      */
 		// above codes that remove elements in a for statement may change the length of list dynamically
-		list = list.filter(function (curGoods) {
+		list = list.filter((curGoods) => {
 			return !curGoods.active;
 		});
 		this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
@@ -447,11 +440,10 @@ Page({
 });
 
 function getStoreCarts() {
-	showLoading({
-		title: 'common.loading'
-	});
+	showLoading();
 	return new Promise((resolve, reject) => {
-		callApi.post('StoreCart.getAll', {}, 400).then(data => {
+		callApi.post('StoreCart.getAll', {}, 400).then(datas => {
+			/* ???
 			let promiseArray = [];
 			data.forEach((tempCart, index) => {
 				let temp = new Promise((resolve_, reject_) => {
@@ -467,7 +459,9 @@ function getStoreCarts() {
 			}); // end each
 			return Promise.all(promiseArray);
 		}).then(value => {
-			resolve(value);
+			*/
+			priceFilter(datas);
+			resolve(datas);
 		}).catch(err => {
 			reject(err);
 		}).finally(() => {
@@ -516,7 +510,7 @@ function totalCost(cartsInfo, cartIndex, carts) {
 }
 
 function updateItem(cart, itemIndex, quantity) {
-	return new Promise(function (resolve, reject) {
+	return new Promise((resolve, reject) => {
 		callApi.post('StoreCart.updateItem', {
 			storeId: cart.store._id || cart.store,
 			itemIndex,
@@ -555,5 +549,23 @@ function removeCartsInfo(cartsInfo, cartIndex) {
 	selectedCopy.sort().reverse();
 	selectedCopy.forEach(item => {
 		cartsInfo[cartIndex].items.splice(item, 1);
+	});
+}
+
+function _synchronizeCart(localCart) {
+	return new Promise((res, rej) => {
+		let promises = [];
+		localCart.forEach(cart => {
+			cart.items.forEach(item => {
+				let params = _.pick(item, ['storeId', 'productId', 'quantity', 'productOptionId']);
+				promises.push(callApi.post('StoreCart.addItem', params, 400));
+			});
+		});
+		Promise.all(promises).then(() => {
+			wx.removeStorageSync('localCart');
+			res(getStoreCarts());
+		}).catch(err => {
+			rej(err);
+		});
 	});
 }

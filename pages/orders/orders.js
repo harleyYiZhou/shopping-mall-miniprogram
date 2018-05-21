@@ -1,7 +1,7 @@
 // pages/order/order.js
 const app = getApp();
-const { priceFilter, showModal, formatTime, showLoading, debug } = require('../../utils/util');
-const { callApi, session, addToShopCarInfo, removeItems } = require('../../utils/guzzu-utils.js');
+const { priceFilter, formatTime, showLoading } = require('../../utils/util');
+const { callApi } = require('../../utils/guzzu-utils.js');
 const statuses = ['allOrders', 'pending', 'unshipped', 'shipped', 'received'];
 
 Page({
