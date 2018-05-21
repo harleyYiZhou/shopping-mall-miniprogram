@@ -17,13 +17,12 @@ Page({
 		terms: null,
 	},
 	onLoad(options) {
-		let that = this;
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
 		let productId = options.productId;
 
-		callApi.get(`products/${productId}?populate=store`).then(res => {
+		callApi.get(`products/${productId}`).then(res => {
 			priceFilter(res);
 			let images = res.gallery.concat(res.image);
 			let items = images.map(item => {
@@ -34,9 +33,7 @@ Page({
 			let imgHeight = items[0].image.medium.height;
 			let imgWidth = items[0].image.medium.width;
 			let swiperHeight = 750 / imgWidth * imgHeight;
-			let { store } = res;
-			that.setData({
-				store,
+			this.setData({
 				product: res,
 				gallery: {
 					items,
@@ -45,15 +42,20 @@ Page({
 			});
 
 			if (res.description) {
-				WxParse.wxParse('description', 'html', res.description, that);
+				WxParse.wxParse('description', 'html', res.description, this);
 			}
 			if (res.shippingDescription && res.shippingDescription.content) {
-				WxParse.wxParse('shippingDescription', 'html', res.shippingDescription.content, that);
+				WxParse.wxParse('shippingDescription', 'html', res.shippingDescription.content, this);
 			}
-			return callApi.get(`stores/${store._id}/profile`);
+			return callApi.get(`stores/${res.store}`);
+		}).then(res => {
+			this.setData({
+				store: res
+			});
+			return callApi.get(`stores/${res._id}/profile`);
 		}).then(res => {
 			debug.trace('profile', res);
-			that.setData({
+			this.setData({
 				terms: res
 			});
 		}).catch(err => {
@@ -159,9 +161,10 @@ Page({
 		});
 	},
 	toStore(e) {
-		let slug = e.currentTarget.dataset.slug;
+		let { storeId } = e.currentTarget.dataset;
+		debug.trace(storeId);
 		wx.navigateTo({
-			url: '/pages/store/store?slug=' + slug
+			url: '/pages/store/store?storeId=' + storeId
 		});
 	},
 	toShoppingCart() {

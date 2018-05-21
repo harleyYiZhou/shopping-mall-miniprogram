@@ -57,6 +57,13 @@ const session = {
 		wx.removeStorageSync('accessToken');
 	},
 };
+/**
+ * @description callApi 请求类型有 get 和 post 两种
+ * callApi.[get|post](url,params,serve),
+ * @param {String} url 请求的地址
+ * @param {Object} [params] 请求的数据，get 请求或者参数为空可省略
+ * @param {Number|String} [serve] 请求的后台类型，400 | 3002，默认是3002
+ */
 const callApi = {
 	get: _request('GET'),
 	post: _request('POST')
@@ -75,12 +82,12 @@ function _request(method = 'GET') {
 			port = config.PORT[serve];
 		}
 		let api_url = serve_url + port + config.API_PREFIX[serve];
-		return new Promise(function (resolve, reject) {
+		return new Promise((resolve, reject) => {
 			// request 设置
 			const app = getApp();
 			const obj = {
 				method,
-				url: api_url + url.replace(/{\s*smallid\s*}/i, config.shoppingMallId),
+				url: api_url + url.replace(/{\s*(smallid|shoppingMallId)\s*}/i, config.shoppingMallId),
 				data: params,
 				header: {
 					'x-guzzu-lang': app.globalData.locale
@@ -127,8 +134,6 @@ function _request(method = 'GET') {
 		});
 	};
 }
-
-// ------------------------------------------------------
 
 function _loginToast() {
 	showModal({
@@ -325,7 +330,7 @@ function addToShopCarInfo(params) {
  * @param {Object} params
  * @param {String} params.storeId
  * @param {Boolean} params.selectAll if clear all
- * @param {Array} params.selectedItems items to be removed
+ * @param {Array} params.selectedItems items to be removed,储存的是 item 的 index
  */
 function removeItems(params) {
 	let { storeId, selectAll, selectedItems } = params;

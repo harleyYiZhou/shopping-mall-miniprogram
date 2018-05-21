@@ -26,12 +26,12 @@
    <view class="spacer"></view>
    <view class="shopMessage">
       <view class="zan-cell zan-cell--access">
-         <view class="zan-cell__bd layout-row" bindtap='toStore' data-slug="{{product.store.slug}}">
+         <view class="zan-cell__bd layout-row" bindtap='toStore' data-store-id="{{product.store}}">
             <view class="">
-               <image src="{{product.store.logo.url}}" mode="widthFix" class="shopImg"></image>
+               <image src="{{store.logo.url}}" mode="widthFix" class="shopImg"></image>
             </view>
             <view class="width-70 margin-left-10 layout-row layout-align-center">
-               <view class="zan-cell__text">{{product.store.name}}</view>
+               <view class="zan-cell__text">{{store.name}}</view>
             </view>
          </view>
          <view class="zan-cell__ft"></view>
@@ -94,7 +94,7 @@
 <!-- bottom -->
 <view class="footer-box">
    <view class="layout-row">
-      <view class="width-15 layout-column layout-justify-center layout-align-center mini-btn" bindtap='toStore' data-slug="{{product.store.slug}}">
+      <view class="width-15 layout-column layout-justify-center layout-align-center mini-btn" bindtap='toStore' data-store-id="{{store._id}}">
          <view class="zan-icon zan-icon-points-mall"></view>
          <view>{{trans.tabBar.store}}</view>
       </view>

@@ -45,10 +45,10 @@ Page({
 				url = '/pages/catagory/catagory';
 				break;
 			case 'store':
-				url = '/pages/store/store?slug=' + linkId;
+				url = '/pages/store/store?storeId=' + linkId;
 				break;
 			case 'category':
-				url = '/pages/store-category/store-category?slug=' + linkId;
+				url = '/pages/store-categories/store-categories?storeId=' + linkId;
 				break;
 			default:
 				console.error('unkown linkType');

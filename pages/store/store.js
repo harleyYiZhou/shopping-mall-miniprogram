@@ -1,7 +1,7 @@
 // store.js
 const guzzuUtils = require('../../utils/guzzu-utils');
 const app = getApp();
-const callApi = guzzuUtils.callApi.post;
+const { callApi } = guzzuUtils;
 Page({
 	data: {
 		store: null,
@@ -12,27 +12,23 @@ Page({
 		totalPages: 1
 	},
 	onLoad(option) {
-		let that = this;
-		let storeId;
-		let slug = option.slug;
+		let { storeId } = option;
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
-		callApi('Store.get', {
-			slug
-		}, 400).then((result) => {
-			that.setData({
+		callApi.get(`stores/${storeId}`).then(result => {
+			this.setData({
 				store: result
 			});
 			storeId = result._id;
-			return callApi('Product.find', {
+			return callApi.post('Product.find', {
 				storeId,
 				page: 1,
-				pageSize: that.data.pageSize
+				pageSize: this.data.pageSize
 			}, 400);
-		}).then((data) => {
+		}).then(data => {
 			let products = data.results;
-			that.setData({
+			this.setData({
 				currentPage: 1,
 				lastPageLength: data.results.length,
 				totalPages: data.totalPages,
@@ -66,7 +62,7 @@ Page({
 			--nextPage;
 			isLastPage = true;
 		}
-		callApi('Product.find', {
+		callApi.post('Product.find', {
 			storeId: that.data.store._id,
 			page: nextPage,
 			pageSize: that.data.pageSize
