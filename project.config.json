@@ -33,7 +33,7 @@
 			"list": []
 		},
 		"miniprogram": {
-			"current": -1,
+			"current": 15,
 			"list": [
 				{
 					"id": -1,
@@ -123,6 +123,18 @@
 					"id": -1,
 					"name": "select-address",
 					"pathName": "pages/select-address/select-address",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "store-categories",
+					"pathName": "pages/store-categories/store-categories",
+					"query": "storeId=57c4ed03cc4f36bc2c12ab29"
+				},
+				{
+					"id": -1,
+					"name": "catagory",
+					"pathName": "pages/catagory/catagory",
 					"query": ""
 				}
 			]

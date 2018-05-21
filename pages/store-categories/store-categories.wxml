@@ -1,0 +1,26 @@
+<!--collection.wxml-->
+<view class="app-main">
+	<view class="wg-desktop-container" style="overflow:hidden;">
+		<view class="i-amphtml-fit-text-content text-center">{{trans.collection}}</view>
+		<view class="row row-padded">
+			<view class="col-6" wx:for="{{categories}}" wx:for-item="category" wx:key="_id">
+				<view class="store-collection-card-sm" bindtap="tapCategory" data-store-group="{{category}}">
+					<view class="store-collection-card-media" style=" background-image: url({{category.image.url}});">
+						<view style="display: block;padding-top: 100%;"></view>
+					</view>
+					<view class="store-collection-card-content">
+						<view class="store-collection-card-title">{{category.name}}</view>
+					</view>
+				</view>
+			</view>
+		</view>
+		<view class="padding-y-5 text-center">
+			<image class="box-circle" src="{{store.logo.url}}" bindtap="tapStore"></image>
+			<view style="line-height: 1.2;color: #212121;">{{store.name}}</view>
+		</view>
+		<view class="text-center padding-y-10">
+			<image src="/public/images/icon/guzzu-logo-long.svg" style="width:63px;height:20px;vertical-align:middle;"></image>
+		</view>
+	</view>
+	<view class="bottom-toolbar-spacer"></view>
+</view>

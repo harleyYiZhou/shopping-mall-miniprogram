@@ -1,0 +1,22 @@
+<!--pages/category/category.wxml-->
+<view class="app-main">
+	<view class="margin-bottom-1">
+		<view class="top-image" style="background-image: url({{category.image.url}});">
+			<view class="top-image-mask">{{category.name}}</view>
+		</view>
+	</view>
+	<view class="col-6" wx:for="{{products}}" wx:for-item="product" bindtap="tapProduct" data-product-id="{{product._id }}" wx:key="_id">
+		<view class="product-card-sm">
+			<view class="product-card-media" style="background-image: url({{product.image.url}});">
+				<view style="display: block;padding-top: 100%;"></view>
+			</view>
+			<view class="product-card-content">
+				<view class="i-amphtml-fill-content i-amphtml-fit-text-content">
+					<view style="max-height:60rpx;">{{product.name}}</view>
+				</view>
+				<text class="text-primary">¥{{product.price}}</text>
+				<text class="text-strike text-alert margin-left-5" wx:if="{{product.isDiscounted}}">¥{{product.originalPrice}}</text>
+			</view>
+		</view>
+	</view>
+</view>
