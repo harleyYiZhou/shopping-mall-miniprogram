@@ -230,12 +230,17 @@ function login() {
 		// 如果获取用户信息失败，判断授权情况
 			.catch(err => {
 				reject(err);
+				if (wx.getStorageSync('auth') && _.get(err, 'errMsg') !== 'getUserInfo:fail auth deny') {
+					return;
+				}
 				wx.openSetting({
 					complete: res => {
 						if (res.authSetting['scope.userInfo']) {
 						// 重新登录
 							getApp().globalData.login = login();
+							wx.setStorageSync('auth', true);
 						} else {
+							wx.removeStorageSync('auth');
 							showModal({
 								title: 'common.authorizeFail',
 								content: 'common.retry',
@@ -310,7 +315,7 @@ function removeItems(params) {
 	}
 	let removePromises = [];
 	let selectedCopy = selectedItems.concat();
-	selectedCopy.sort().reverse();
+	selectedCopy.sort((a, b) => a - b).reverse();
 	selectedCopy.forEach((item, i) => {
 		if (i) {
 			removePromises[i] = new Promise((resolve, rej) => {

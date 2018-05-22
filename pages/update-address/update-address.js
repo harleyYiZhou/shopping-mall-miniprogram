@@ -219,7 +219,7 @@ Page({
 		let value = event.detail.value;
 		if (!value.name || !value.mobilePhone || !value.province ||
       !value.city || !value.address || !this.data.citys || !this.data.areas) {
-			debug.trace(value);
+			// debug.trace(value);
 			showModal({
 				title: 'common.error',
 				content: 'updateAddress.infoNotComplete',

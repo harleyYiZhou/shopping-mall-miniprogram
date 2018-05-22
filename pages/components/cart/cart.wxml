@@ -15,7 +15,7 @@
 	</view>
 	<view class="goodsList {{editable && 'goodsList-margin'}}">
 		<block wx:for="{{carts}}" wx:for-item="cart" wx:for-index="cartIndex" wx:key="_id">
-			<navigator url="/pages/store/store?slug={{cart.store.slug}}" class="layout-row layout-align-center">
+			<navigator url="/pages/store/store?storeId={{cart.store._id}}" class="layout-row layout-align-center">
 				<view class="zan-icon zan-icon-shop padding-left-10"></view>
 				<view class="padding-y-10 padding-x-5 text-primary">{{cart.store.name}}</view>
 				<view class="zan-icon zan-icon-arrow"></view>

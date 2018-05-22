@@ -43,16 +43,16 @@ Page({
 		this.initEleWidth();
 	},
 	onShow() {
-		let localCart = wx.getStorageSync('localCart') || [];
+		let localCarts = wx.getStorageSync('localCarts') || [];
 		app.globalData.login.finally(() => {
 			session.check().then(res => {
 				if (res) {
-					if (localCart) {
-						return _synchronizeCart(localCart);
+					if (localCarts) {
+						return _synchronizeCart(localCarts);
 					}
 					return getStoreCarts();
 				}
-				return localCart;
+				return localCarts;
 			}).then(res => {
 				if (res) {
 					let cartsInfo = res.map(item => {
@@ -299,7 +299,7 @@ Page({
 			if (res) {
 				return updateItem(carts[cartIndex], itemIndex, quantity);
 			}
-			return localCart.update(carts[cartIndex], cartIndex, itemIndex, quantity);
+			return localCartsUtils.update(carts[cartIndex], cartIndex, itemIndex, quantity);
 		}).then(carts => {
 			this.setData({
 				carts
@@ -327,9 +327,20 @@ Page({
 						storeId,
 						selectAll,
 						selectedItems,
+						carts,
+						cartIndex
 					};
-					removeItems(params).then(() => {
-						return getStoreCarts();
+					let hasSession;
+					session.check().then(res => {
+						hasSession = res;
+						if (res) {
+							return removeItems(params);
+						}
+					}).then(() => {
+						if (hasSession) {
+							return getStoreCarts();
+						}
+						return localCartsUtils.remove(params);
 					}).then(carts => {
 						that.setData({
 							carts
@@ -352,18 +363,28 @@ Page({
 			content: 'shoppingCart.removeContent',
 			success(res) {
 				if (res.confirm) {
-					for (let i = carts.length - 1; i >= 0; i--) {
-						let params = {
-							storeId: carts[i].store._id,
-							selectAll: true,
-						};
-						promises.push(removeItems(params));
-					}
-					Promise.all(promises).then(() => {
+					session.check().then(res => {
+						if (res) {
+							for (let i = carts.length - 1; i >= 0; i--) {
+								let params = {
+									storeId: carts[i].store._id,
+									selectAll: true,
+								};
+								promises.push(removeItems(params));
+							}
+							return Promise.all(promises);
+						}
+						if (localCartsUtils.compare(carts, wx.getStorageSync('localCarts'))) {
+							return wx.removeStorageSync('localCarts');
+						}
+						throw Error('Conflict');
+					}).then(() => {
 						that.setData({
 							carts: [],
 							cartsInfo: []
 						});
+					}).catch(err => {
+						console.error(err);
 					});
 				}
 			}
@@ -552,52 +573,71 @@ function removeCartsInfo(cartsInfo, cartIndex) {
 	});
 }
 
-function _synchronizeCart(localCart) {
+function _synchronizeCart(localCarts) {
 	return new Promise((res, rej) => {
 		let promises = [];
-		localCart.forEach(cart => {
+		localCarts.forEach(cart => {
 			cart.items.forEach(item => {
 				let params = _.pick(item, ['storeId', 'productId', 'quantity', 'productOptionId']);
 				promises.push(callApi.post('StoreCart.addItem', params, 400));
 			});
 		});
 		Promise.all(promises).then(() => {
-			wx.removeStorageSync('localCart');
+			wx.removeStorageSync('localCarts');
 			res(getStoreCarts());
 		}).catch(err => {
 			rej(err);
 		});
 	});
 }
-let localCart = {
+
+let localCartsUtils = {
 	update(cart, cartIndex, itemIndex, quantity) {
-		let localCart = wx.getStorageSync('localCart') || [];
-		let offlineCart = localCart[cartIndex];
-		if (
-			!localCart.length || !offlineCart ||
-			!offlineCart.items[itemIndex] ||
-			offlineCart.store._id !== cart.store._id ||
-			offlineCart.items[itemIndex].productId !== cart.items[itemIndex].productId ||
-			offlineCart.items[itemIndex].productOptionId !== cart.items[itemIndex].productOptionId
-		) {
-			showModal({
-				title: 'common.error',
-				content: 'shoppingCart.invalidCart',
-				showCancel: false,
-			});
+		let localCarts = wx.getStorageSync('localCarts') || [];
+		let offlineCart = localCarts[cartIndex];
+		if (!this.compare(cart, offlineCart)) {
 			return Promise.reject(Error('Conflict'));
 		}
 		offlineCart.items[itemIndex].quantity = quantity;
-		this.refreshInfo(localCart, cartIndex);
-		wx.setStorageSync('localCart', localCart);
-		return Promise.resolve(localCart);
+		this.refreshInfo(localCarts, cartIndex);
+		wx.setStorageSync('localCarts', localCarts);
+		return Promise.resolve(localCarts);
 	},
-	remove() {},
-	refreshInfo(localCart, cartIndex) {
-		let totalCost = localCart[cartIndex].items.reduce((inc, item) => {
+	remove(params) {
+		let localCarts = wx.getStorageSync('localCarts') || [];
+		let { carts, selectedItems, cartIndex, selectAll } = params;
+		if (!this.compare(carts, localCarts)) {
+			return Promise.reject(Error('Conflict'));
+		}
+		if (selectAll) {
+			localCarts.splice(cartIndex, 1);
+			wx.setStorageSync('localCarts', localCarts);
+			return localCarts;
+		}
+		let selectedCopy = selectedItems.concat();
+		selectedCopy.sort((a, b) => a - b).reverse();
+		selectedCopy.forEach(i => {
+			localCarts[cartIndex].items.splice(i, 1);
+		});
+		this.refreshInfo(localCarts, cartIndex);
+		wx.setStorageSync('localCarts', localCarts);
+		return localCarts;
+	},
+	refreshInfo(localCarts, cartIndex) {
+		let totalCost = localCarts[cartIndex].items.reduce((inc, item) => {
 			inc += item.price * item.quantity;
 			return inc;
 		}, 0);
-		localCart[cartIndex].totalCost = totalCost.toFixed(2);
+		localCarts[cartIndex].totalCost = totalCost.toFixed(2);
+	},
+	compare(cartA, cartB) {
+		if (_.isEqual(cartA, cartB)) {
+			return true;
+		}
+		showModal({
+			title: 'common.error',
+			content: 'shoppingCart.invalidCart',
+			showCancel: false,
+		});
 	}
 };

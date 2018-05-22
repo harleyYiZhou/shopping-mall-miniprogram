@@ -1,5 +1,7 @@
 /* pages/user-center/user-center.wxss */
-
+.page-container>view{
+	background-color: #fff;
+}
 .userImg{
   /* border-radius: 50%; */
   width: 70%;
@@ -12,7 +14,7 @@
 .signin{
 	color: #E3F8FF;
 }
-.top{
+.page-container .top{
   background: #666666
 }
 .order-icon{
@@ -20,4 +22,14 @@
 }
 .order-name{
   font-size: 30rpx;
+}
+.lang-radio{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding:12px 15px;
+	line-height:1.4;
+}
+.checked view,.checked text{
+	color:#4b0;
 }

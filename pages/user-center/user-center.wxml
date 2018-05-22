@@ -15,7 +15,7 @@
 			<text class="width-10 usertext">></text>
 		</view>
 		<!-- orders -->
-		<view bindtap='toOrders' data-status='0' class="zan-cell zan-cell--access">
+		<view bindtap='toOrders' data-status='0' class="zan-cell zan-cell--access margin-top-10">
 			<view class="zan-cell__bd">{{trans.orders}}</view>
 			<view class="zan-cell__ft">{{trans.allOrder}}</view>
 		</view>
@@ -37,7 +37,7 @@
 				<view class="order-name">{{trans.received}}</view>
 			</view>
 		</view>
-		<view>
+		<view class='margin-top-10'>
 			<navigator url="/pages/select-address/select-address?viewOnly=1">
 				<view class="zan-cell zan-cell--access">
 					<view class="zan-cell__bd">
@@ -86,16 +86,13 @@
 				<view class="zan-cell__ft"></view>
 			</view>
 		</view>
-		<view>
-			<navigator url="/pages/setting/setting">
-				<view class="zan-cell zan-cell--access">
-					<view class="zan-cell__bd">
-						<view class="zan-icon zan-icon-setting"></view>
-						{{trans.setting}}
-					</view>
-					<view class="zan-cell__ft"></view>
-				</view>
-			</navigator>
+		<view class="lang-radio {{checkItem=='0' && 'checked'}} margin-top-10" data-index='0' bindtap='tapLanguage'>
+			<text>简体中文</text>
+			<view wx:if="{{checkItem=='0'}}" class='zan-icon zan-icon-success'></view>
+		</view>
+		<view class="lang-radio {{checkItem=='1' && 'checked'}}" data-index='1' bindtap='tapLanguage'>
+			<text>English</text>
+			<view wx:if="{{checkItem=='1'}}" class='zan-icon zan-icon-success'></view>
 		</view>
 	</view>
 	<template is="bottom-nav" data="{{selected,trans}}" />

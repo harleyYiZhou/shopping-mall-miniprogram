@@ -54,7 +54,7 @@ Page({
 			});
 			return callApi.get(`stores/${res._id}/profile`);
 		}).then(res => {
-			debug.trace('profile', res);
+			// debug.trace('profile', res);
 			this.setData({
 				terms: res
 			});
@@ -125,7 +125,7 @@ Page({
 			if (res) {
 				return callApi.post('StoreCart.addItem', params, 400);
 			}
-			return _addToLocalCart(cartItem, store);
+			return _addToLocalCarts(cartItem, store);
 		}).then(res => {
 			let that = this;
 			showToast({
@@ -168,7 +168,7 @@ Page({
 	},
 	toStore(e) {
 		let { storeId } = e.currentTarget.dataset;
-		debug.trace(storeId);
+		// debug.trace(storeId);
 		wx.navigateTo({
 			url: '/pages/store/store?storeId=' + storeId
 		});
@@ -241,17 +241,17 @@ Page({
  * @param {*} item storeCart 里的 item
  * @param {*} store
  */
-function _addToLocalCart(item, store) {
+function _addToLocalCarts(item, store) {
 	if (!item || !item.storeId || !item.productId) {
 		console.error(item);
-		throw new ReferenceError('_addToLocalCart');
+		throw new ReferenceError('_addToLocalCarts');
 	}
-	let localCart = wx.getStorageSync('localCart') || [];
+	let localCarts = wx.getStorageSync('localCarts') || [];
 	let hasStore = false;
 	let storeIndex = -1;
 	let hasItem = false;
 	let itemIndex = -1;
-	localCart.forEach((cart, i) => {
+	localCarts.forEach((cart, i) => {
 		if (hasStore) {
 			return;
 		}
@@ -277,18 +277,18 @@ function _addToLocalCart(item, store) {
 
 	if (hasStore) {
 		if (hasItem) {
-			item.quantity += localCart[storeIndex].items[itemIndex].quantity;
-			localCart[storeIndex].items[itemIndex] = item;
+			item.quantity += localCarts[storeIndex].items[itemIndex].quantity;
+			localCarts[storeIndex].items[itemIndex] = item;
 		} else {
-			localCart[storeIndex].items.push(item);
+			localCarts[storeIndex].items.push(item);
 		}
 		// update totalCost
-		let totalCost = localCart[storeIndex].items.reduce((inc, item) => {
+		let totalCost = localCarts[storeIndex].items.reduce((inc, item) => {
 			inc += item.price * item.quantity;
 			return inc;
 		}, 0);
 		// debug.trace(item, totalCost);
-		localCart[storeIndex].totalCost = totalCost.toFixed(2);
+		localCarts[storeIndex].totalCost = totalCost.toFixed(2);
 	} else {
 		let storeCart = {
 			store,
@@ -296,8 +296,8 @@ function _addToLocalCart(item, store) {
 			totalCost: (item.price * item.quantity).toFixed(2),
 			items: [item]
 		};
-		localCart.push(storeCart);
+		localCarts.push(storeCart);
 	}
 
-	return Promise.resolve(wx.setStorageSync('localCart', localCart));
+	return Promise.resolve(wx.setStorageSync('localCarts', localCarts));
 }

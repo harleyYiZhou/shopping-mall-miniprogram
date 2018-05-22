@@ -7,6 +7,7 @@ Page({
 	data: {
 		selected: '3',
 		userInfo: null,
+		checkItem: 0
 	},
 	onLoad(options) {
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
@@ -19,8 +20,10 @@ Page({
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
+		let checkItem = this.data.locale === 'zh' ? 0 : 1;
 		this.setData({
-			selected: '3'
+			selected: '3',
+			checkItem
 		});
 		app.globalData.login.finally(() => {
 			this.setData({
@@ -54,37 +57,24 @@ Page({
 			}
 		}
 	},
-	/**
-   * 生命周期函数--监听页面隐藏
-   */
-	onHide() {
-
+	tapLanguage(e) {
+		let langs = ['zh', 'en'];
+		let checkItem = e.currentTarget.dataset.index;
+		if (langs[checkItem] === this.data.locale) {
+			return;
+		}
+		this.setData({
+			checkItem
+		});
+		app.translate.setLocale(langs[checkItem]);
+		app.translate.langData(this);
 	},
-
-	/**
-   * 生命周期函数--监听页面卸载
-   */
-	onUnload() {
-
-	},
-
-	/**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
 	onPullDownRefresh() {
 
 	},
-
-	/**
-   * 页面上拉触底事件的处理函数
-   */
 	onReachBottom() {
 
 	},
-
-	/**
-   * 用户点击右上角分享
-   */
 	onShareAppMessage() {
 
 	},
