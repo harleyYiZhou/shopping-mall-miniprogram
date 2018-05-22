@@ -12,7 +12,7 @@ Page({
 			noSelect: false,
 		},
 		delBtnWidth: 120, // 删除按钮宽度单位（rpx）
-		selected: '1',
+		selected: '2',
 		cartsInfo: [], // 记录购物车各种状态：storeCart 是否全选，item 是否选中，记录选中的 items 的 indexes
 	},
 	btnNavLink: app.btnNavLink(),
@@ -75,7 +75,7 @@ Page({
 			});
 		});
 		this.setData({
-			selected: '1',
+			selected: '2',
 		});
 		debug('cart show');
 	},

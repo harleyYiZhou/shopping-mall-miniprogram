@@ -61,10 +61,10 @@ const btnNavLink = () => {
 				url = '/pages/index/index';
 				break;
 			case '1':
-				url = '/pages/shopping-cart/shopping-cart';
+				url = '/pages/catagory/catagory';
 				break;
 			case '2':
-				url = '/pages/catagory/catagory';
+				url = '/pages/shopping-cart/shopping-cart';
 				break;
 			case '3':
 				url = '/pages/user-center/user-center';

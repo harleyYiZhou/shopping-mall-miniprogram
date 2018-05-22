@@ -4,7 +4,7 @@
 <view>
 	<view class="page-container">
 		<view class="layout-row layout-wrap layout-align-center padding-y-20 top" bindtap='toAccount'>
-			<view wx:if="{{userInfo}}" class="width-30 text-center">
+			<view wx:if="{{userInfo && userInfo.image}}" class="width-30 text-center">
 				<image class="userImg" mode="widthFix" src="{{userInfo.image.url}}"></image>
 			</view>
 			<view wx:else class="width-30 text-center">

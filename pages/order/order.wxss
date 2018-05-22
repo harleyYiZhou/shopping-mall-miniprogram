@@ -39,7 +39,7 @@
 }
 
 .back-btn {
-    width: 320rpx;
+	display:inline-block;
     background-color: #9d9d9d;
     color: #fff;
 }

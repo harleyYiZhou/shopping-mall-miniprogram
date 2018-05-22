@@ -287,7 +287,7 @@ function _addToLocalCart(item, store) {
 			inc += item.price * item.quantity;
 			return inc;
 		}, 0);
-		debug.trace(item, totalCost);
+		// debug.trace(item, totalCost);
 		localCart[storeIndex].totalCost = totalCost.toFixed(2);
 	} else {
 		let storeCart = {

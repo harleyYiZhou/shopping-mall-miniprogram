@@ -5,7 +5,7 @@ const { callApi } = require('../../utils/guzzu-utils.js');
 Page({
 	data: {
 		tapIndex: 0,
-		selected: '2'
+		selected: '1'
 	},
 	onLoad(options) {
 		let categoryId = wx.getStorageSync('catagoryId');
@@ -21,7 +21,7 @@ Page({
 	},
 	onShow() {
 		this.setData({
-			selected: '2'
+			selected: '1'
 		});
 	},
 	btnNavLink: app.btnNavLink(),

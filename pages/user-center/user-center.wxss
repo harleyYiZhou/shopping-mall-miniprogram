@@ -3,6 +3,7 @@
 .userImg{
   /* border-radius: 50%; */
   width: 70%;
+  max-height: 150rpx;
 }
 .usertext{
   font-size: 35rpx;

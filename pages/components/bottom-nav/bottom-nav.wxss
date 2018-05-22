@@ -1,4 +1,5 @@
 .bottom-nav {
+	padding: 5rpx 0 8rpx;
     font-size: 45rpx;
     background: #fff;
     width: 100%;
