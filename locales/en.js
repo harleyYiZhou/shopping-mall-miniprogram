@@ -278,7 +278,9 @@ module.exports = {
 		removeTitle: 'Remove',
 		removeAll: 'Remove All',
 		removeContent: 'Are you sure you want to remove this product?',
-		error1: 'Order: out of stock'
+		error1: 'Order: out of stock',
+		invalidCart: 'Invalid cart,please refresh.',
+
 	},
 	storeCategories: {
 		navBarTitle: 'Categories',

@@ -278,7 +278,8 @@ module.exports = {
 		removeTitle: '移除商品',
 		removeAll: '全部移除',
 		removeContent: '您确定要移除该商品吗？',
-		error1: '订单：商品库存不足'
+		error1: '订单：商品库存不足',
+		invalidCart: '数据不正确，请刷新购物车',
 	},
 	storeCategories: {
 		navBarTitle: '商品分类',

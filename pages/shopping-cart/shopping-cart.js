@@ -43,7 +43,7 @@ Page({
 		this.initEleWidth();
 	},
 	onShow() {
-		let localCart = wx.getStorageSync('localCart');
+		let localCart = wx.getStorageSync('localCart') || [];
 		app.globalData.login.finally(() => {
 			session.check().then(res => {
 				if (res) {
@@ -72,12 +72,13 @@ Page({
 				}
 			}).catch(err => {
 				console.error(err);
+			}).finally(() => {
+				wx.stopPullDownRefresh();
 			});
 		});
 		this.setData({
 			selected: '2',
 		});
-		debug('cart show');
 	},
 	toIndexPage() {
 		wx.redirectTo({
@@ -263,14 +264,7 @@ Page({
 		if (!checkInventory(carts[cartIndex].items, [itemIndex], quantity)) {
 			return;
 		}
-		updateItem(carts[cartIndex], itemIndex, quantity).then(carts => {
-			this.setData({
-				carts
-			});
-			this.setGoodsList(this.data.cartsInfo, cartIndex);
-		}).catch(err => {
-			console.error(err);
-		});
+		this.updateItems(cartIndex, itemIndex, quantity);
 	},
 	// -1
 	jianBtnTap(e) {
@@ -281,14 +275,7 @@ Page({
 		if (quantity < 1) {
 			return;
 		}
-		updateItem(carts[cartIndex], itemIndex, quantity).then(carts => {
-			this.setData({
-				carts
-			});
-			this.setGoodsList(this.data.cartsInfo, cartIndex);
-		}).catch(err => {
-			console.error(err);
-		});
+		this.updateItems(cartIndex, itemIndex, quantity);
 	},
 	inputNum(e) {
 		let cartIndex = e.currentTarget.dataset.cartIndex;
@@ -303,9 +290,19 @@ Page({
 		if (!checkInventory(carts[cartIndex].items, [itemIndex], quantity)) {
 			return;
 		}
-		updateItem(carts[cartIndex], itemIndex, quantity).then(res => {
+		this.updateItems(cartIndex, itemIndex, quantity);
+	},
+	// 更新线上/本地购物车
+	updateItems(cartIndex, itemIndex, quantity) {
+		let carts = this.data.carts;
+		session.check().then(res => {
+			if (res) {
+				return updateItem(carts[cartIndex], itemIndex, quantity);
+			}
+			return localCart.update(carts[cartIndex], cartIndex, itemIndex, quantity);
+		}).then(carts => {
 			this.setData({
-				carts: res
+				carts
 			});
 			this.setGoodsList(this.data.cartsInfo, cartIndex);
 		}).catch(err => {
@@ -424,7 +421,7 @@ Page({
 		if (checkInventory(carts[cartIndex].items, selectedItems)) {
 			url = `/pages/checkout/checkout?storeId=${storeId}&selectedItems=${JSON.stringify(selectedItems)}&selectAll=${selectAll}`;
 		}
-		if (url) {
+		if (url && session.checkSync()) {
 			wx.navigateTo({
 				url
 			});
@@ -435,7 +432,10 @@ Page({
 		wx.navigateTo({
 			url: '/pages/to-pay-order/index'
 		});
-	}
+	},
+	onPullDownRefresh() {
+		this.onShow();
+	},
 
 });
 
@@ -569,3 +569,35 @@ function _synchronizeCart(localCart) {
 		});
 	});
 }
+let localCart = {
+	update(cart, cartIndex, itemIndex, quantity) {
+		let localCart = wx.getStorageSync('localCart') || [];
+		let offlineCart = localCart[cartIndex];
+		if (
+			!localCart.length || !offlineCart ||
+			!offlineCart.items[itemIndex] ||
+			offlineCart.store._id !== cart.store._id ||
+			offlineCart.items[itemIndex].productId !== cart.items[itemIndex].productId ||
+			offlineCart.items[itemIndex].productOptionId !== cart.items[itemIndex].productOptionId
+		) {
+			showModal({
+				title: 'common.error',
+				content: 'shoppingCart.invalidCart',
+				showCancel: false,
+			});
+			return Promise.reject(Error('Conflict'));
+		}
+		offlineCart.items[itemIndex].quantity = quantity;
+		this.refreshInfo(localCart, cartIndex);
+		wx.setStorageSync('localCart', localCart);
+		return Promise.resolve(localCart);
+	},
+	remove() {},
+	refreshInfo(localCart, cartIndex) {
+		let totalCost = localCart[cartIndex].items.reduce((inc, item) => {
+			inc += item.price * item.quantity;
+			return inc;
+		}, 0);
+		localCart[cartIndex].totalCost = totalCost.toFixed(2);
+	}
+};
