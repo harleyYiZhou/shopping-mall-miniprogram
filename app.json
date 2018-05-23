@@ -17,7 +17,7 @@
     "pages/update-address/update-address",
     "pages/account/account",
     "pages/product-detail/product-detail",
-	 "pages/catagory/catagory",
+	 "pages/category/category",
 	 "pages/contact-store/contact-store",
     "pages/setting/setting"
   ],

@@ -61,7 +61,7 @@ const btnNavLink = () => {
 				url = '/pages/index/index';
 				break;
 			case '1':
-				url = '/pages/catagory/catagory';
+				url = '/pages/category/category';
 				break;
 			case '2':
 				url = '/pages/shopping-cart/shopping-cart';

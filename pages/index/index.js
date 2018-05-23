@@ -45,9 +45,9 @@ Page({
 				url = '/pages/store/store?storeId=' + linkId;
 				break;
 			case 'category':
-				wx.setStorageSync('catagoryId', linkId);
+				wx.setStorageSync('categoryId', linkId);
 			case 'shoppingMallCategory':
-				url = '/pages/catagory/catagory';
+				url = '/pages/category/category';
 				break;
 			default:
 				console.error('unkown linkType');

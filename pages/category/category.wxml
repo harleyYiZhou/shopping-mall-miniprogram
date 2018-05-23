@@ -1,4 +1,4 @@
-<!--pages/catagory/catagory.wxml-->
+<!--pages/category/category.wxml-->
 <import src="../components/bottom-nav/bottom-nav" />
 
 <view class="layout-column ">
@@ -8,8 +8,8 @@
     <input class="input-content" placeholder='出行季 最高减200'></input>
   </view>
     -->
-	<view class="catagory layout-row width-100">
-		<view class="catagory-title layout-column">
+	<view class="category layout-row width-100">
+		<view class="category-title layout-column">
 			<scroll-view scroll-y style="height: {{scrollHeight}}rpx;" bindscrolltoupper="" bindscrolltolower="" bindscroll="" scroll-into-view=""
 			   scroll-top="{{scrollTop}}">
 				<view class="levelOne padding-left-10 ellipsis {{index===tapIndex?'selecte':'false'}}" wx:for="{{category}}" wx:key="item" data-index="{{index}}"
@@ -17,7 +17,7 @@
 				<view data-index='-1' bindtap='chooseLevel' class="levelOne padding-left-10 ellipsis {{tapIndex=='-1'?'selecte':'false'}}">{{trans.stores}}</view>
 			</scroll-view>
 		</view>
-		<view class="catagory-subtitle flex padding-x-10 padding-y-10 layout-column ">
+		<view class="category-subtitle flex padding-x-10 padding-y-10 layout-column ">
 			<view wx:if="{{category[tapIndex].image || category[tapIndex].image.url}}">
 				<image mode="widthFix" class="sub-image" src="{{category[tapIndex].image.thumb.url || category[tapIndex].image.url}}"></image>
 			</view>
@@ -35,6 +35,7 @@
 						<view class="layout-column layout-align-center text-center margin-bottom-10">
 							<image class="level-3-img" mode="widthFix" src="{{item.image.thumb.url}}"></image>
 							<view class="width-100 ellipsis">{{item.name}}</view>
+							<view class="width-100 ellipsis color-text--red-400">￥{{item.price}}</view>
 						</view>
 					</navigator>
 				</block>

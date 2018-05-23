@@ -1,6 +1,7 @@
-// pages/catagory/catagory.js
+// pages/category/category.js
 let app = getApp();
 const { callApi } = require('../../utils/guzzu-utils.js');
+const { priceFilter } = require('../../utils/util');
 
 Page({
 	data: {
@@ -10,8 +11,8 @@ Page({
 		stores: [],
 	},
 	onLoad(options) {
-		let categoryId = wx.getStorageSync('catagoryId');
-		wx.removeStorageSync('catagoryId');
+		let categoryId = wx.getStorageSync('categoryId');
+		wx.removeStorageSync('categoryId');
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
@@ -29,6 +30,9 @@ Page({
 	btnNavLink: app.btnNavLink(),
 	chooseLevel(e) {
 		let tapIndex = e.currentTarget.dataset.index;
+		if (tapIndex === this.data.tapIndex) {
+			return;
+		}
 		this.setData({
 			tapIndex
 		});
@@ -55,6 +59,9 @@ Page({
 			});
 			return;
 		}
+		this.setData({
+			stores: []
+		});
 		_getCategory.bind(this)();
 	}
 });
@@ -83,6 +90,7 @@ function _getCategory(categoryId) {
 		});
 		return callApi.get('shopping-malls/{smallid}/categories/' + categoryId);
 	}).then((result) => {
+		priceFilter(result);
 		this.setData({
 			categoryPage: result
 		});
