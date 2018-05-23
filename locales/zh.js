@@ -60,6 +60,12 @@ module.exports = {
 		membershipCard: '会员卡',
 		signin: '未登录',
 	},
+	coupons: {
+		navBarTitle: '会员卡',
+		membershipCard: '会员卡',
+		coupon: '优惠券',
+		validForever: '一直有效',
+	},
 	addAddress: {
 		navBarTitle: 'Add address',
 		updating: '提交中',

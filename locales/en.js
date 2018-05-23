@@ -57,9 +57,15 @@ module.exports = {
 		myFavorite: 'My favorite',
 		setting: 'Setting',
 		service: 'Service Center',
-		coupon: 'Coupon',
-		membershipCard: 'Menbership Card',
+		coupon: 'Coupons',
+		membershipCard: 'Member Cards',
 		signin: 'Sign In',
+	},
+	coupons: {
+		navBarTitle: 'Member Cards',
+		coupon: 'Coupons',
+		validUntil: 'Valid until',
+		validForever: 'Never expire',
 	},
 	addAddress: {
 		navBarTitle: 'Add address',

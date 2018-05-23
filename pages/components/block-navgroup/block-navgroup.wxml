@@ -4,7 +4,7 @@
       <block wx:if="{{item}}" wx:for="{{item.items}}" wx:for-item="comItem" wx:key="comItem">
          <view class="flex layout-column layout-align-center layout-justify-between color--white  padding-y-10" bindtap="linkTo" data-link-id="{{comItem[comItem.linkType]}}" data-link-type="{{comItem.linkType}}">
             <view wx:if="{{item.template !='text-only'}}" class="flex layout-row layout-center">
-               <image style="width: 90rpx" mode="widthFix" src="{{comItem.image.thumb.url}}"></image>
+               <image style="width: 90rpx;max-height:90rpx" mode="widthFix" src="{{comItem.image.thumb.url}}"></image>
             </view>
             <text wx:if="{{item.template !='image-only' && comItem.title}}">{{comItem.title}}</text>
          </view>

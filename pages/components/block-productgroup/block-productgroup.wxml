@@ -8,7 +8,7 @@
 					<image src="{{product.image.thumb.url}}" style="width: 100%;height: {{item.imageHeight}}rpx;" mode="aspectFill"></image>
 					<view style='width: 100%;' class="productContent">
 						<view class="productName textview">{{product.name}}</view>
-						<view class="productPrice">￥{{product.price/100}}</view>
+						<view class="productPrice">￥{{product.price}}</view>
 					</view>
 				</view>
 			</view>

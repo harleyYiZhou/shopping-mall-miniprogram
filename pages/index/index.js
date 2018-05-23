@@ -2,6 +2,7 @@
 // 获取应用实例
 const app = getApp();
 const { callApi } = require('../../utils/guzzu-utils.js');
+const { priceFilter } = require('../../utils/util');
 
 Page({
 	data: {
@@ -81,6 +82,7 @@ function _processCurrentPage(that) {
 		let blocks = res.blocks;
 		for (let i in blocks) {
 			if (blocks[i].type === 'productgroup') {
+				priceFilter(blocks[i]);
 				let productCol = 1;
 				if (blocks[i].template === 'double') {
 					productCol = 2;

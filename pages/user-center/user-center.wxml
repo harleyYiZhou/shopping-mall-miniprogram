@@ -37,17 +37,15 @@
 				<view class="order-name">{{trans.received}}</view>
 			</view>
 		</view>
-		<view class='margin-top-10'>
-			<navigator url="/pages/select-address/select-address?viewOnly=1">
-				<view class="zan-cell zan-cell--access">
-					<view class="zan-cell__bd">
-						<view class="zan-icon zan-icon-location"></view>
-						{{trans.manageAddress}}
-					</view>
-					<view class="zan-cell__ft"></view>
-				</view>
-			</navigator>
+
+		<view class="zan-cell zan-cell--access margin-top-10" bindtap="navigateTo" data-url="/pages/select-address/select-address?viewOnly=1">
+			<view class="zan-cell__bd">
+				<view class="zan-icon zan-icon-location"></view>
+				{{trans.manageAddress}}
+			</view>
+			<view class="zan-cell__ft"></view>
 		</view>
+		
 		<!--
 		<view>
 			<view class="zan-cell zan-cell--access">
@@ -68,29 +66,21 @@
 			</view>
 		</view>
 		  -->
-		<view>
-			<view class="zan-cell zan-cell--access">
-				<view class="zan-cell__bd">
-					<view class="zan-icon zan-icon-debit-pay"></view>
-					{{trans.coupon}}
-				</view>
-				<view class="zan-cell__ft"></view>
+		<view class="zan-cell zan-cell--access" bindtap="navigateTo" data-url="/pages/coupons/coupons">
+			<view class="zan-cell__bd">
+				<view class="zan-icon zan-icon-coupon"></view>
+				{{trans.coupon}}
 			</view>
+			<view class="zan-cell__ft"></view>
 		</view>
 		<view>
-			<view class="zan-cell zan-cell--access">
-				<view class="zan-cell__bd">
-					<view class="zan-icon zan-icon-member-day-privilege"></view>
-					{{trans.membershipCard}}
-				</view>
-				<view class="zan-cell__ft"></view>
-			</view>
+
 		</view>
 		<view class="lang-radio {{checkItem=='0' && 'checked'}} margin-top-10" data-index='0' bindtap='tapLanguage'>
 			<text>简体中文</text>
 			<view wx:if="{{checkItem=='0'}}" class='zan-icon zan-icon-success'></view>
 		</view>
-		<view class="lang-radio {{checkItem=='1' && 'checked'}}" data-index='1' bindtap='tapLanguage'>
+		<view class="lang-radio {{checkItem=='1' && 'checked'}} list-bordered" data-index='1' bindtap='tapLanguage'>
 			<text>English</text>
 			<view wx:if="{{checkItem=='1'}}" class='zan-icon zan-icon-success'></view>
 		</view>

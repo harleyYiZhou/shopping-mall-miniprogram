@@ -439,13 +439,15 @@ Page({
 		if (!selectedItems.length) {
 			return;
 		}
-		if (checkInventory(carts[cartIndex].items, selectedItems)) {
-			url = `/pages/checkout/checkout?storeId=${storeId}&selectedItems=${JSON.stringify(selectedItems)}&selectAll=${selectAll}`;
-		}
-		if (url && session.checkSync()) {
-			wx.navigateTo({
-				url
-			});
+		if (session.checkSync()) {
+			callApi.post('StoreCart.preview', { storeId},400).then(()=>{
+				url = `/pages/checkout/checkout?storeId=${storeId}&selectedItems=${JSON.stringify(selectedItems)}&selectAll=${selectAll}`;
+				wx.navigateTo({
+					url
+				});
+			}).catch(err=>{
+				console.error(err);
+			})
 		}
 	},
 	navigateToPayOrder() {

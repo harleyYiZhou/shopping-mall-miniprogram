@@ -1,30 +1,31 @@
 {
-  "pages":[
-    "pages/index/index",
-	 "pages/bind-phone/bind-phone",
-	 "pages/checkout/checkout",
-	 "pages/deliver-time/deliver-time",
-	 "pages/order/order",
-    "pages/components/searchFor/searchFor",
-    "pages/shopping-cart/shopping-cart",
-    "pages/user-center/user-center",
-    "pages/orders/orders",
-	 "pages/addresses/addresses",
-	 "pages/select-address/select-address",
-	 "pages/store/store",
-	 "pages/store-categories/store-categories",
-	 "pages/store-category/store-category",
-    "pages/update-address/update-address",
-    "pages/account/account",
-    "pages/product-detail/product-detail",
-	 "pages/category/category",
-	 "pages/contact-store/contact-store",
-    "pages/setting/setting"
-  ],
-  "window":{
-    "backgroundTextStyle":"light",
-    "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "WeChat",
-    "navigationBarTextStyle":"black"
-  }
+   "pages": [
+      "pages/index/index",
+      "pages/bind-phone/bind-phone",
+      "pages/checkout/checkout",
+      "pages/deliver-time/deliver-time",
+      "pages/order/order",
+      "pages/components/searchFor/searchFor",
+      "pages/shopping-cart/shopping-cart",
+      "pages/user-center/user-center",
+      "pages/orders/orders",
+      "pages/addresses/addresses",
+      "pages/select-address/select-address",
+      "pages/store/store",
+      "pages/store-categories/store-categories",
+      "pages/store-category/store-category",
+      "pages/update-address/update-address",
+      "pages/account/account",
+      "pages/product-detail/product-detail",
+      "pages/category/category",
+      "pages/contact-store/contact-store",
+      "pages/setting/setting",
+      "pages/coupons/coupons"
+   ],
+   "window": {
+      "backgroundTextStyle": "light",
+      "navigationBarBackgroundColor": "#fff",
+      "navigationBarTitleText": "WeChat",
+      "navigationBarTextStyle": "black"
+   }
 }

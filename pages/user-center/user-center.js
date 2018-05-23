@@ -69,8 +69,11 @@ Page({
 		app.translate.setLocale(langs[checkItem]);
 		app.translate.langData(this);
 	},
-	onPullDownRefresh() {
-
+	navigateTo(e) {
+		let { url } = e.currentTarget.dataset;
+		wx.navigateTo({
+			url
+		});
 	},
 	onReachBottom() {
 
