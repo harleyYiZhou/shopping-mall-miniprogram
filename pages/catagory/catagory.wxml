@@ -9,25 +9,43 @@
   </view>
     -->
 	<view class="catagory layout-row width-100">
-		<view class="catagory-title layout-column width-30">
+		<view class="catagory-title layout-column">
 			<scroll-view scroll-y style="height: {{scrollHeight}}rpx;" bindscrolltoupper="" bindscrolltolower="" bindscroll="" scroll-into-view=""
 			   scroll-top="{{scrollTop}}">
-				<view class="levelOne padding-left-10 {{index===tapIndex?'selecte':'false'}}" wx:for="{{category}}" wx:key="item" data-index="{{index}}"
-				   bindtap='chooseLevel'>{{item.name}}</view>
+				<view class="levelOne padding-left-10 ellipsis {{index===tapIndex?'selecte':'false'}}" wx:for="{{category}}" wx:key="item" data-index="{{index}}"
+					bindtap='chooseLevel'>{{item.name}}</view>
+				<view data-index='-1' bindtap='chooseLevel' class="levelOne padding-left-10 ellipsis {{tapIndex=='-1'?'selecte':'false'}}">{{trans.stores}}</view>
 			</scroll-view>
 		</view>
 		<view class="catagory-subtitle flex padding-x-10 padding-y-10 layout-column ">
-			<view>
-				<image mode="widthFix" class="width-100" src="{{category[tapIndex].image.thumb.url}}"></image>
+			<view wx:if="{{category[tapIndex].image || category[tapIndex].image.url}}">
+				<image mode="widthFix" class="sub-image" src="{{category[tapIndex].image.thumb.url || category[tapIndex].image.url}}"></image>
 			</view>
-			<view class="text-center margin-top-10 margin-bottom-20">
+			<view wx:if="{{category[tapIndex].description}}" class="text-center margin-top-10 margin-bottom-20">
 				<text>{{category[tapIndex].description}}</text>
 			</view>
+
+			<view wx:if="{{tapIndex=='-1'}}" class="text-center margin-top-10 margin-bottom-20">
+				<text class="text-title text-strong">{{trans.storeList}}</text>
+			</view>
+
 			<view class="layout-row layout-wrap  layout-justify-between">
-				<view wx:for="{{categoryPage.products}}" wx:key="item" class="width-30 text-center margin-bottom-10">
-					<image class="square-100 levelSecImg" src="{{item.image.thumb.url}}"></image>
-					<view>{{item.name}}</view>
-				</view>
+				<block wx:for="{{categoryPage.products}}" wx:key="item">
+					<navigator class="level-3-box layout-center" url="/pages/product-detail/product-detail?productId={{item._id}}">
+						<view class="layout-column layout-align-center text-center margin-bottom-10">
+							<image class="level-3-img" mode="widthFix" src="{{item.image.thumb.url}}"></image>
+							<view class="width-100 ellipsis">{{item.name}}</view>
+						</view>
+					</navigator>
+				</block>
+				<block wx:for="{{stores}}" wx:key="item">
+					<navigator class="level-3-box layout-center" url="/pages/store/store?storeId={{item._id}}">
+						<view class="layout-column layout-align-center text-center margin-bottom-10">
+							<image class="level-3-img" mode="widthFix" src="{{item.logo.thumb.url}}"></image>
+							<view class="width-100 ellipsis">{{item.name}}</view>
+						</view>
+					</navigator>
+				</block>
 			</view>
 		</view>
 	</view>

@@ -5,7 +5,9 @@ const { callApi } = require('../../utils/guzzu-utils.js');
 Page({
 	data: {
 		tapIndex: 0,
-		selected: '1'
+		selected: '1',
+		categoryPage: [],
+		stores: [],
 	},
 	onLoad(options) {
 		let categoryId = wx.getStorageSync('catagoryId');
@@ -26,9 +28,33 @@ Page({
 	},
 	btnNavLink: app.btnNavLink(),
 	chooseLevel(e) {
+		let tapIndex = e.currentTarget.dataset.index;
 		this.setData({
-			tapIndex: e.currentTarget.dataset.index
+			tapIndex
 		});
+		if (tapIndex === '-1') {
+			this.setData({
+				categoryPage: {}
+			});
+			let temp = this.data.stores;
+			let options = {
+				page: this.data.currentPage,
+				pageSize: this.data.pageSize
+			};
+			callApi.post('Store.find', options, 400).then(result => {
+				if (result && result.totalPages) {
+					temp = temp.concat(result.results);
+					this.setData({
+						stores: temp,
+						totalPages: result.totalPages,
+						currentPage: result.currentPage,
+					});
+				}
+			}).catch(err => {
+				console.error(err);
+			});
+			return;
+		}
 		_getCategory.bind(this)();
 	}
 });

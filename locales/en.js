@@ -99,7 +99,11 @@ module.exports = {
 		removeTitle: 'Remove product',
 		removeContent: 'Are you sure you want to remove this product?'
 	},
-	category: { },
+	category: {
+		navBarTitle: 'Category',
+		stores: 'Stores',
+		storeList: 'Stores List',
+	},
 	checkout: {
 		navBarTitle: 'Confirm Order',
 		selectItem: '(--Please select--)',

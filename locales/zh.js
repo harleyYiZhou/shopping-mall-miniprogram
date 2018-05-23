@@ -98,7 +98,12 @@ module.exports = {
 		removeTitle: '移除商品',
 		removeContent: '您确定要移除该商品吗？'
 	},
-	category: {},
+	category: {
+		navBarTitle: '分类',
+		stores: '店铺',
+		storeList: '店铺列表',
+
+	},
 	checkout: {
 		navBarTitle: '确认订单',
 		selectItem: '(--请选择--)',
