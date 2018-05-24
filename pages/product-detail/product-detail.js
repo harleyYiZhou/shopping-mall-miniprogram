@@ -174,7 +174,7 @@ Page({
 	},
 	toShoppingCart() {
 		app.globalData.selected = '1';
-		wx.reLaunch({
+		wx.switchTab({
 			url: '/pages/shopping-cart/shopping-cart'
 		});
 	},

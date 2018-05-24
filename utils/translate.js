@@ -18,7 +18,7 @@ module.exports = {
 		}
 		self.setData({
 			language: langArr,
-			index: index
+			index
 		});
 	},
 	setLocale(code) {
@@ -46,7 +46,7 @@ module.exports = {
 		const currLang = Object.assign({}, trans[route], trans['common']);
 		self.setData({
 			trans: currLang,
-			locale: locale
+			locale
 		});
 		if (currLang.navBarTitle) {
 			wx.setNavigationBarTitle({
@@ -57,5 +57,11 @@ module.exports = {
 				title: 'GUZZU'
 			});
 		}
+		trans.tabBar.forEach((elem, i) => {
+			wx.setTabBarItem({
+				index: i,
+				text: elem,
+			});
+		});
 	}
 };

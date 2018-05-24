@@ -325,7 +325,5 @@ module.exports = {
 		phMobilePhone: '请输入手机号码',
 		phAddress: '请输入详细地址'
 	},
-	setting: {
-		language: '语言'
-	}
+	tabBar: ['主页', '分类', '购物车', '我的'],
 };

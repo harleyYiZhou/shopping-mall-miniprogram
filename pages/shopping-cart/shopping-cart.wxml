@@ -1,5 +1,4 @@
 <!--pages/shopping-cart/shopping-cart.wxml-->
-<import src="../components/bottom-nav/bottom-nav" />
 <import src="../components/cart/cart" />
 
 <view>
@@ -7,5 +6,4 @@
     <template is="{{carts.length > 0 ? 'cart-goods' : 'cart-empty'}}" data="{{...goodsList,carts,cartsInfo,removeSelections,removeTotal,trans}}"></template>
   </view>
   <view style="height: 200rpx;"></view>
-  <template is="bottom-nav" data="{{selected,trans}}" />
 </view>

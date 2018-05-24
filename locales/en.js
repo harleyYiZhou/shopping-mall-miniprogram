@@ -324,7 +324,5 @@ module.exports = {
 		phMobilePhone: 'Please input your mobilePhone.',
 		phAddress: 'Please input your address.'
 	},
-	setting: {
-		language: 'language'
-	}
+	tabBar: ['Home', 'Category', 'Cart', 'Account'],
 };

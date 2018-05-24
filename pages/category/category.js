@@ -6,7 +6,6 @@ const { priceFilter } = require('../../utils/util');
 Page({
 	data: {
 		tapIndex: 0,
-		selected: '1',
 		categoryPage: [],
 		stores: [],
 	},
@@ -23,9 +22,6 @@ Page({
 		_getCategory.bind(this)(categoryId);
 	},
 	onShow() {
-		this.setData({
-			selected: '1'
-		});
 	},
 	btnNavLink: app.btnNavLink(),
 	chooseLevel(e) {

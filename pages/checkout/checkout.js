@@ -69,7 +69,7 @@ Page({
 		getCart.then(result => {
 			// wx.removeStorageSync('cart');
 			if (!result || result.items.length < 1) {
-				wx.redirectTo({
+				wx.switchTab({
 					url: '/pages/shopping-cart/shopping-cart'
 				});
 				throw new TypeError('Empty Order');

@@ -7,7 +7,6 @@
 <import src="../components/block-spacer/block-spacer" />
 <import src="../components/block-title/block-title" />
 <import src="../components/image-adv/image-adv" />
-<import src="../components/bottom-nav/bottom-nav" />
 
 <view style="position: relative">
       <view style="margin-bottom: 100rpx" class="search-nav">
@@ -22,6 +21,4 @@
             <!--标题导航-->
             <!--商品列表-->
       </block>
-      <view style="height: 100rpx;"></view>
-      <template is="bottom-nav" data="{{selected,trans}}" />
 </view>

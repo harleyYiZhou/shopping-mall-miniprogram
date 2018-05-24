@@ -8,7 +8,6 @@ Page({
 	data: {
 		hasUserInfo: false,
 		current: 0,
-		selected: '0',
 		pageIndex: 0,
 		pages: null,
 		currentPage: null,
@@ -25,9 +24,6 @@ Page({
 			_processCurrentPage(this);
 		}).catch(err => {
 			console.error(err);
-		});
-		this.setData({
-			selected: '0'
 		});
 	},
 	linkTo(e) {
@@ -54,8 +50,9 @@ Page({
 				console.error('unkown linkType');
 				url = '/pages/index/index';
 		}
-		if (linkType === 'shoppingMallCategory' || linkType === 'index') {
-			wx.redirectTo({
+
+		if (linkType === 'shoppingMallCategory' || linkType === 'category' || linkType === 'index') {
+			wx.switchTab({
 				url,
 			});
 			return;

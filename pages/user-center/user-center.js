@@ -5,7 +5,6 @@ const { showLoading } = require('../../utils/util');
 
 Page({
 	data: {
-		selected: '3',
 		userInfo: null,
 		checkItem: 0
 	},
@@ -22,7 +21,6 @@ Page({
 		}
 		let checkItem = this.data.locale === 'zh' ? 0 : 1;
 		this.setData({
-			selected: '3',
 			checkItem
 		});
 		app.globalData.login.finally(() => {

@@ -17,6 +17,9 @@ App({
 		this.globalData.trans = require(`./locales/${this.globalData.locale}`);
 	},
 	onShow() {
+		wx.setTabBarStyle({
+			selectedColor: '#FF0000',
+		});
 		this.globalData.login = login();
 	},
 	translate,

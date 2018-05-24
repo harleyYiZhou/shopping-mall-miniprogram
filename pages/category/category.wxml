@@ -1,6 +1,4 @@
 <!--pages/category/category.wxml-->
-<import src="../components/bottom-nav/bottom-nav" />
-
 <view class="layout-column ">
 	<!--
   <view class="search layout-row layout-wrap ">
@@ -51,4 +49,3 @@
 		</view>
 	</view>
 </view>
-<template is="bottom-nav" data="{{trans,selected}}"></template>

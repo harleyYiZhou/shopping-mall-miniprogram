@@ -74,7 +74,7 @@ Page({
 		});
 	},
 	tabStore() {
-		wx.redirectTo({
+		wx.switchTab({
 			url: `/pages/index/index`
 		});
 	},

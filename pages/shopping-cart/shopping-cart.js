@@ -11,7 +11,6 @@ Page({
 			noSelect: false,
 		},
 		delBtnWidth: 120, // 删除按钮宽度单位（rpx）
-		selected: '2',
 		cartsInfo: [], // 记录购物车各种状态：storeCart 是否全选，item 是否选中，记录选中的 items 的 indexes
 	},
 	btnNavLink: app.btnNavLink(),
@@ -75,12 +74,9 @@ Page({
 				wx.stopPullDownRefresh();
 			});
 		});
-		this.setData({
-			selected: '2',
-		});
 	},
 	toIndexPage() {
-		wx.redirectTo({
+		wx.switchTab({
 			url: '/pages/index/index'
 		});
 	},

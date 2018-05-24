@@ -110,7 +110,7 @@ Page({
 		});
 	},
 	tapStore() {
-		wx.reLaunch({
+		wx.switchTab({
 			url: '/pages/index/index'
 		});
 	}, // 跳转商品分类，传入两个参数slug&storeId

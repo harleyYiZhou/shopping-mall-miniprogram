@@ -1,5 +1,4 @@
 <!--pages/user-center/user-center.wxml-->
-<import src="../components/bottom-nav/bottom-nav" />
 
 <view>
 	<view class="page-container">
@@ -85,5 +84,4 @@
 			<view wx:if="{{checkItem=='1'}}" class='zan-icon zan-icon-success'></view>
 		</view>
 	</view>
-	<template is="bottom-nav" data="{{selected,trans}}" />
 </view>
