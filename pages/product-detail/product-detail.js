@@ -66,7 +66,6 @@ Page({
 
 	},
 	bindchange(e) {
-		// console.log(e.detail.current)
 		this.setData({ current: e.detail.current });
 	},
 	showPopup() {

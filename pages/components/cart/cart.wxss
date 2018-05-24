@@ -46,7 +46,6 @@
 }
 .a-gooods {
   width: 100%;
-  overflow: hidden;
 }
 .a-goods-conts {
   display: flex;
@@ -57,6 +56,14 @@
   transition: margin-left 0.2s ease-in-out;
   background: url(https://cdn.it120.cc/images/weappshop/gou.png) no-repeat 30rpx center;
   background-size: 40rpx auto;
+}
+.a-goods-conts .delete-btn {
+  width: 120rpx;
+  line-height: 220rpx;
+  text-align: center;
+  background: #e64340;
+  font-size: 24rpx;
+  color: #fff;
 }
 .a-goods-conts.active {
   background: url(https://cdn.it120.cc/images/weappshop/gou-red.png) no-repeat 30rpx center;
@@ -155,14 +162,6 @@
 .goods-info .img-box .img {
   width: 160rpx;
   height: 160rpx;
-}
-.a-goods-conts .delete-btn {
-  width: 120rpx;
-  line-height: 220rpx;
-  text-align: center;
-  background: #e64340;
-  font-size: 24rpx;
-  color: #fff;
 }
 .jiesuan-box {
   display: flex;

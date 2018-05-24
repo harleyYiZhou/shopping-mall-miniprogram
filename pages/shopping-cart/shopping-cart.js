@@ -5,7 +5,6 @@ const { callApi, session, removeItems, checkInventory } = require('../../utils/g
 
 Page({
 	data: {
-		shopCarInfo: null,
 		goodsList: {
 			editable: false,
 			allSelect: false,
@@ -22,7 +21,6 @@ Page({
 		try {
 			let res = wx.getSystemInfoSync().windowWidth;
 			let scale = (750 / 2) / (w / 2); // 以宽度750px设计稿做宽度的自适应
-			// console.log(scale);
 			real = Math.floor(res / scale);
 			return real;
 		} catch (e) {
@@ -62,7 +60,8 @@ Page({
 							itemSelected: false,
 							totalCost: '0.00',
 							selectedItems: [],
-							items: []
+							items: [],
+							pos: [],
 						};
 					});
 					this.setData({
@@ -87,6 +86,9 @@ Page({
 	},
 
 	touchS(e) {
+		if (!this.data.goodsList) {
+			return;
+		}
 		if (e.touches.length === 1) {
 			this.setData({
 				startX: e.touches[0].clientX
@@ -94,75 +96,74 @@ Page({
 		}
 	},
 	touchM(e) {
-		let index = e.currentTarget.dataset.index;
+		if (!this.data.goodsList) {
+			return;
+		}
+
+		let { itemIndex, cartIndex } = e.currentTarget.dataset;
+		let { cartsInfo } = this.data;
+
 		if (e.touches.length === 1) {
 			let moveX = e.touches[0].clientX;
 			let disX = this.data.startX - moveX;
 			let delBtnWidth = this.data.delBtnWidth;
 			let left = '';
-			if (disX == 0 || disX < 0) { // 如果移动距离小于等于0，container位置不变
-				left = 'margin-left:0px';
-			} else if (disX > 0) { // 移动距离大于0，container left值等于手指移动距离
+			if (disX == 0) {
+				return;
+			}
+			if (disX > 0) { // 移动距离大于0，container left值等于手指移动距离
 				left = 'margin-left:-' + disX + 'px';
 				if (disX >= delBtnWidth) {
 					left = 'left:-' + delBtnWidth + 'px';
 				}
+			} else {
+				left = 'margin-left:0px';
 			}
-			let list = this.data.goodsList.list;
-			if (index != '' && index != null) {
-				list[parseInt(index)].left = left;
-				// this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
-			}
+			cartsInfo[cartIndex].pos[itemIndex] = left;
+			this.setData({
+				cartsInfo
+			});
 		}
 	},
 
 	touchE(e) {
-		let index = e.currentTarget.dataset.index;
+		if (!this.data.goodsList) {
+			return;
+		}
+		let { itemIndex, cartIndex } = e.currentTarget.dataset;
+		let { cartsInfo } = this.data;
 		if (e.changedTouches.length == 1) {
 			let endX = e.changedTouches[0].clientX;
 			let disX = this.data.startX - endX;
 			let delBtnWidth = this.data.delBtnWidth;
 			// 如果距离小于删除按钮的1/2，不显示删除按钮
-			let left = disX > delBtnWidth / 2 ? 'margin-left:-' + delBtnWidth + 'px' : 'margin-left:0px';
-			let list = this.data.goodsList.list;
-			if (index !== '' && index != null) {
-				list[parseInt(index)].left = left;
-				// this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
+			if (disX < delBtnWidth / 2) {
+				return;
 			}
+			let left = 'margin-left:-' + delBtnWidth + 'px';
+			cartsInfo[cartIndex].pos[itemIndex] = left;
+			this.setData({
+				cartsInfo
+			});
 		}
 	},
 	delItem(e) {
-		let index = e.currentTarget.dataset.index;
-		let list = this.data.goodsList.list;
-		list.splice(index, 1);
-		// this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
-	},
-	/*
-	updateItem(event) {
-		var that = this;
-		var cartIndex = parseInt(event.currentTarget.dataset.cartIndex);
-		var itemIndex = parseInt(event.currentTarget.dataset.itemIndex);
-		var quantity = parseInt(event.currentTarget.dataset.quantity);
-		wx.showLoading({
-			title: that.data.trans.loading
+		let { itemIndex, cartIndex } = e.currentTarget.dataset;
+		let { cartsInfo, goodsList } = this.data;
+		goodsList.processing = true;
+		cartsInfo[cartIndex].selectedItems = [itemIndex];
+		this.setData({
+			cartsInfo,
+			goodsList
 		});
-		cartUtils.updateItem(that.data.carts[cartIndex], itemIndex, quantity).then(function (result) {
-			// update view
-			if (result) {
-				getStoreCarts().then(function (results) {
-					that.setData({
-						carts: results
-					});
-				}, function (err) {
-					console.log(err);
-				});
+		this.removeSelections({
+			currentTarget: {
+				dataset: {
+					cartIndex
+				}
 			}
-		}, function (err) {
-			console.log(err);
 		});
 	},
-
-	*/
 
 	// 单个product 选择状态，关联全选
 	selectTap(e) {
@@ -171,26 +172,7 @@ Page({
 		let cartsInfo = this.data.cartsInfo;
 		cartsInfo[cartIndex].items[itemIndex] = !cartsInfo[cartIndex].items[itemIndex];
 		this.setGoodsList(cartsInfo, cartIndex);
-		// this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), carts);
 	},
-
-	/*
-	noSelect() {
-		var list = this.data.goodsList.list;
-		var noSelect = 0;
-		for (var i = 0; i < list.length; i++) {
-			var curItem = list[i];
-			if (!curItem.active) {
-				noSelect++;
-			}
-		}
-		if (noSelect == list.length) {
-			return true;
-		} else {
-			return false;
-		}
-	},
-	*/
 
 	// 设置编辑状态，单购物车：全选，总价
 	setGoodsList(cartsInfo, cartIndex) {
@@ -203,30 +185,7 @@ Page({
 			goodsList,
 		});
 	},
-	/*
-	setGoodsList(editable, total, allSelect, noSelect, list) {
-		this.setData({
-			goodsList: {
-				editable: editable,
-				totalCost: total,
-				allSelect: allSelect,
-				noSelect: noSelect,
-				list: list
-			}
-		});
-		var shopCarInfo = {};
-		var tempNumber = 0;
-		shopCarInfo.shopList = list;
-		for (var i = 0; i < list.length; i++) {
-			tempNumber = tempNumber + list[i].number;
-		}
-		shopCarInfo.shopNum = tempNumber;
-		wx.setStorage({
-			key: 'shopCarInfo',
-			data: shopCarInfo
-		});
-	},
-	*/
+
 	// product 全选/不选
 	bindAllSelect(e) {
 		let cartIndex = e.currentTarget.dataset.cartIndex;
@@ -398,36 +357,20 @@ Page({
 		});
 	},
 	editExit() {
-		let { goodsList } = this.data;
+		let { goodsList, cartsInfo } = this.data;
 		goodsList.editable = false;
+		cartsInfo.forEach((item, i) => {
+			cartsInfo[i].pos = [];
+		});
 		this.setData({
-			goodsList
+			goodsList,
+			cartsInfo
 		});
 		this.toggleTotalSelected({
 			option: {
 				bool: false
 			}
 		});
-	},
-	getSaveHide() {
-		let editable = this.data.goodsList.editable;
-		return editable;
-	},
-	deleteSelected() {
-		let list = this.data.goodsList.list;
-		/*
-     for(let i = 0 ; i < list.length ; i++){
-           let curItem = list[i];
-           if(curItem.active){
-             list.splice(i,1);
-           }
-     }
-     */
-		// above codes that remove elements in a for statement may change the length of list dynamically
-		list = list.filter((curGoods) => {
-			return !curGoods.active;
-		});
-		this.setGoodsList(this.getSaveHide(), this.totalCost(), this.allSelect(), this.noSelect(), list);
 	},
 
 	toPayOrder(e) {
@@ -440,21 +383,15 @@ Page({
 			return;
 		}
 		if (session.checkSync()) {
-			callApi.post('StoreCart.preview', { storeId},400).then(()=>{
+			callApi.post('StoreCart.preview', { storeId }, 400).then(() => {
 				url = `/pages/checkout/checkout?storeId=${storeId}&selectedItems=${JSON.stringify(selectedItems)}&selectAll=${selectAll}`;
 				wx.navigateTo({
 					url
 				});
-			}).catch(err=>{
+			}).catch(err => {
 				console.error(err);
-			})
+			});
 		}
-	},
-	navigateToPayOrder() {
-		wx.hideLoading();
-		wx.navigateTo({
-			url: '/pages/to-pay-order/index'
-		});
 	},
 	onPullDownRefresh() {
 		this.onShow();
@@ -466,23 +403,6 @@ function getStoreCarts() {
 	showLoading();
 	return new Promise((resolve, reject) => {
 		callApi.post('StoreCart.getAll', {}, 400).then(datas => {
-			/* ???
-			let promiseArray = [];
-			data.forEach((tempCart, index) => {
-				let temp = new Promise((resolve_, reject_) => {
-					callApi.post('StoreCart.get', {
-						storeId: tempCart.store._id
-					}, 400).then(resultData => {
-						resultData.store = tempCart.store;
-						priceFilter(resultData);
-						resolve_(resultData);
-					});
-				});
-				promiseArray.push(temp);
-			}); // end each
-			return Promise.all(promiseArray);
-		}).then(value => {
-			*/
 			priceFilter(datas);
 			resolve(datas);
 		}).catch(err => {
@@ -564,6 +484,7 @@ function checkTotalSelected(cartsInfo, goodsList) {
 }
 function removeCartsInfo(cartsInfo, cartIndex) {
 	let cart = cartsInfo[cartIndex];
+	cart.pos = [];
 	if (cart.selectAll) {
 		cartsInfo.splice(cartIndex, 1);
 		return;

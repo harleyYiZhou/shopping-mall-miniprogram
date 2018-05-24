@@ -4,7 +4,7 @@
     <scroll-view class="type-navbar" scroll-x="true">
       <view class="type-box" wx:for="{{pages}}" wx:for-item="item" wx:key="id">
         <view class="type-navbar-item {{pageIndex == index ? 'type-item-on' : ''}}" bindtap="tabPageNav" data-id="{{index}}">
-          {{item.tabLabel}}
+          {{item.pageTitle}}
         </view>
       </view>
     </scroll-view>

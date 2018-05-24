@@ -39,7 +39,7 @@
    </view>
    <view class="spacer"></view>
 
-   <view wx:if='{{!showProductDetail && product.description}}' class="section layout-row layout-justify-center margin-y-10 padding-bottom-20">
+   <view wx:if='{{!showProductDetail && product.description}}' bindtap="onReachBottom" class="section layout-row layout-justify-center margin-y-10 padding-bottom-20">
       {{trans.upLoad}}
    </view>
    <view wx:if='{{showProductDetail}}' class="margin-y-20">

@@ -86,7 +86,15 @@ module.exports = {
 		'addShippingAddress': 'Add New Address'
 	},
 	bindPhone: {
-		navBarTitle: 'bindPhone'
+		navBarTitle: 'BindPhone',
+		title: 'Your acount hasn\'t bind mobilephone yet,you need to bind the mobilephone first',
+		mobilePhone: 'Mobile Phone',
+		getVerifyCode: 'Get Verify Code',
+		verifyCode: 'Verify Code',
+		bindPhone: 'Bind MobilePhone',
+		bindWechat: 'Bind Wechat',
+		phoneTips: 'Input the mobilePhone',
+		verifyCodeTips: 'Input the verifyCode',
 	},
 	cart: {
 		navBarTitle: 'Cart',

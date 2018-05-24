@@ -73,7 +73,9 @@ Page({
 	bindchange(e) {
 		this.setData({ current: e.detail.current });
 	},
+	onShareAppMessage() {
 
+	}
 });
 
 function _processCurrentPage(that) {

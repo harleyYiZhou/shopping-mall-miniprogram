@@ -85,7 +85,15 @@ module.exports = {
 		'addShippingAddress': '新增收货地址'
 	},
 	bindPhone: {
-		navBarTitle: 'Cart'
+		navBarTitle: 'Cart',
+		title: '您的账号尚未绑定手机，请绑定手机',
+		mobilePhone: '手机号码',
+		getVerifyCode: '获取验证码',
+		verifyCode: '验证码',
+		bindPhone: '绑定手机',
+		bindWechat: '绑定微信',
+		phoneTips: '请输入手机号码',
+		verifyCodeTips: '请输入验证码',
 	},
 	cart: {
 		navBarTitle: '购物车',

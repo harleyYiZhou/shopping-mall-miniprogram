@@ -37,7 +37,7 @@ Page({
 			wx.stopPullDownRefresh();
 			wx.hideNavigationBarLoading();
 		}, (err) => {
-			console.log(err);
+			console.error(err);
 		});
 	},
 	onPullDownRefresh() {
@@ -67,7 +67,6 @@ Page({
 			page: nextPage,
 			pageSize: that.data.pageSize
 		}, 400).then((data) => {
-			console.log(1, data);
 			let products = that.data.products;
 			if (isLastPage) {
 				for (let i = lastPageLength; i < data.results.length; ++i) {
@@ -85,7 +84,7 @@ Page({
 				products
 			});
 		}, (err) => {
-			console.log(err);
+			console.error(err);
 		});
 	}, // 点击商品跳转到详情
 	tapProduct(event) {

@@ -19,7 +19,6 @@
       "pages/product-detail/product-detail",
       "pages/category/category",
       "pages/contact-store/contact-store",
-      "pages/setting/setting",
       "pages/coupons/coupons"
    ],
    "window": {

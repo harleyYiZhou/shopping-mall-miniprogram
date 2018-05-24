@@ -2,7 +2,7 @@
 const { callApi, bindPhoneNumber, session, login } = require('../../utils/guzzu-utils.js');
 const { showToast, showModal } = require('../../utils/util');
 
-var app = getApp();
+let app = getApp();
 
 Page({
 	data: {
@@ -11,43 +11,43 @@ Page({
 		interval: null,
 		countdown: 0
 	},
-	onLoad: function (options) {
+	onLoad(options) {
 		// 页面初始化 options为页面跳转所带来的参数
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
 		login();
 	},
-	verifyMobilePhone: function (event) {
-		var that = this;
-		var mobilePhone = event.detail.value;
-		var pattern = /^\d{11}$/;
+	verifyMobilePhone(event) {
+		let that = this;
+		let mobilePhone = event.detail.value;
+		let pattern = /^\d{11}$/;
 		if (pattern.test(mobilePhone)) {
 			that.setData({
 				disableGetVerifyCode: false,
-				mobilePhone: mobilePhone
+				mobilePhone
 			});
 		} else {
 			that.setData({
 				disableGetVerifyCode: true,
-				mobilePhone: mobilePhone
+				mobilePhone
 			});
 		}
 	},
-	getVerifyCode: function () {
-		var that = this;
-		callApi('Auth.requestSmsCode', {
+	getVerifyCode() {
+		let that = this;
+		callApi.post('Auth.requestSmsCode', {
 			mobilePhone: that.data.mobilePhone
-		}, 400).then(function () {
+		}, 400).then(() => {
 			// noop
-		}, function (err) {
+		}, (err) => {
 			console.error(err);
 		});
 
 		that.setData({
 			countdown: 60
 		});
-		var interval = setInterval(function () {
+		let interval = setInterval(() => {
 			that.setData({
 				countdown: that.data.countdown - 1
 			});
@@ -59,25 +59,25 @@ Page({
 			}
 		}, 1000);
 		that.setData({
-			interval: interval
+			interval
 		});
 	},
-	submit: function (event) {
-		var value = event.detail.value;
-		var phonePattern = /^\d{11}$/;
-		var verifyCodePattern = /^\d{6}$/;
+	submit(event) {
+		let value = event.detail.value;
+		let phonePattern = /^\d{11}$/;
+		let verifyCodePattern = /^\d{6}$/;
 
 		if (phonePattern.test(value.mobilePhone) && verifyCodePattern.test(value.verifyCode)) {
-			callApi('Auth.bindMobilePhone', {
+			callApi.post('Auth.bindMobilePhone', {
 				mobilePhone: value.mobilePhone,
 				verifyCode: value.verifyCode
-			}, 400).then(function (result) {
+			}, 400).then((result) => {
 				session.set(result.sessionId);
 				showToast({
 					title: 'common.bindSuccess',
 					icon: 'success',
 					duration: 1500,
-					complete: function () {
+					complete() {
 						wx.navigateBack();
 					}
 				});
