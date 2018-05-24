@@ -2,6 +2,9 @@ const _ = require('./lodash');
 const { MODE } = require('../config');
 
 const formatTime = date => {
+	if (!(date instanceof Date)) {
+		date = new Date(date);
+	}
 	const year = date.getFullYear();
 	const month = date.getMonth() + 1;
 	const day = date.getDate();
@@ -54,7 +57,6 @@ const btnNavLink = () => {
 		if (this.data.selected === id) {
 			return;
 		}
-		showLoading();
 		let url;
 		switch (id) {
 			case '0':
@@ -75,13 +77,12 @@ const btnNavLink = () => {
 				url,
 			});
 		}
-		wx.hideLoading();
 	};
 };
 
 const showModal = (data = {}) => {
 	let params = Object.assign({
-		title: 'common.showModal.title',
+		title: 'common.showModal.title', // 提示，Notes
 		content: '',
 		showCancel: true,
 		cancelText: 'common.showModal.cancel',
@@ -126,7 +127,7 @@ const showToast = (data = {}) => {
 
 const showLoading = (data = {}) => {
 	let params = Object.assign({
-		title: 'common.loading',
+		title: 'common.loading', // 加载中,Loading...
 		mask: false,
 		// duration: 1500,
 		success(res) { },

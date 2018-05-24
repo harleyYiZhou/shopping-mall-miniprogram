@@ -1,6 +1,7 @@
 // order.js
 const { callApi } = require('../../utils/guzzu-utils');
 const app = getApp();
+const { showToast, showModal, formatTime } = require('../../utils/util');
 
 Page({
 	data: {
@@ -13,18 +14,16 @@ Page({
 		refundStatus: null
 	},
 	onLoad(option) {
-		let that = this;
 		let orderId = option.orderId;
-		getOrder(that, orderId);
+		getOrder(this, orderId);
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
 	},
 	onShow() {
-		let that = this;
-		if (that.data.order) {
-			let orderId = that.data.order._id;
-			getOrder(that, orderId);
+		if (this.data.order) {
+			let orderId = this.data.order._id;
+			getOrder(this, orderId);
 		}
 	},
 	onPullDownRefresh() {
@@ -32,23 +31,22 @@ Page({
 		this.onShow();
 	},
 	tapWxpay() {
-		let that = this;
-		let orderId = that.data.order._id;
+		let orderId = this.data.order._id;
 		callApi.post('Order.generateWxpayOrderForMiniProgram', {
 			orderId
 		}, 400).then(result => {
 			let params = result;
 			return new Promise((resolve, reject) => {
 				params.success = function (res) {
-					wx.showToast({
-						title: '付款成功',
+					showToast({
+						title: 'order.paySuccess',
 						icon: 'success',
 						duration: 1000
 					});
 					resolve(true);
 				};
 				params.fail = function (err) {
-					console.log('payment fail');
+					console.error('payment fail');
 					reject(err);
 				};
 				wx.requestPayment(params);
@@ -56,11 +54,11 @@ Page({
 		}).then(() => {
 			return callApi.post('Order.get', { orderId }, 400);
 		}).then(result => {
-			that.setData({
+			this.setData({
 				order: result
 			});
 		}, err => {
-			console.log(err);
+			console.error(err);
 		});
 	},
 	backToOrders() {
@@ -97,47 +95,36 @@ Page({
 		});
 	},
 	refundConfirm(e) {
-		let that = this;
-		let orderId = that.data.order._id;
+		let orderId = this.data.order._id;
 		callApi.post('Order.customerRequestRefund', {
 			orderId,
 			note: e.detail.value.refundReason
 		}, 400).then(res => {
-			console.log(res);
-			getOrder(that, orderId);
+			getOrder(this, orderId);
 			this.setData({
 				refundDialog: false
 			});
-			wx.showModal({
-				title: '提示',
+			showModal({
 				showCancel: false,
-				content: '退款请求成功,请等待商家处理'
+				content: 'order.waiteRefundRequestHint'
 			});
 		}).catch(err => {
-			console.log(err);
-			wx.showModal({
-				title: '提示',
-				showCancel: false,
-				content: '退款请求失败,请重试'
-			});
+			console.error(err);
 		});
 	},
 	confirmReceipt() {
 		let that = this;
 		let orderId = that.data.order._id;
-		wx.showModal({
-			title: '提示:',
-			content: '确定收货?',
+		showModal({
+			content: '@{order.confirmReceipt}?',
 			success(res) {
 				if (res.confirm) {
-					console.log('用户确定收货');
 					callApi.post('Order.confirmReceipt', {
 						orderId
 					}, 400).then(res => {
-						console.log(res);
 						getOrder(that, orderId);
 					}).catch(err => {
-						console.log(err);
+						console.error(err);
 					});
 				}
 			}
@@ -146,9 +133,8 @@ Page({
 	showExpress() {
 		let that = this;
 		if (!that.data.order.shippingProvider || !that.data.order.trackingCode) {
-			wx.showModal({
-				title: '提示:',
-				content: '暂时没有物流信息',
+			showModal({
+				content: 'order.noShipping',
 				showCancel: false
 			});
 			return;
@@ -186,11 +172,11 @@ Page({
 						});
 					}
 					if (res.data.status == 2) {
-						console.log('快递100接口出现异常');
+						console.error('快递100接口出现异常');
 					}
 				},
 				fail(err) {
-					console.log('expr', err);
+					console.error(err);
 				}
 			});
 		}
@@ -212,7 +198,7 @@ Page({
 			},
 			fail(res) {
 				// 转发失败
-				wx.showToast({
+				showToast({
 					title: '分享失败',
 					image: '/img/icon-close.png',
 					duration: 2000
@@ -221,18 +207,6 @@ Page({
 		};
 	}
 });
-
-function formatDate(date) {
-	let digits = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09'];
-	let str = [date.getFullYear(),
-		digits[date.getMonth() + 1] || date.getMonth() + 1,
-		digits[date.getDate()] || date.getDate()
-	].join('-') +
-		' ' + [digits[date.getHours()] || date.getHours(),
-		digits[date.getMinutes()] || date.getMinutes()
-	].join(':');
-	return str;
-}
 
 function getOrder(that, orderId) {
 	wx.hideShareMenu();
@@ -255,20 +229,20 @@ function getOrder(that, orderId) {
 				that.setData({
 					timeLeft
 				});
-				result.createdAt = formatDate(new Date(result.createdAt));
+				result.createdAt = formatTime(new Date(result.createdAt));
 			}
 			if (result.paidAt) {
-				result.paidAt = formatDate(new Date(result.paidAt));
+				result.paidAt = formatTime(new Date(result.paidAt));
 			}
 			if (result.shippedAt) {
 				let timeLeft = new Date(new Date(result.createdAt).getTime() + 10 * 24 * 60 * 60 * 1000);
 				that.setData({
-					autoConfirmTime: formatDate(timeLeft)
+					autoConfirmTime: formatTime(timeLeft)
 				});
-				result.shippedAt = formatDate(new Date(result.shippedAt));
+				result.shippedAt = formatTime(new Date(result.shippedAt));
 			}
 			if (result.receivedAt) {
-				result.receivedAt = formatDate(new Date(result.receivedAt));
+				result.receivedAt = formatTime(new Date(result.receivedAt));
 			}
 			result.totalCost = Math.round(result.totalCost);
 			let refundStatus = null;
@@ -276,7 +250,7 @@ function getOrder(that, orderId) {
 			let timestamp = null;
 			if (result.log[result.log.length - 1].type == 'customer_requested_refund') {
 				refundStatus = 'pending';
-				timestamp = formatDate(result.log[result.log.length - 1].timestamp);
+				timestamp = formatTime(result.log[result.log.length - 1].timestamp);
 			}
 			if (result.log[result.log.length - 1].type == 'rejected_customer_refund_request') {
 				refundStatus = 'rejected';

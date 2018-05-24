@@ -207,11 +207,14 @@ module.exports = {
 		'autoRefundHint': '若48小时内未处理，将自动退款到你的账户',
 		'requestRefundTime': '请求时间',
 		'rejectRefundRequestHint': '您的退款请求已被商家拒绝',
+		'waiteRefundRequestHint': '退款请求成功,请等待商家处理',
 		'rejectNote': '拒绝原因',
 		'confirmReceipt': '确认收货',
+		noShipping: '暂时没有物流信息',
 		confirm: '提交',
 		cancel: '取消',
-		note: '买家留言'
+		note: '买家留言',
+		paySuccess: '付款成功',
 	},
 	orders: {
 		navBarTitle: '我的订单',

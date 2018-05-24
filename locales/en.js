@@ -207,11 +207,14 @@ module.exports = {
 		'autoRefundHint': 'If the request is not processed in 48 hours, an auto refund will be raised',
 		'requestRefundTime': 'Requested at',
 		'rejectRefundRequestHint': 'Your refund request was rejected by the merchant.',
+		'waiteRefundRequestHint': 'Request success, wating for processing...',
 		'rejectNote': 'Reject reason',
 		'confirmReceipt': 'Confirm receipt',
+		noShipping: "There isn't any Track Shipment.",
 		confirm: 'submit',
 		cancel: 'cancel',
-		note: 'Note'
+		note: 'Note',
+		paySuccess: 'Pay success',
 	},
 	orders: {
 		navBarTitle: 'Orders',
