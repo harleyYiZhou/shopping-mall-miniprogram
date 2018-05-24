@@ -33,3 +33,7 @@
 .checked view,.checked text{
 	color:#4b0;
 }
+.icon{
+	width: 35rpx;
+	height: 35rpx;
+}

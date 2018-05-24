@@ -43,6 +43,12 @@ module.exports = {
 		changeName: '修改姓名',
 		language: '语言'
 	},
+	coupons: {
+		navBarTitle: '优惠券',
+		membershipCard: '会员卡',
+		coupon: '优惠券',
+		validForever: '一直有效',
+	},
 	userCenter: {
 		orders: '我的订单',
 		allOrder: '全部订单',
@@ -59,12 +65,6 @@ module.exports = {
 		coupon: '优惠券',
 		membershipCard: '会员卡',
 		signin: '未登录',
-	},
-	coupons: {
-		navBarTitle: '会员卡',
-		membershipCard: '会员卡',
-		coupon: '优惠券',
-		validForever: '一直有效',
 	},
 	addAddress: {
 		navBarTitle: 'Add address',

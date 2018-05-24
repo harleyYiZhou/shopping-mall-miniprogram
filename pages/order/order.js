@@ -249,7 +249,9 @@ function getOrder(that, orderId) {
 				].join('');
 			}
 			if (result.createdAt) {
-				var timeLeft = 30 - new Date(new Date() - new Date(result.createdAt)).getMinutes();
+				let pastTimes = parseInt((new Date() - new Date(result.createdAt)) / 60000);
+				pastTimes > 0 || (pastTimes = 0);
+				let timeLeft = 15 - pastTimes;
 				that.setData({
 					timeLeft
 				});
@@ -259,7 +261,7 @@ function getOrder(that, orderId) {
 				result.paidAt = formatDate(new Date(result.paidAt));
 			}
 			if (result.shippedAt) {
-				var timeLeft = new Date(new Date(result.createdAt).getTime() + 10 * 24 * 60 * 60 * 1000);
+				let timeLeft = new Date(new Date(result.createdAt).getTime() + 10 * 24 * 60 * 60 * 1000);
 				that.setData({
 					autoConfirmTime: formatDate(timeLeft)
 				});

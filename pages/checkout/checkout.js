@@ -39,7 +39,7 @@ Page({
 		noStoreCart: '',
 	},
 	onLoad(option) {
-		debug('option', option);
+		// debug('option', option);
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
@@ -85,6 +85,8 @@ Page({
 					shippingAddress: result
 				});
 				app.globalData.shippingAddress = result;
+				// -----关闭其他配送----------------
+				/*
 				return callApi.post('StoreApp.checkPermission', {
 					storeId,
 					slug: 'customer-pick-up'
@@ -129,6 +131,8 @@ Page({
 				});
 			})// 6. 获取可用的优惠
 			.then(() => {
+				--------------------------//
+				*/
 				// items: 订单里的商品
 				let items = [];
 				let displayItems = [];

@@ -1,6 +1,6 @@
 <!--pages/coupons/coupons.wxml-->
-<view class="membercard">
-	<view class="zan-icon zan-icon-member-day-privilege icon"></view>
+<view class="coupons">
+	<image class="icon" src="/public/images/icon/coupon.svg"></image>
 	<text class="title">{{trans.coupon}}</text>
 
 		<view class="list" wx:for="{{coupons}}" wx:for-item="storeCoupons" wx:for-index="cardIndex" wx:key="_id">
@@ -9,22 +9,17 @@
 				<view class="padding-y-10 padding-x-5 text-primary">{{stores[storeCoupons[0]].name}}</view>
 				<view class="zan-icon zan-icon-arrow"></view>
 			</navigator>
-			<view class="membership list-bordered {{itemIndex==storeCoupons[1].length-1 && 'border-bottom'}}" wx:for="{{storeCoupons[1]}}" wx:for-index="itemIndex"  wx:for-item="membership" wx:key="_id">
-				<navigator url="/pages/membership/membership?membershipId={{membership._id}}">
-					<view class="layout-row layout-justify-between layout-align-center">
-						<view class="layout-column">
-							<text class="margin-bottom-10 text-primary">{{membership.name}}</text>
-							<text class="until" wx:if="{{item.effectivePolicy=='limited'}}">
-								{{trans.validUntil}}:
-								{{membership.expiredAt}}
-							</text>
-							<text class="until" wx:else>{{trans.validForever}}</text>
+			<view class="coupon list-bordered {{itemIndex==storeCoupons[1].length-1 && 'border-bottom'}}" wx:for="{{storeCoupons[1]}}" wx:for-index="itemIndex"  wx:for-item="coupon" wx:key="_id">
+				<navigator url="/pages/coupon/coupon?promoCode={{coupon.promoCode}}">
+					<view class="layout-row layout-justify-between layout-align-center padding-y-10">
+						<view class="layout-column padding-y-5">
+							<text class="text-primary">{{coupon.name}}</text>
+							<!-- <text class="until margin-bottom-10">{{coupon.promoCode}}</text> -->
 						</view>
 						<view class="zan-icon zan-icon-arrow margin-right-10"></view>
 					</view>
 				</navigator>
 			</view>
 		</view>
-
-
+		
 </view>

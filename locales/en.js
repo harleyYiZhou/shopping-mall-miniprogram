@@ -44,6 +44,12 @@ module.exports = {
 		orders: 'Orders',
 		language: 'Language'
 	},
+	coupons: {
+		navBarTitle: 'My Coupons',
+		coupon: 'My Coupons',
+		validUntil: 'Valid until',
+		validForever: 'Never expire',
+	},
 	userCenter: {
 		orders: 'Orders',
 		manageAddress: 'Address book',
@@ -60,12 +66,6 @@ module.exports = {
 		coupon: 'Coupons',
 		membershipCard: 'Member Cards',
 		signin: 'Sign In',
-	},
-	coupons: {
-		navBarTitle: 'Member Cards',
-		coupon: 'Coupons',
-		validUntil: 'Valid until',
-		validForever: 'Never expire',
 	},
 	addAddress: {
 		navBarTitle: 'Add address',

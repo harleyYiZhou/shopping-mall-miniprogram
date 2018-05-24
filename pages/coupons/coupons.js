@@ -13,22 +13,25 @@ Page({
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
-		let storeCards = {};
+		let coupons = {};
 		let stores = {};
-		callApi.post('Discount.find', 400).then(res => {
-			res.forEach(elem => {
+		callApi.post('Discount.getByPromoCode', {
+			storeId: '57d7703f8a2848bc5f150e06',
+			promoCode: 'zx9527'
+		}, 400).then(res => {
+			let results = [res];
+			results.forEach(elem => {
 				stores[elem.store._id] = elem.store;
-				let storeCard = storeCards[elem.store._id];
-				elem.membership.name || (elem.membership.name = 'vip');
-				if (storeCard) {
-					storeCard.push(elem.membership);
+				let storeCoupons = coupons[elem.store._id];
+				if (storeCoupons) {
+					storeCoupons.push(elem);
 				} else {
-					storeCards[elem.store._id] = [elem.membership];
+					coupons[elem.store._id] = [elem];
 				}
 			});
 			this.setData({
-				storeCards: Object.entries(storeCards),
-				coupons: res,
+				coupons: Object.entries(coupons),
+				userCoupons: res,
 				stores,
 			});
 		}).catch(err => {
