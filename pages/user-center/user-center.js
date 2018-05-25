@@ -1,6 +1,6 @@
 // pages/user-center/user-center.js
 const app = getApp();
-const { login, session } = require('../../utils/guzzu-utils.js');
+const { login, session, cartsCounter } = require('../../utils/guzzu-utils.js');
 const { showLoading } = require('../../utils/util');
 
 Page({
@@ -24,10 +24,15 @@ Page({
 			checkItem
 		});
 		app.globalData.login.finally(() => {
+			let userInfo = app.globalData.userInfo;
 			this.setData({
-				userInfo: app.globalData.userInfo
+				userInfo
 			});
 		});
+		if (wx.getStorageSync('logout')) {
+			cartsCounter([]);
+			wx.removeStorageSync('logout');
+		}
 	},
 	toAccount() {
 		app.globalData.login.finally(() => {
@@ -37,8 +42,8 @@ Page({
 				});
 			} else {
 				showLoading();
-				login().then(() => {
-					wx.hideLoading();
+				app.onShow();
+				app.globalData.login.then(() => {
 					this.onShow();
 				});
 			}

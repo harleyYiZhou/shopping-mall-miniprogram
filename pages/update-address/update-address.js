@@ -25,8 +25,6 @@ Page({
 		let params = {
 			// provinceId: '440000'
 		};
-		console.log(app.globalData.trans);
-
 		callApi('Zone.findProvince', params, 400).then((result) => {
 			// init zone
 			let zones = result;
@@ -42,8 +40,6 @@ Page({
 				provinces_index: 0,
 				zones
 			});
-			console.log(zones);
-			console.log(provinces.length);
 		});
 		let addressId = options.addressId;
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
@@ -115,10 +111,7 @@ Page({
 				this.setData({
 					zoneLevel: level1
 				});
-				console.log(this.data.zoneLevel);
-
 				if (this.data.areas.length === 1) {
-					console.log(this.data.zoneLevel);
 					let params = {
 						districtId: this.data.areas[0].id
 					};
@@ -128,7 +121,6 @@ Page({
 				if (!result) {
 					return;
 				}
-				console.log(result);
 				this.setData({
 					zoneLevel: 4,
 					state: 'none'
@@ -208,7 +200,6 @@ Page({
 				break;
 			case 4:
 				this.data.streets_index = index;
-				console.log(index);
 		}
 		let datas = _.pick(this.data, ['provinces_index', 'citys_index', 'areas_index', 'streets_index', 'provinces', 'citys', 'areas']);
 		debug('datas', datas);
@@ -285,7 +276,6 @@ Page({
 		let userAddress;
 		let index = 0;
 		callApi('UserAddress.get', params, 400).then(result => {
-			console.log(result);
 			userAddress = result;
 			wx.hideLoading();
 			this.data.currAddress = result;
@@ -393,7 +383,6 @@ Page({
 				}
 				index++;
 			}
-			console.log(this.data.areas.length);
 			if (this.data.areas.length === 1) {
 				this.setData({
 					state: 'none'

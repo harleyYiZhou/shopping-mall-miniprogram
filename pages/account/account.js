@@ -3,14 +3,13 @@ const { Actionsheet, extend } = require('../components/actionsheet/actionsheet.j
 const Zan = require('../index.js');
 var app = getApp();
 const { session } = require('../../utils/guzzu-utils.js');
-const { showToast } = require('../../utils/util');
+const { showToast, debug } = require('../../utils/util');
 
 Page(Object.assign({}, Zan.Dialog, {
 	data: {
 
 	},
 	onLoad: function (option) {
-		console.log(1);
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
 			app.translate.langData(this);
 		}
@@ -25,6 +24,7 @@ Page(Object.assign({}, Zan.Dialog, {
 		showToast({
 			title: 'common.logoutSuccess'
 		});
+		wx.setStorageSync('logout', true);
 		setTimeout(() => {
 			wx.navigateBack();
 		}, 1500);
@@ -35,9 +35,9 @@ Page(Object.assign({}, Zan.Dialog, {
 			content: 'harley',
 			showCancel: true
 		}).then(() => {
-			console.log('=== dialog ===', 'type: confirm');
+			debug('=== dialog ===', 'type: confirm');
 		}).catch(() => {
-			console.log('=== dialog ===', 'type: cancel');
+			console.error('=== dialog ===', 'type: cancel');
 		});
 	},
 
@@ -45,7 +45,7 @@ Page(Object.assign({}, Zan.Dialog, {
 		this.showZanDialog({
 			content: '这是一个模态弹窗'
 		}).then(() => {
-			console.log('=== dialog without title ===', 'type: confirm');
+			debug('=== dialog without title ===', 'type: confirm');
 		});
 	},
 
@@ -66,7 +66,7 @@ Page(Object.assign({}, Zan.Dialog, {
 				type: 'cancel'
 			}]
 		}).then(({ type }) => {
-			console.log('=== dialog with custom buttons ===', `type: ${type}`);
+			debug('=== dialog with custom buttons ===', `type: ${type}`);
 		});
 	},
 
@@ -88,23 +88,23 @@ Page(Object.assign({}, Zan.Dialog, {
 				type: 'cancel'
 			}]
 		}).then(({ type }) => {
-			console.log('=== dialog with vertical buttons ===', `type: ${type}`);
+			debug('=== dialog with vertical buttons ===', `type: ${type}`);
 		});
 	},
 	userImg: function () {
 		wx.showActionSheet({
 			itemList: ['手机拍照', '本地图片'],
 			success: function (res) {
-				console.log(res.tapIndex);
+				debug(res.tapIndex);
 				if (res.tapIndex === 0) {
-					console.log('scan');
+					debug('scan');
 				}
 				if (res.tapIndex === 1) {
-					console.log('imgage');
+					debug('imgage');
 				}
 			},
 			fail: function (res) {
-				console.log(res.errMsg);
+				console.error(res.errMsg);
 			}
 		});
 	}

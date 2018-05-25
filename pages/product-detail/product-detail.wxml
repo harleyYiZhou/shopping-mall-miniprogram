@@ -98,9 +98,10 @@
          <view class="zan-icon zan-icon-points-mall"></view>
          <view>{{trans.tabBar.store}}</view>
       </view>
-      <view class="width-15 layout-column layout-justify-center layout-align-center mini-btn" bindtap='toShoppingCart'>
+      <view class="width-15 layout-column layout-justify-center layout-align-center mini-btn store-cart" bindtap='toShoppingCart'>
          <view class="zan-icon zan-icon-cart"></view>
          <view>{{trans.cart}}</view>
+			<view wx:if="{{itemQuantity}}" class="cart-badge">{{itemQuantity}}</view>
       </view>
       <view class="flex">
          <button class="zan-btn  zan-btn--danger" bindtap="checkout">{{trans.payment}}</button>

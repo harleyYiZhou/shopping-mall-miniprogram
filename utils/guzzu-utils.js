@@ -1,6 +1,6 @@
 // guzzu-utils.js
 const config = require('../config.js');
-const { showModal, showToast, _, debug } = require('./util');
+const { showModal, showToast, _, debug, priceFilter, showLoading } = require('./util');
 let logining = false;
 
 /**
@@ -379,6 +379,61 @@ function checkInventory(items, selectedItems, quantity) {
 	return bool;
 }
 
+function cartsCounter(carts = []) {
+	let counts = carts.reduce((inc, item) => {
+		inc += item.items.length;
+		return inc;
+	}, 0);
+	if (counts) {
+		wx.setTabBarBadge({
+			index: 2,
+			text: `${counts}`,
+			fail(err) {
+				debug(err);
+			}
+		});
+	} else {
+		wx.removeTabBarBadge({
+			index: 2,
+			fail(err) {
+				debug(err);
+			}
+		});
+	}
+}
+
+function getStoreCarts() {
+	showLoading();
+	return new Promise((resolve, reject) => {
+		callApi.post('StoreCart.getAll', {}, 400).then(datas => {
+			priceFilter(datas);
+			resolve(datas);
+		}).catch(err => {
+			reject(err);
+		}).finally(() => {
+			wx.hideLoading();
+		});
+	});
+}
+
+function synchronizeCart(localCarts) {
+	return new Promise((res, rej) => {
+		let promises = [];
+		localCarts.forEach(cart => {
+			cart.items.forEach(item => {
+				let params = _.pick(item, ['storeId', 'productId', 'quantity', 'productOptionId']);
+				promises.push(callApi.post('StoreCart.addItem', params, 400));
+			});
+		});
+		Promise.all(promises).then(() => {
+			wx.removeStorageSync('localCarts');
+			res(getStoreCarts());
+		}).catch(err => {
+			rej(err);
+		});
+	});
+}
+
 module.exports.callApi = callApi;
 module.exports.checkMobilePhone = checkMobilePhone;
 module.exports.login = login;
@@ -389,3 +444,6 @@ module.exports.bindPhoneNumber = bindPhoneNumber;
 module.exports.session = session;
 exports.removeItems = removeItems;
 exports.checkInventory = checkInventory;
+exports.cartsCounter = cartsCounter;
+exports.synchronizeCart = synchronizeCart;
+exports.getStoreCarts = getStoreCarts;

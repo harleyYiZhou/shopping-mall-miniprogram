@@ -1,7 +1,12 @@
 // app.js
 const translate = require('./utils/translate.js');
 const { btnNavLink } = require('./utils/util.js');
-const { login } = require('./utils/guzzu-utils.js');
+const {
+	login,
+	cartsCounter,
+	synchronizeCart,
+	callApi,
+} = require('./utils/guzzu-utils.js');
 
 App({
 	onLaunch() {
@@ -20,7 +25,25 @@ App({
 		wx.setTabBarStyle({
 			selectedColor: '#FF0000',
 		});
-		this.globalData.login = login();
+		this.globalData.login = new Promise((resovle, reject) => {
+			let info;
+			let error;
+			login().then(res => {
+				info = res;
+			}).catch(err => {
+				error = err || new Error('login fail');
+			}).finally(() => {
+				return processCartsCounter(error);
+			}).then(() => {
+				if (error) {
+					reject(error);
+				} else {
+					resovle(info);
+				}
+			}).catch(err => {
+				console.error(err);
+			});
+		});
 	},
 	translate,
 	btnNavLink,
@@ -39,3 +62,27 @@ App({
 		},
 	}
 });
+
+function processCartsCounter(bool) {
+	let routes = getCurrentPages().reverse();
+	if (routes.length > 0 && routes[0].route.indexOf('shopping-cart') > -1) {
+		return Promise.resolve();
+	}
+	let localCarts = wx.getStorageSync('localCarts');
+	if (bool) {
+		cartsCounter(localCarts);
+		return Promise.resolve();
+	} else {
+		return new Promise((resolve, reject) => {
+			let getCarts;
+			if (localCarts) {
+				getCarts = synchronizeCart(localCarts);
+			} else {
+				getCarts = callApi.post('StoreCart.getAll', {}, 400);
+			}
+			getCarts.then(res => {
+				resolve(cartsCounter(res));
+			});
+		});
+	}
+}

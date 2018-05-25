@@ -193,3 +193,21 @@
 .wxParse-img {
    width: 100%;
 }
+
+.store-cart{
+	position: relative;
+}
+.cart-badge{
+	position: absolute;
+	top: 8rpx;
+	right: 25rpx;
+	width: 30rpx;
+	height: 30rpx;
+	line-height: 30rpx;
+	border-radius:50%;
+	font-size: 20rpx;
+	text-align: center;
+	background: #ff0000;
+	color: #fff;
+	box-shadow: 0 0 5rpx #ff0000;
+}

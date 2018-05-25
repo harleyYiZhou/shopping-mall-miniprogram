@@ -11,7 +11,7 @@
 	<view class="list-top {{editable && 'p-fixed-top'}}">
 		<view class="label">{{trans.shop}}</view>
 		<view class="edit-btn" hidden="{{editable}}" bindtap="editTap">{{trans.edit}}</view>
-		<view class="edit-btn" hidden="{{!editable}}" bindtap="editExit">{{trans.complete}}</view>
+		<view class="edit-btn color-text--red-400" hidden="{{!editable}}" bindtap="editExit">{{trans.complete}}</view>
 	</view>
 	<view class="goodsList {{editable && 'goodsList-margin'}}">
 		<block wx:for="{{carts}}" wx:for-item="cart" wx:for-index="cartIndex" wx:key="_id">

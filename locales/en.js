@@ -281,7 +281,7 @@ module.exports = {
 		navBarTitle: 'Store Cart',
 		emptyCart: 'The cart is empty',
 		emptyCartHint: 'You can look around in the homepage',
-		shop: 'Guzzu',
+		shop: 'GUZZU',
 		edit: 'Edit',
 		complete: 'Complete',
 		allSelect: 'Select All',

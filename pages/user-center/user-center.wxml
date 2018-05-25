@@ -37,12 +37,14 @@
 			</view>
 		</view>
 
-		<view class="zan-cell zan-cell--access margin-top-10" bindtap="navigateTo" data-url="/pages/select-address/select-address?viewOnly=1">
-			<view class="zan-cell__bd">
-				<view class="zan-icon zan-icon-location"></view>
-				{{trans.manageAddress}}
+		<view class='margin-top-10'>
+			<view class="zan-cell zan-cell--access" bindtap="navigateTo" data-url="/pages/select-address/select-address?viewOnly=1">
+				<view class="zan-cell__bd">
+					<view class="zan-icon zan-icon-location"></view>
+					{{trans.manageAddress}}
+				</view>
+				<view class="zan-cell__ft"></view>
 			</view>
-			<view class="zan-cell__ft"></view>
 		</view>
 		
 		<!--
@@ -65,6 +67,7 @@
 			</view>
 		</view>
 		  -->
+		  <!--
 		<view class="zan-cell zan-cell--access" bindtap="navigateTo" data-url="/pages/coupons/coupons">
 			<view class="zan-cell__bd">
 				<view class="zan-icon zan-icon-coupon"></view>
@@ -72,6 +75,7 @@
 			</view>
 			<view class="zan-cell__ft"></view>
 		</view>
+		  -->
 		<view>
 
 		</view>

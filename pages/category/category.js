@@ -1,20 +1,17 @@
 // pages/category/category.js
 let app = getApp();
 const { callApi } = require('../../utils/guzzu-utils.js');
-const { priceFilter } = require('../../utils/util');
+const { priceFilter, showLoading } = require('../../utils/util');
 
 Page({
 	data: {
 		tapIndex: 0,
 		categoryPage: [],
-		stores: [],
+		stores: null,
 	},
 	onLoad(options) {
 		let categoryId = wx.getStorageSync('categoryId');
 		wx.removeStorageSync('categoryId');
-		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
-			app.translate.langData(this);
-		}
 		let scrollHeight = wx.getSystemInfoSync().windowHeight / wx.getSystemInfoSync().windowWidth * 750;
 		this.setData({
 			scrollHeight: scrollHeight - 170
@@ -22,6 +19,13 @@ Page({
 		_getCategory.bind(this)(categoryId);
 	},
 	onShow() {
+		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
+			app.translate.langData(this);
+			this.onLoad();
+		}
+		if (wx.getStorageSync('categoryId')) {
+			this.onLoad();
+		}
 	},
 	btnNavLink: app.btnNavLink(),
 	chooseLevel(e) {
@@ -63,6 +67,7 @@ Page({
 });
 
 function _getCategory(categoryId) {
+	showLoading();
 	callApi.get('shopping-malls/{smallid}/categories').then((results) => {
 		let tapIndex = this.data.tapIndex;
 		if (categoryId) {
@@ -90,7 +95,14 @@ function _getCategory(categoryId) {
 		this.setData({
 			categoryPage: result
 		});
+		if (!this.data.stores) {
+			this.setData({
+				stores: []
+			});
+		}
 	}).catch(err => {
 		console.error(err);
+	}).finally(() => {
+		wx.hideLoading();
 	});
 }

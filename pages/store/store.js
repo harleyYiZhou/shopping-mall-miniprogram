@@ -93,22 +93,6 @@ Page({
 			url: '/pages/product-detail/product-detail?productId=' + productId
 		});
 	},
-	tapStoreCart() {
-		let that = this;
-		let slug = that.data.store.slug;
-		let storeId = that.data.store._id;
-		if (app.globalData.userInfo && app.globalData.mobilePhone) {
-			wx.navigateTo({
-				url: '/pages/store-cart/store-cart?storeId=' + storeId + '&slug=' + slug
-			});
-			return;
-		}
-		app.login().then(res => {
-			wx.navigateTo({
-				url: '/pages/store-cart/store-cart?storeId=' + storeId + '&slug=' + slug
-			});
-		});
-	},
 	tapStore() {
 		wx.switchTab({
 			url: '/pages/index/index'

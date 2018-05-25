@@ -14,9 +14,6 @@ Page({
 	},
 	btnNavLink: app.btnNavLink(),
 	onLoad() {
-		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
-			app.translate.langData(this);
-		}
 		callApi.get('shopping-malls/{smallid}/pages').then(result => {
 			this.setData({
 				pages: result
@@ -25,6 +22,12 @@ Page({
 		}).catch(err => {
 			console.error(err);
 		});
+	},
+	onShow() {
+		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
+			app.translate.langData(this);
+			this.onLoad();
+		}
 	},
 	linkTo(e) {
 		let linkId = e.currentTarget.dataset.linkId;
@@ -42,8 +45,8 @@ Page({
 				url = '/pages/store/store?storeId=' + linkId;
 				break;
 			case 'category':
-				wx.setStorageSync('categoryId', linkId);
 			case 'shoppingMallCategory':
+				wx.setStorageSync('categoryId', linkId);
 				url = '/pages/category/category';
 				break;
 			default:

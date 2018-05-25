@@ -1,7 +1,15 @@
 // index.js
 const app = getApp();
-const { priceFilter, showModal, _, showLoading, debug } = require('../../utils/util');
-const { callApi, session, removeItems, checkInventory } = require('../../utils/guzzu-utils.js');
+const { showModal, _, debug } = require('../../utils/util');
+const {
+	callApi,
+	session,
+	removeItems,
+	checkInventory,
+	cartsCounter,
+	synchronizeCart,
+	getStoreCarts,
+} = require('../../utils/guzzu-utils.js');
 
 Page({
 	data: {
@@ -34,18 +42,18 @@ Page({
 		});
 	},
 	onLoad() {
-		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
-			app.translate.langData(this);
-		}
 		this.initEleWidth();
 	},
 	onShow() {
+		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
+			app.translate.langData(this);
+		}
 		let localCarts = wx.getStorageSync('localCarts') || [];
 		app.globalData.login.finally(() => {
 			session.check().then(res => {
 				if (res) {
 					if (localCarts) {
-						return _synchronizeCart(localCarts);
+						return synchronizeCart(localCarts);
 					}
 					return getStoreCarts();
 				}
@@ -72,6 +80,7 @@ Page({
 				console.error(err);
 			}).finally(() => {
 				wx.stopPullDownRefresh();
+				cartsCounter(this.data.carts);
 			});
 		});
 	},
@@ -82,7 +91,7 @@ Page({
 	},
 
 	touchS(e) {
-		if (!this.data.goodsList) {
+		if (!this.data.goodsList.editable) {
 			return;
 		}
 		if (e.touches.length === 1) {
@@ -92,12 +101,17 @@ Page({
 		}
 	},
 	touchM(e) {
-		if (!this.data.goodsList) {
+		if (!this.data.goodsList.editable) {
 			return;
 		}
 
-		let { itemIndex, cartIndex } = e.currentTarget.dataset;
-		let { cartsInfo } = this.data;
+		let {
+			itemIndex,
+			cartIndex
+		} = e.currentTarget.dataset;
+		let {
+			cartsInfo
+		} = this.data;
 
 		if (e.touches.length === 1) {
 			let moveX = e.touches[0].clientX;
@@ -123,11 +137,16 @@ Page({
 	},
 
 	touchE(e) {
-		if (!this.data.goodsList) {
+		if (!this.data.goodsList.editable) {
 			return;
 		}
-		let { itemIndex, cartIndex } = e.currentTarget.dataset;
-		let { cartsInfo } = this.data;
+		let {
+			itemIndex,
+			cartIndex
+		} = e.currentTarget.dataset;
+		let {
+			cartsInfo
+		} = this.data;
 		if (e.changedTouches.length == 1) {
 			let endX = e.changedTouches[0].clientX;
 			let disX = this.data.startX - endX;
@@ -144,8 +163,14 @@ Page({
 		}
 	},
 	delItem(e) {
-		let { itemIndex, cartIndex } = e.currentTarget.dataset;
-		let { cartsInfo, goodsList } = this.data;
+		let {
+			itemIndex,
+			cartIndex
+		} = e.currentTarget.dataset;
+		let {
+			cartsInfo,
+			goodsList
+		} = this.data;
 		goodsList.processing = true;
 		cartsInfo[cartIndex].selectedItems = [itemIndex];
 		this.setData({
@@ -172,10 +197,14 @@ Page({
 
 	// 设置编辑状态，单购物车：全选，总价
 	setGoodsList(cartsInfo, cartIndex) {
-		let { carts, goodsList } = this.data;
+		let {
+			carts,
+			goodsList
+		} = this.data;
 		ckeckSelected(cartsInfo, cartIndex, carts);
 		totalCost(cartsInfo, cartIndex, carts);
 		checkTotalSelected(cartsInfo, goodsList);
+		cartsCounter(carts);
 		this.setData({
 			cartsInfo,
 			goodsList,
@@ -194,7 +223,10 @@ Page({
 		this.setGoodsList(cartsInfo, cartIndex);
 	},
 	toggleTotalSelected(e) {
-		let { carts, goodsList } = this.data;
+		let {
+			carts,
+			goodsList
+		} = this.data;
 		let bool = goodsList.allSelect;
 		if (e.option) {
 			bool = e.option.bool;
@@ -202,7 +234,9 @@ Page({
 			bool = !bool;
 		}
 		carts.forEach((cart, cartIndex) => {
-			let { cartsInfo } = this.data;
+			let {
+				cartsInfo
+			} = this.data;
 			cartsInfo[cartIndex].selectAll = bool;
 			cart.items.forEach((i, j) => {
 				cartsInfo[cartIndex].items[j] = bool;
@@ -266,9 +300,15 @@ Page({
 	},
 	removeSelections(e) {
 		let cartIndex = e.currentTarget.dataset.cartIndex;
-		let { cartsInfo, carts } = this.data;
+		let {
+			cartsInfo,
+			carts
+		} = this.data;
 		let storeId = carts[cartIndex].store._id;
-		let { selectedItems, selectAll } = cartsInfo[cartIndex];
+		let {
+			selectedItems,
+			selectAll
+		} = cartsInfo[cartIndex];
 		let that = this;
 		if (!selectAll && !selectedItems.length) {
 			return;
@@ -310,7 +350,12 @@ Page({
 		});
 	},
 	removeTotal() {
-		let { carts } = this.data;
+		if (!this.data.goodsList.allSelect) {
+			return;
+		}
+		let {
+			carts
+		} = this.data;
 		let promises = [];
 		let that = this;
 		showModal({
@@ -334,6 +379,7 @@ Page({
 						}
 						throw Error('Conflict');
 					}).then(() => {
+						cartsCounter([]);
 						that.setData({
 							carts: [],
 							cartsInfo: []
@@ -346,14 +392,19 @@ Page({
 		});
 	},
 	editTap() {
-		let { goodsList } = this.data;
+		let {
+			goodsList
+		} = this.data;
 		goodsList.editable = true;
 		this.setData({
 			goodsList
 		});
 	},
 	editExit() {
-		let { goodsList, cartsInfo } = this.data;
+		let {
+			goodsList,
+			cartsInfo
+		} = this.data;
 		goodsList.editable = false;
 		cartsInfo.forEach((item, i) => {
 			cartsInfo[i].pos = [];
@@ -371,15 +422,23 @@ Page({
 
 	toPayOrder(e) {
 		let cartIndex = e.currentTarget.dataset.cartIndex;
-		let { cartsInfo, carts } = this.data;
+		let {
+			cartsInfo,
+			carts
+		} = this.data;
 		let storeId = carts[cartIndex].store._id;
 		let url;
-		let { selectAll, selectedItems } = cartsInfo[cartIndex];
+		let {
+			selectAll,
+			selectedItems
+		} = cartsInfo[cartIndex];
 		if (!selectedItems.length) {
 			return;
 		}
 		if (session.checkSync()) {
-			callApi.post('StoreCart.preview', { storeId }, 400).then(() => {
+			callApi.post('StoreCart.preview', {
+				storeId
+			}, 400).then(() => {
 				url = `/pages/checkout/checkout?storeId=${storeId}&selectedItems=${JSON.stringify(selectedItems)}&selectAll=${selectAll}`;
 				wx.navigateTo({
 					url
@@ -394,20 +453,6 @@ Page({
 	},
 
 });
-
-function getStoreCarts() {
-	showLoading();
-	return new Promise((resolve, reject) => {
-		callApi.post('StoreCart.getAll', {}, 400).then(datas => {
-			priceFilter(datas);
-			resolve(datas);
-		}).catch(err => {
-			reject(err);
-		}).finally(() => {
-			wx.hideLoading();
-		});
-	});
-}
 
 // 判断全选状态，列表中是否有选中的状态
 function ckeckSelected(cartsInfo, cartIndex, carts) {
@@ -478,6 +523,7 @@ function checkTotalSelected(cartsInfo, goodsList) {
 	}
 	goodsList.allSelect = bool;
 }
+
 function removeCartsInfo(cartsInfo, cartIndex) {
 	let cart = cartsInfo[cartIndex];
 	cart.pos = [];
@@ -489,24 +535,6 @@ function removeCartsInfo(cartsInfo, cartIndex) {
 	selectedCopy.sort().reverse();
 	selectedCopy.forEach(item => {
 		cartsInfo[cartIndex].items.splice(item, 1);
-	});
-}
-
-function _synchronizeCart(localCarts) {
-	return new Promise((res, rej) => {
-		let promises = [];
-		localCarts.forEach(cart => {
-			cart.items.forEach(item => {
-				let params = _.pick(item, ['storeId', 'productId', 'quantity', 'productOptionId']);
-				promises.push(callApi.post('StoreCart.addItem', params, 400));
-			});
-		});
-		Promise.all(promises).then(() => {
-			wx.removeStorageSync('localCarts');
-			res(getStoreCarts());
-		}).catch(err => {
-			rej(err);
-		});
 	});
 }
 
@@ -524,7 +552,12 @@ let localCartsUtils = {
 	},
 	remove(params) {
 		let localCarts = wx.getStorageSync('localCarts') || [];
-		let { carts, selectedItems, cartIndex, selectAll } = params;
+		let {
+			carts,
+			selectedItems,
+			cartIndex,
+			selectAll
+		} = params;
 		if (!this.compare(carts, localCarts)) {
 			return Promise.reject(Error('Conflict'));
 		}
