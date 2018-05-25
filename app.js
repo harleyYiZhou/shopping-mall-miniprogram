@@ -44,7 +44,8 @@ App({
 				console.error(err);
 			});
 		});
-		if (this.globalData.onShow) {
+		let routes = getCurrentPages().reverse();
+		if (routes.length > 0 && routes[0].route.indexOf('shopping-cart') > -1 && this.globalData.onShow) {
 			this.globalData.onShow();
 		}
 	},
