@@ -36,7 +36,7 @@
 							<!--选择数量  -->
 							<view class="buy-num">
 								<view class="jian-btn {{item.number==1? 'disabled' : ''}}" catchtap="jianBtnTap" data-item-index="{{itemIndex}}" data-cart-index="{{cartIndex}}">-</view>
-								<input type="number" value="{{item.quantity}}" bindinput='inputNum' data-item-index="{{itemIndex}}" data-cart-index="{{cartIndex}}"/>
+								<input type="number" value="{{item.quantity}}" disabled="true" bindinput='inputNum' data-item-index="{{itemIndex}}" data-cart-index="{{cartIndex}}"/>
 								<view class="jia-btn {{item.number==10? 'disabled' : ''}}" catchtap="jiaBtnTap" data-item-index="{{itemIndex}}" data-cart-index="{{cartIndex}}">+</view>
 							</view>
 						</view>

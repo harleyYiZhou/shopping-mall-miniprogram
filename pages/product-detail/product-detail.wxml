@@ -146,7 +146,7 @@
          <view class="num-box layout-row layout-wrap layout-justify-end">
             <view class="num-jian {{buyNumber == buyNumMin ? 'hui': ''}}" bindtap="numMinus">-</view>
             <view class="num-input">
-               <input type="number" value="{{buyNum}}" bindinput="changeNum" />
+               <input type="number" disabled="true" value="{{buyNum}}" bindinput="changeNum" />
             </view>
             <view class="num-jia {{buyNumber== buyNumMax ? 'hui': ''}}" bindtap="numAdd">+</view>
          </view>
