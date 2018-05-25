@@ -12,7 +12,6 @@ Page({
 		pages: null,
 		currentPage: null,
 	},
-	btnNavLink: app.btnNavLink(),
 	onLoad() {
 		callApi.get('shopping-malls/{smallid}/pages').then(result => {
 			this.setData({

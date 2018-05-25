@@ -84,5 +84,4 @@ Page({
 	onShareAppMessage() {
 
 	},
-	btnNavLink: app.btnNavLink()
 });

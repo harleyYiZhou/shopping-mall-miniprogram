@@ -1,6 +1,6 @@
 // app.js
 const translate = require('./utils/translate.js');
-const { btnNavLink } = require('./utils/util.js');
+
 const {
 	login,
 	cartsCounter,
@@ -44,9 +44,11 @@ App({
 				console.error(err);
 			});
 		});
+		if (this.globalData.onShow) {
+			this.globalData.onShow();
+		}
 	},
 	translate,
-	btnNavLink,
 	globalData: {
 		shippingAddress: null,
 		userInfo: null,

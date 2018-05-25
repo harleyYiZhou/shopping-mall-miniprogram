@@ -36,7 +36,7 @@ module.exports = {
 		image: 'Image',
 		accountId: 'AccountId',
 		name: 'Name',
-		secretInf: 'Secert Info',
+		secretInf: 'Secret Info',
 		phoneNum: 'Phone',
 		changepsw: 'Change password',
 		logoutBtn: 'Logout',

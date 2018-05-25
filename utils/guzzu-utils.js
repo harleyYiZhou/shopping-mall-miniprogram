@@ -141,7 +141,7 @@ function _loginToast() {
 		content: 'common.reSignin',
 		success(res) {
 			if (res.confirm) {
-				login();
+				getApp().onShow();
 			} else {
 				session.remove();
 			}
@@ -379,7 +379,8 @@ function checkInventory(items, selectedItems, quantity) {
 	return bool;
 }
 
-function cartsCounter(carts = []) {
+function cartsCounter(carts) {
+	carts = carts || [];
 	let counts = carts.reduce((inc, item) => {
 		inc += item.items.length;
 		return inc;

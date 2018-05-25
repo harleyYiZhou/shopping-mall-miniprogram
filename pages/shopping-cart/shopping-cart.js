@@ -21,7 +21,6 @@ Page({
 		delBtnWidth: 120, // 删除按钮宽度单位（rpx）
 		cartsInfo: [], // 记录购物车各种状态：storeCart 是否全选，item 是否选中，记录选中的 items 的 indexes
 	},
-	btnNavLink: app.btnNavLink(),
 	// 获取元素自适应后的实际宽度
 	getEleWidth(w) {
 		let real = 0;
@@ -43,6 +42,7 @@ Page({
 	},
 	onLoad() {
 		this.initEleWidth();
+		app.globalData.onShow = this.onShow;
 	},
 	onShow() {
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {

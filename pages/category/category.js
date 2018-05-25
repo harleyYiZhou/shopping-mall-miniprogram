@@ -27,7 +27,6 @@ Page({
 			this.onLoad();
 		}
 	},
-	btnNavLink: app.btnNavLink(),
 	chooseLevel(e) {
 		let tapIndex = e.currentTarget.dataset.index;
 		if (tapIndex === this.data.tapIndex) {
