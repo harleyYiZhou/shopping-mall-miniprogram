@@ -157,9 +157,13 @@ function checkMobilePhone() {
 			if (result && result.user && result.user.mobilePhone) {
 				resolve(result);
 			} else {
-				wx.navigateTo({
-					url: '/pages/bind-phone/bind-phone'
-				});
+				let pages = getCurrentPages();
+				let route = pages[pages.length - 1].route;
+				if (!(/bind-phone/).test(route)) {
+					wx.navigateTo({
+						url: '/pages/bind-phone/bind-phone'
+					});
+				}
 				resolve(false);
 			}
 		}, err => {
