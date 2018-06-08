@@ -243,6 +243,7 @@ module.exports = {
 		emptyCartHint: '请到首页逛逛吧！',
 		createdAt: '订单日期',
 		willExpire: '订单即将关闭',
+		refunding: '待退款',
 	},
 	pageLayout: {},
 	productDetail: {
@@ -282,7 +283,7 @@ module.exports = {
 		navBarTitle: '购物车',
 		emptyCart: '购物车里目前没有商品',
 		emptyCartHint: '去首页逛逛吧！',
-		shop: 'Guzzu',
+		shop: 'GUZZU',
 		edit: '编辑',
 		complete: '完成',
 		allSelect: '全选',

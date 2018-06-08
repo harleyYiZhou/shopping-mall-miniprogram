@@ -121,13 +121,13 @@
 				<view class="divider-line"></view>-->
 				<view class="layout-row padding-y-10" wx:for="{{ displayItems }}" wx:key="_id">
 					<view class="width-25">
-						<image class="product-image" src="{{ item.product.image.url }}" mode="aspectFit"></image>
+						<image class="product-image" src="{{ item.image.url }}" mode="aspectFit"></image>
 					</view>
 					<view class="flex">
 						<view class="layout-row">
 							<view class="flex">
 								<text class="product-name">{{ item.name }}</text>
-								<text class="product-name" wx:if="{{ item.option }}">{{trans.option}}：{{ item.option.name }}</text>
+								<text class="product-name" wx:if="{{ item.optionName }}">{{trans.option}}：{{ item.optionName }}</text>
 							</view>
 							<text class="width-30 text-right text-primary">￥{{ item.price }} × {{ item.quantity }}</text>
 						</view>

@@ -127,4 +127,9 @@ function checkStatus(order) {
 	if (order.shippingStatus === 'received') {
 		return 'closed';
 	}
+	// 退款
+	if (order.paymentStatus === 'customer_requested_refund') {
+		return 'refunding';
+	}
+	throw new Error('Invalid status');
 }

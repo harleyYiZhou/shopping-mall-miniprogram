@@ -243,7 +243,7 @@ module.exports = {
 		emptyCartHint: 'You can look around in the homepage',
 		createdAt: 'Created At',
 		willExpire: 'The order is going to be expired.',
-
+		refunding: 'Refund',
 	},
 	pageLayout: {},
 	productDetail: {

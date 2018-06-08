@@ -26,12 +26,12 @@
 					<view class="goods-info {{itemIndex==0 && 'border-top'}}">
 						<navigator url="/pages/product-detail/product-detail?productId={{item.productId}}">
 							<view class="img-box">
-								<image src="{{item.product.image.url }}" class="img" />
+								<image src="{{item.image.url }}" class="img" />
 							</view>
 						</navigator>
 						<view class="text-box">
 							<view class="goods-title">{{item.name}}</view>
-							<view class="margin-bottom-5 text-muted text-smaller" wx:if="{{item.productOption}}">{{item.productOption.name}}</view>
+							<view class="margin-bottom-5 text-muted text-smaller" wx:if="{{item.optionName}}">{{item.optionName}}</view>
 							<view class="goods-price">¥{{item.price}}</view>
 							<!--选择数量  -->
 							<view class="buy-num">

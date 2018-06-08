@@ -5,12 +5,18 @@
 			<view class="order-text" data-status='{{index}}' bindtap="switchStatus">{{item.text}}</view>
 		</view>
 	</view>
-	<view class="orders">
+	<view class="orders color--grey-100">
 		<view class="no-order layout-align-center" hidden="{{orders.length ? true : false}}">
 			<view class="zan-icon zan-icon-records no-order-icon"></view>
 			<view class="text">{{trans.emptyCart}}</view>
 		</view>
-		<view class="" hidden="{{orders.length ? false : true}}" wx:for="{{orders}}" wx:for-item="order" wx:key="order">
+		<view class=" margin-top-10 color--grey-0" hidden="{{orders.length ? false : true}}" wx:for="{{orders}}" wx:for-item="order" wx:key="order">
+			<navigator url="/pages/store/store?storeId={{order.store._id}}" class="layout-row layout-align-center">
+				<view class="zan-icon zan-icon-shop padding-left-10"></view>
+				<view class="padding-y-10 padding-x-5 text-primary">{{order.store.name}}</view>
+				<view class="zan-icon zan-icon-arrow"></view>
+			</navigator>
+
 			<view class="zan-cell">
 				<view class="zan-cell__bd">
 					<view class="zan-cell__text">{{trans.createdAt}}：{{order.createdAt}}</view>
@@ -21,9 +27,11 @@
 
 			<view class="zan-card" wx:for="{{order.items}}" wx:for-item="item" wx:key="item">
 				<!-- 卡片左侧商品图片 -->
-				<view class="zan-card__thumb">
-					<image class="zan-card__img " src="{{item.product.image.thumb.url}}" mode="aspectFit"></image>
-				</view>
+				<navigator url="/pages/product-detail/product-detail?productId={{item.productId}}">
+					<view class="zan-card__thumb">
+						<image class="zan-card__img " src="{{item.image.thumb.url}}" mode="aspectFit"></image>
+					</view>
+				</navigator>
 				<!-- 卡片右侧详情描述 -->
 				<view class="zan-card__detail">
 					<!-- 商品标题行 -->
@@ -38,8 +46,8 @@
 					<!-- 商品附属信息展示行 -->
 					<view class="zan-card__detail-row zan-c-gray-darker">
 						<view class="zan-card__right-col">x{{item.quantity}}</view>
-						<view class="zan-card__left-col" wx:if="{{item.productOption}}">
-							{{item.productOption.name}}
+						<view class="zan-card__left-col" wx:if="{{item.optionName}}">
+							{{item.optionName}}
 						</view>
 					</view>
 				</view>
@@ -61,7 +69,7 @@
 					<!-- <button class="zan-btn zan-btn--small zan-btn--warn">{{trans.cancel}}</button> -->
 					<navigator url="/pages/order/order?orderId={{order._id}}">
 						<button wx:if="{{order.exStatus==='pending'}}" class="zan-btn zan-btn--small zan-btn--danger">{{trans.goToPay}}</button>
-						<button wx:else class="zan-btn zan-btn--small zan-btn--primary">{{trans.viewDetails}}</button>
+						<button wx:else class="zan-btn zan-btn--small zan-btn--primary {{order.exStatus==='refunding' && 'zan-btn--warn'}}">{{trans.viewDetails}}</button>
 					</navigator>
 				</view>
 			</view>

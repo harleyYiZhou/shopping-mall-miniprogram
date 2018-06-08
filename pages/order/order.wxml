@@ -23,22 +23,34 @@
         <block wx:if="{{ order.paymentStatus === 'paid' && order.shippingStatus === 'unshipped' }}">
             <view class="weui-flex layout-justify-center margin-top-30 margin-bottom-5">
                 <view class="icon-large weui-flex layout-align-center layout-justify-center">
+                    <image class='icon-large' src='/public/images/icon/travel-wallet-dark.svg' mode='aspectFit'> </image>
+                </view>
+            </view>
+            <view class="text-center margin-bottom-20 layout-row layout-justify-center">
+                <button class='bg-skyblue margin-x-5 padding-y-5' bindtap='contactStore'>{{trans.contactStore}}</button>
+                <button class='bg-grey margin-x-5 padding-y-5' bindtap='showRefundDialog'>{{trans.requestRefund}}</button>
+            </view>
+        </block>
+
+		   <!--customer_requested_refund  退款-->
+        <block wx:if="{{ order.paymentStatus === 'customer_requested_refund' }}">
+            <view class="weui-flex layout-justify-center margin-top-30 margin-bottom-5">
+                <view class="icon-large weui-flex layout-align-center layout-justify-center">
                     <image wx:if="{{refundStatus=='pending' || refundStatus=='rejected' }}" class='icon-large' src='/public/images/icon/person-dark.svg' mode='aspectFit'> </image>
-                    <image wx:else class='icon-large' src='/public/images/icon/travel-wallet-dark.svg' mode='aspectFit'> </image>
                 </view>
             </view>
             <view class="text-center margin-y-10">
-                <text hidden="{{refundStatus}}" class="">{{trans.paidHint}}</text>
                 <text wx:if="{{refundStatus=='pending'}}">
-					{{trans.requestRefundHint}}\n{{trans.autoRefundHint}}\n{{trans.requestRefundTime}}：{{timestamp}}
-				</text>
+						{{trans.requestRefundHint}}\n{{trans.autoRefundHint}}\n{{trans.requestRefundTime}}：{{timestamp}}
+					</text>
                 <text wx:if="{{refundStatus=='rejected'}}">{{trans.rejectRefundRequestHint}},{{trans.rejectNote}}:{{rejectReason}}。</text>
             </view>
             <view class="text-center margin-bottom-20 layout-row layout-justify-center">
-                <button hidden="{{refundStatus=='pending'}}"class='bg-skyblue margin-x-5 padding-x-40 padding-y-5' bindtap='contactStore'>{{trans.contactStore}}</button>
-                <button hidden="{{refundStatus}}" class='bg-grey margin-x-5 padding-x-40 padding-y-5' bindtap='showRefundDialog'>{{trans.requestRefund}}</button>
+                <button hidden="{{refundStatus=='pending'}}"class='bg-skyblue margin-x-5 padding-y-5' bindtap='contactStore'>{{trans.contactStore}}</button>
+                <button hidden="{{refundStatus}}" class='bg-grey margin-x-5 padding-y-5' bindtap='showRefundDialog'>{{trans.requestRefund}}</button>
             </view>
         </block>
+
         <!--退款dialog  -->
         <view class="modal-mask" bindtap="hideRefundDialog" catchtouchmove="preventTouchMove" wx:if="{{refundDialog}}"></view>
         <view class="modal-dialog" wx:if="{{refundDialog}}">
@@ -132,13 +144,13 @@
     <view class="color--grey-0 padding-x-20 padding-y-10">
         <view class="layout-row padding-top-10" wx:for="{{ order.items }}" wx:key="_id">
             <view>
-                <image class="product-image" src="{{ item.product.image.url }}" mode="aspectFit"></image>
+                <image class="product-image" src="{{ item.image.url }}" mode="aspectFit"></image>
             </view>
             <view class="flex margin-left-10">
                 <view class="layout-row">
                     <view class="flex">
                         <text class="product-name">{{ item.name }}</text>
-                        <text class="product-name" wx:if="{{ item.productOption }}">{{trans.option}}：{{ item.productOption.name }}</text>
+                        <text class="product-name" wx:if="{{ item.optionName }}">{{trans.option}}：{{ item.optionName }}</text>
                     </view>
                     <text class="width-30 text-right text-muted">￥{{ item.price /100 }} × {{ item.quantity }}</text>
                 </view>

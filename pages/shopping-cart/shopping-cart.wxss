@@ -2,7 +2,6 @@
 @import "../components/cart/cart";
 
 .container {
-  background-color: #F2f2f2;
   min-height: 1400rpx;
 }
 .pos-fiexd{
