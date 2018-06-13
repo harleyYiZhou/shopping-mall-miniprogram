@@ -46,40 +46,6 @@ const priceFilter = data => {
 	}
 };
 
-/**
- * @description 顶层路由
- */
-const btnNavLink = () => {
-	return function (e) {
-		const app = getApp();
-		let id = e.currentTarget.dataset.id;
-		app.globalData.selected = id;
-		if (this.data.selected === id) {
-			return;
-		}
-		let url;
-		switch (id) {
-			case '0':
-				url = '/pages/index/index';
-				break;
-			case '1':
-				url = '/pages/category/category';
-				break;
-			case '2':
-				url = '/pages/shopping-cart/shopping-cart';
-				break;
-			case '3':
-				url = '/pages/user-center/user-center';
-				break;
-		}
-		if (url) {
-			wx.redirectTo({
-				url,
-			});
-		}
-	};
-};
-
 const showModal = (data = {}) => {
 	let params = Object.assign({
 		title: 'common.showModal.title', // 提示，Notes
@@ -157,7 +123,6 @@ debug.trace = (...params) => {
 module.exports = {
 	formatTime,
 	priceFilter,
-	btnNavLink,
 	showModal,
 	showToast,
 	showLoading,
