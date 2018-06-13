@@ -8,13 +8,14 @@ Page({
 		tapIndex: 0,
 		categoryPage: [],
 		stores: null,
+		scrollHeight: 0 // 左侧标题高度
 	},
 	onLoad(options) {
 		let categoryId = wx.getStorageSync('categoryId');
 		wx.removeStorageSync('categoryId');
 		let scrollHeight = wx.getSystemInfoSync().windowHeight / wx.getSystemInfoSync().windowWidth * 750;
 		this.setData({
-			scrollHeight: scrollHeight - 170
+			scrollHeight: scrollHeight
 		});
 		_getCategory.bind(this)(categoryId);
 	},
@@ -39,20 +40,10 @@ Page({
 			this.setData({
 				categoryPage: {}
 			});
-			let temp = this.data.stores;
-			let options = {
-				page: this.data.currentPage,
-				pageSize: this.data.pageSize
-			};
-			callApi.post('Store.find', options, 400).then(result => {
-				if (result && result.totalPages) {
-					temp = temp.concat(result.results);
-					this.setData({
-						stores: temp,
-						totalPages: result.totalPages,
-						currentPage: result.currentPage,
-					});
-				}
+			callApi.get('shopping-malls/{smallid}/stores').then(result => {
+				this.setData({
+					stores: result,
+				});
 			}).catch(err => {
 				console.error(err);
 			});

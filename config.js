@@ -21,7 +21,6 @@ const config = {
 	SESSION_EXPIRE_SECONDS: 600,
 	'INDEX_SLUG': 'guzzu-msite-index',
 	'shoppingMallId': '5adedc43de3c90022eb25d3b',
-	// 'shoppingMallId': '5adedc43de3c90022eb25d3b',
 	SESSION_REQUIRE: [
 		'Auth.getCurrentSession',
 		'Auth.removeSession',

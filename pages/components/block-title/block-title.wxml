@@ -2,12 +2,12 @@
 <template name="block-title">
 	<block wx:for="{{item.items}}" wx:for-item="comItem" wx:key="comItem">
 		<view class="zan-panel" bindtap="linkTo" data-link-id="{{comItem[comItem.linkType]}}" data-link-type="{{comItem.linkType}}">
-			<view class="zan-cell">
+			<view class="zan-cell zan-cell--access">
 				<view class="zan-cell__bd">
 					<view class="zan-cell__text">{{comItem.title}}</view>
 					<view class="zan-cell__desc" wx:if="{{comItem.subtitle}}">{{comItem.subtitle}}</view>
 				</view>
-				<view wx:if="{{comItem.linkType}}" class="zan-cell__ft">{{trans.more}}></view>
+				<view wx:if="{{comItem.linkType}}" class="zan-cell__ft">{{trans.more}}</view>
 			</view>
 		</view>
 	</block>

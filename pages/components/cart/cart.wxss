@@ -37,7 +37,7 @@
   color: #000;
 }
 .list-top .edit-btn {
-  color: #999;
+  color: #3787FB;
   height: 100%;
 }
 .goodsList {
@@ -212,7 +212,7 @@
 .p-fixed {
   position: fixed;
   left: 0;
-  bottom: 112rpx;
+  bottom: 0;
   z-index: 10;
 }
 .p-fixed-top {

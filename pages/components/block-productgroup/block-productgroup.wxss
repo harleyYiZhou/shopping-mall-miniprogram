@@ -6,7 +6,7 @@
 
 .productgroup-inner {
    box-sizing: border-box;
-   margin: 4rpx;
+   margin: 10rpx;
    background-color: #fff;
 }
 

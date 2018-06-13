@@ -1,8 +1,8 @@
 <!--pages/components/page-nav/page-nav.wxml-->
  <template name="page-nav"> 
   <view class="type-container">
-    <scroll-view class="type-navbar" scroll-x="true">
-      <view class="type-box" wx:for="{{pages}}" wx:for-item="item" wx:key="id">
+    <scroll-view class="type-navbar" scroll-x="true" scroll-into-view="nav{{pageIndex-1}}" scroll-with-animation="true">
+      <view class="type-box" wx:for="{{pages}}" wx:for-item="item" wx:key="id" id="nav{{index}}">
         <view class="type-navbar-item {{pageIndex == index ? 'type-item-on' : ''}}" bindtap="tabPageNav" data-id="{{index}}">
           {{item.pageTitle}}
         </view>

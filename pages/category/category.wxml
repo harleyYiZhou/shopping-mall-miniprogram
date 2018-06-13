@@ -1,5 +1,5 @@
 <!--pages/category/category.wxml-->
-<view class="layout-column ">
+<view class="layout-column category-container">
 	<!--
   <view class="search layout-row layout-wrap ">
     <view class="zan-icon zan-icon-search"></view>
@@ -15,11 +15,11 @@
 				<view wx:if="{{stores}}" data-index='-1' bindtap='chooseLevel' class="levelOne padding-left-10 ellipsis {{tapIndex=='-1'?'selecte':'false'}}">{{trans.stores}}</view>
 			</scroll-view>
 		</view>
-		<view class="category-subtitle flex padding-x-10 padding-y-10 layout-column ">
-			<view wx:if="{{category[tapIndex].image || category[tapIndex].image.url}}">
+		<view class="category-subtitle">
+			<view class="layout-row layout-center margin-y-10" wx:if="{{category[tapIndex].image || category[tapIndex].image.url}}">
 				<image mode="widthFix" class="sub-image" src="{{category[tapIndex].image.thumb.url || category[tapIndex].image.url}}"></image>
 			</view>
-			<view wx:if="{{category[tapIndex].description}}" class="text-center margin-top-10 margin-bottom-20">
+			<view wx:if="{{category[tapIndex].description}}" class="description">
 				<text>{{category[tapIndex].description}}</text>
 			</view>
 
@@ -27,7 +27,7 @@
 				<text class="text-title text-strong">{{trans.storeList}}</text>
 			</view>
 
-			<view class="layout-row layout-wrap  layout-justify-between">
+			<view class="layout-row layout-wrap">
 				<block wx:for="{{categoryPage.products}}" wx:key="item">
 					<navigator class="level-3-box layout-center" url="/pages/product-detail/product-detail?productId={{item._id}}">
 						<view class="layout-column layout-align-center text-center margin-bottom-10">
