@@ -30,7 +30,11 @@ Page({
 		],
 		orderList: [
 			{ id: '123' }
-		]
+		],
+		currentPage: 1,
+		next: -1,
+		pageSize: 10,
+		orders: []
 	},
 	onShow() {
 		if (!this.data.locale || this.data.locale !== app.globalData.locale) {
@@ -64,10 +68,26 @@ Page({
 		this.setData({
 			orderStatus,
 			currStatus,
+			currentPage: 1,
+			next: -1,
+			orders: []
 		});
-		showLoading();
+		this.findOrders();
+	},
+	switchStatus(e) {
+		let { status } = e.currentTarget.dataset;
+		wx.setStorageSync('status', status);
+		this.onShow();
+	},
+	onReachBottom() {
+		if (this.data.next < 2) {
+			return;
+		}
+		this.findOrders(this.data.next);
+	},
+	findOrders(next) {
 		let params = {
-			page: 1,
+			page: next || this.data.currentPage,
 			pageSize: this.data.pageSize,
 			filters: {
 				type: 'default'
@@ -76,9 +96,10 @@ Page({
 		if (this.data.currStatus !== 'allOrders') {
 			params.tab = this.data.currStatus;
 		}
-		callApi.post('Order.find', params, 400).then(data => {
-			priceFilter(data);
-			let orders = data.results;
+		showLoading();
+		callApi.post('Order.find', params, 400).then(result => {
+			priceFilter(result);
+			let orders = result.results;
 			let filterOrders = [];
 			for (let i = 0; i < orders.length; ++i) {
 				let createdAt = new Date(orders[i].createdAt);
@@ -87,10 +108,9 @@ Page({
 				filterOrders.push(orders[i]);
 			}
 			this.setData({
-				currentPage: 1,
-				lastPageLength: data.results.length,
-				totalPages: data.totalPages,
-				orders: filterOrders
+				currentPage: result.currentPage,
+				next: result.next,
+				orders: this.data.orders.concat(filterOrders)
 			});
 		}).catch(err => {
 			console.error(err);
@@ -99,16 +119,7 @@ Page({
 			wx.hideNavigationBarLoading();
 			wx.hideLoading();
 		});
-	},
-	switchStatus(e) {
-		let { status } = e.currentTarget.dataset;
-		wx.setStorageSync('status', status);
-		this.onShow();
-	},
-	onPullDownRefresh() {
-	},
-	onReachBottom() {
-	},
+	}
 });
 function checkStatus(order) {
 	// 待付款
