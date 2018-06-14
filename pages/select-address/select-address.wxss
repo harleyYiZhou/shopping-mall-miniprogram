@@ -6,10 +6,7 @@
 }
 
 .update-btn {
-	display:block;
 	width: 150rpx;
-	height: 62rpx;
-	line-height: 62rpx;
 }
 
 .remove-btn {

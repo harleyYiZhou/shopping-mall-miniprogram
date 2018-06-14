@@ -42,6 +42,7 @@ App({
 				}
 			}).catch(err => {
 				console.error(err);
+				reject(err);
 			});
 		});
 		let routes = getCurrentPages().reverse();
@@ -85,6 +86,8 @@ function processCartsCounter(bool) {
 			}
 			getCarts.then(res => {
 				resolve(cartsCounter(res));
+			}).catch(err => {
+				reject(err);
 			});
 		});
 	}

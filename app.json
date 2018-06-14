@@ -62,5 +62,9 @@
 		"navigationBarBackgroundColor": "#fff",
 		"navigationBarTitleText": "WeChat",
 		"navigationBarTextStyle": "black"
-	}
+	},
+	"networkTimeout": {
+		"request": 20000
+	},
+	"debug": false
 }

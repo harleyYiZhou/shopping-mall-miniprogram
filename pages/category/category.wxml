@@ -32,8 +32,8 @@
 					<navigator class="level-3-box layout-center" url="/pages/product-detail/product-detail?productId={{item._id}}">
 						<view class="layout-column layout-align-center text-center margin-bottom-10">
 							<image class="level-3-img" mode="widthFix" src="{{item.image.thumb.url}}"></image>
-							<view class="width-100 ellipsis">{{item.name}}</view>
-							<view class="width-100 ellipsis color-text--red-400">￥{{item.price}}</view>
+							<view class="ellipsis">{{item.name}}</view>
+							<view class="ellipsis color-text--red-400">￥{{item.price}}</view>
 						</view>
 					</navigator>
 				</block>
@@ -41,7 +41,7 @@
 					<navigator class="level-3-box layout-center" url="/pages/store/store?storeId={{item._id}}">
 						<view class="layout-column layout-align-center text-center margin-bottom-10">
 							<image class="level-3-img" mode="widthFix" src="{{item.logo.thumb.url}}"></image>
-							<view class="width-100 ellipsis">{{item.name}}</view>
+							<view class="ellipsis">{{item.name}}</view>
 						</view>
 					</navigator>
 				</block>

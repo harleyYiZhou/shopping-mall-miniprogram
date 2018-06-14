@@ -85,6 +85,9 @@ function _request(method = 'GET') {
 		return new Promise((resolve, reject) => {
 			// request 设置
 			const app = getApp();
+			if (!app) {
+				return reject(new Error('getApp Error'));
+			}
 			const obj = {
 				method,
 				url: api_url + url.replace(/{\s*(smallid|shoppingMallId)\s*}/i, config.shoppingMallId),
