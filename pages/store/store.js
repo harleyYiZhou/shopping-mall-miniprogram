@@ -24,7 +24,8 @@ Page({
 			return callApi.post('Product.find', {
 				storeId,
 				page: 1,
-				pageSize: this.data.pageSize
+				pageSize: this.data.pageSize,
+				type: 'default'
 			}, 400);
 		}).then(data => {
 			let products = data.results;
@@ -65,7 +66,8 @@ Page({
 		callApi.post('Product.find', {
 			storeId: that.data.store._id,
 			page: nextPage,
-			pageSize: that.data.pageSize
+			pageSize: that.data.pageSize,
+			type: 'default'
 		}, 400).then((data) => {
 			let products = that.data.products;
 			if (isLastPage) {
