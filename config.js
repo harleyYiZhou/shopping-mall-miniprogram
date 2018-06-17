@@ -1,6 +1,6 @@
 const config = {
-	MODE: 'development',
-	// MODE: 'production', // localhost development production
+	// MODE: 'development',
+	MODE: 'production', // localhost development production
 	PORT: {
 		400: '4020',
 		3002: '53002'
