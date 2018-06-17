@@ -64,6 +64,7 @@
 }
 
 .page-container {
+	min-height: 100vh;
    margin-bottom: 100rpx;
 }
 
@@ -181,9 +182,6 @@
 .text-box .option-title {
    font-size: 28rpx;
    color: #000;
-   text-overflow: ellipsis;
-   white-space: nowrap;
-   overflow: hidden;
    padding: 10rpx 20rpx 5rpx 0;
 }
 

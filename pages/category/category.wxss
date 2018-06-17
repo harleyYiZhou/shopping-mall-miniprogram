@@ -71,6 +71,7 @@ page,.category-container{
 }
 
 .ellipsis {
+	width: 140rpx;
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;

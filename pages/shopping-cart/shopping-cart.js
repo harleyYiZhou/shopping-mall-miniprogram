@@ -30,8 +30,8 @@ Page({
 			real = Math.floor(res / scale);
 			return real;
 		} catch (e) {
+			console.error(e);
 			return false;
-			// Do something when catch error
 		}
 	},
 	initEleWidth() {

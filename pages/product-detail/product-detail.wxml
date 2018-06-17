@@ -133,7 +133,7 @@
             <view class="margin-x-20" wx:else>
                <image src="../../public/images/icon/option-none.png" class="square-40"></image>
             </view>
-            <image src="{{item.image.thumb.url}}" class="square-80" />
+            <image mode="widthFix" src="{{item.image.thumb.url}}" class="square-80" />
             <view class="text-box margin-x-20">
                <view class="option-title">{{item.name}}</view>
                <view class="option-price">¥ {{item.price}}</view>
